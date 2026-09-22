@@ -499,12 +499,116 @@ img,svg{max-width:100%;display:block}
 }
 .id-top span:last-child{color:var(--green);font-weight:700}
 
-.avatar{
-  width:100%;aspect-ratio:1;border-radius:16px;overflow:hidden;
-  margin-bottom:16px;
-  box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--purple-3);
+/* Hero 头像 — arch 拱形（顶半圆 + 底矩形）+ 光环 + 扫描线 */
+.avatar-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:3/4;
+  margin-bottom:18px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:visible;
 }
-.avatar svg{width:100%;height:100%}
+.avatar-wrap .avatar,.arch-photo{
+  position:relative;
+  width:86%;
+  aspect-ratio:3/4;
+  border-radius:50% 50% 16px 16px / 30% 30% 16px 16px;
+  overflow:hidden;
+  background:var(--surface-2);
+  z-index:2;
+  margin:0;
+  box-shadow:
+    0 0 0 3px var(--bg),
+    0 0 0 5px var(--purple-3),
+    0 30px 60px rgba(120,40,214,.45);
+  /* 渲染动画初始：模糊 + 缩放 + 中央裂开 */
+  opacity:0;
+  transform:scale(.92);
+  filter:blur(14px);
+  clip-path:inset(0 50% 0 50%);
+  transition:
+    opacity 1.1s cubic-bezier(.4,0,.2,1),
+    transform 1.1s cubic-bezier(.4,0,.2,1),
+    filter 1.1s cubic-bezier(.4,0,.2,1),
+    clip-path 1.1s cubic-bezier(.4,0,.2,1);
+}
+.arch-photo img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:center 20%;
+  display:block;
+}
+.reveal.is-visible .avatar-wrap .avatar,
+.reveal.is-visible .arch-photo{
+  opacity:1;transform:scale(1);filter:blur(0);
+  clip-path:inset(0 0 0 0);
+}
+
+/* 旋转彩色光环 */
+.avatar-halo{
+  position:absolute;inset:4%;
+  border-radius:50% 50% 16px 16px / 30% 30% 16px 16px;
+  background:conic-gradient(from 0deg,
+    var(--purple) 0%,
+    var(--cyan) 25%,
+    var(--orange) 50%,
+    var(--purple) 75%,
+    var(--purple) 100%);
+  filter:blur(22px);
+  opacity:0;
+  z-index:0;
+  animation:haloSpin 12s linear infinite;
+  transition:opacity 1.2s ease;
+  pointer-events:none;
+}
+.reveal.is-visible .avatar-halo{opacity:.6}
+@keyframes haloSpin{to{transform:rotate(360deg)}}
+
+/* 外圈脉冲光环 */
+.avatar-ring{
+  position:absolute;inset:-3%;
+  border-radius:50% 50% 16px 16px / 30% 30% 16px 16px;
+  background:
+    linear-gradient(var(--bg),var(--bg)) padding-box,
+    linear-gradient(135deg,var(--cyan),var(--orange),var(--purple-3)) border-box;
+  border:2px solid transparent;
+  z-index:1;opacity:0;
+  animation:ringPulse 2.5s ease-in-out infinite;
+  transition:opacity 1.2s ease .2s;
+  pointer-events:none;
+}
+.reveal.is-visible .avatar-ring{opacity:1}
+@keyframes ringPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.025)}
+}
+
+/* 扫描线（从顶到底循环扫过） */
+.avatar-scan{
+  position:absolute;inset:4%;
+  border-radius:50% 50% 16px 16px / 30% 30% 16px 16px;
+  overflow:hidden;z-index:3;pointer-events:none;
+  opacity:0;
+  transition:opacity 1.4s ease .5s;
+}
+.reveal.is-visible .avatar-scan{opacity:1}
+.avatar-scan::after{
+  content:'';
+  position:absolute;left:0;right:0;
+  top:-40%;height:30%;
+  background:linear-gradient(180deg,
+    transparent,
+    rgba(0,217,255,.5) 50%,
+    transparent);
+  animation:scanMove 4s ease-in-out infinite;
+}
+@keyframes scanMove{
+  0%{top:-40%}
+  100%{top:110%}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .avatar-halo,.avatar-ring,.avatar-scan::after{animation:none}
+}
 
 .id-name{margin-bottom:12px}
 .id-name strong{

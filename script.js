@@ -25,14 +25,17 @@
   function leaveIntro(){
     if(!introGate) return;
     introGate.classList.add('is-leaving');
+    $('.intro-photo-sticker')?.classList.add('is-leaving');
+    $('.character-halo')?.classList.add('is-leaving');
     setTimeout(()=>{
       introGate.style.display='none';
       header?.classList.add('is-visible');
       miniGuide?.classList.add('is-visible');
       signalDock?.classList.add('is-visible');
-      // 触发一次滚动揭示
-      setTimeout(()=>revealObserver?.observe($('.hero-copy')),100);
-    },550);
+      // 只让 hero 区块的 reveal 元素立即可见（启动页 → 主站的衔接）
+      // 其他区块（about/internship/...）保留 IntersectionObserver 滚动揭示
+      $$('.hero .reveal').forEach(el=>el.classList.add('is-visible'));
+    },850);
   }
   $('.character-button')?.addEventListener('click',leaveIntro);
   $('.intro-skip')?.addEventListener('click',leaveIntro);

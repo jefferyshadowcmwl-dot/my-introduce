@@ -332,7 +332,7 @@ img,svg{max-width:100%;display:block}
   background:rgba(15,8,32,.45);backdrop-filter:blur(4px);
   border:1px solid rgba(186,140,255,.25);
   opacity:0;
-  animation:questionCycle 8s ease-in-out infinite;
+  animation:questionCycle 2s ease-in-out infinite;
   transform:rotate(var(--rot,0deg));
   box-shadow:0 4px 14px rgba(0,0,0,.3);
   font-style:italic;
@@ -348,13 +348,13 @@ img,svg{max-width:100%;display:block}
   color:var(--orange);font-size:11px;font-weight:700;
 }
 .question-one{top:10%;left:-150px;animation-delay:0s;--rot:-3deg}
-.question-two{top:18%;right:-200px;animation-delay:2s;--rot:2.5deg}
-.question-three{bottom:12%;right:-170px;animation-delay:4s;--rot:-2deg}
-.question-four{bottom:20%;left:-190px;animation-delay:6s;--rot:4deg}
+.question-two{top:18%;right:-200px;animation-delay:.5s;--rot:2.5deg}
+.question-three{bottom:12%;right:-170px;animation-delay:1s;--rot:-2deg}
+.question-four{bottom:20%;left:-190px;animation-delay:1.5s;--rot:4deg}
 @keyframes questionCycle{
   0%,8%{opacity:0}
-  12%,38%{opacity:1}
-  42%,100%{opacity:0}
+  12%,28%{opacity:1}
+  32%,100%{opacity:0}
 }
 
 .intro-hint{

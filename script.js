@@ -325,6 +325,73 @@
     update();
   }
 
+  /* ---------- 奖项详情弹层 ---------- */
+  function initAwards(){
+    const cards = $$('.award-evidence');
+    if(!cards.length) return;
+
+    // 动态创建 modal
+    const modal = document.createElement('div');
+    modal.className = 'award-modal';
+    modal.setAttribute('role','dialog');
+    modal.setAttribute('aria-modal','true');
+    modal.setAttribute('aria-hidden','true');
+    modal.innerHTML = `
+      <div class="award-modal-backdrop" data-award-close></div>
+      <div class="award-modal-card">
+        <button class="award-modal-close" type="button" aria-label="关闭" data-award-close>✕</button>
+        <div class="award-modal-head">
+          <span class="award-modal-year" id="awardYear"></span>
+          <span class="award-modal-tag" id="awardTag"></span>
+        </div>
+        <h3 id="awardTitle" class="award-modal-title"></h3>
+        <p id="awardResult" class="award-modal-result"></p>
+        <div class="award-modal-story" id="awardStory"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const yearEl = modal.querySelector('#awardYear');
+    const tagEl = modal.querySelector('#awardTag');
+    const titleEl = modal.querySelector('#awardTitle');
+    const resultEl = modal.querySelector('#awardResult');
+    const storyEl = modal.querySelector('#awardStory');
+
+    function open(card){
+      yearEl.textContent = card.dataset.year || '';
+      tagEl.textContent = card.dataset.tag || 'AWARD';
+      titleEl.textContent = card.dataset.title || '';
+      resultEl.textContent = card.dataset.result || '';
+      storyEl.textContent = card.dataset.story || '暂无更多细节。';
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+    }
+    function close(){
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    }
+
+    cards.forEach(card=>{
+      card.addEventListener('click',(e)=>{
+        e.preventDefault();
+        open(card);
+      });
+      card.addEventListener('keydown',(e)=>{
+        if(e.key==='Enter'||e.key===' '){e.preventDefault();open(card);}
+      });
+    });
+
+    // 关闭交互
+    modal.addEventListener('click',(e)=>{
+      if(e.target.dataset.awardClose!==undefined) close();
+    });
+    document.addEventListener('keydown',(e)=>{
+      if(e.key==='Escape'&&modal.classList.contains('is-open')) close();
+    });
+  }
+
   /* ---------- 键盘快捷键 ---------- */
   function initKeys(){
     document.addEventListener('keydown',(e)=>{
@@ -348,6 +415,7 @@
     initMiniGuide();
     initMobileMenu();
     initScrollSpy();
+    initAwards();
     initKeys();
   });
 

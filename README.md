@@ -6,7 +6,7 @@
 
 ## 在线访问
 
-部署后：`https://jefferyshadowcmwl-dot.github.io/`
+部署后：`https://jefferyshadowcmwl-dot.github.io/my-introduce/`
 
 ## 本地预览
 
@@ -37,7 +37,8 @@ github简历/
 
 ## 部署
 
-1. GitHub 创建仓库 `jefferyshadowcmwl-dot.github.io`
-2. `git remote add origin git@github.com:jefferyshadowcmwl-dot/jefferyshadowcmwl-dot.github.io.git`
-3. `git push -u origin main`
-4. 仓库 Settings → Pages → Source: main / root
+1. GitHub 仓库：`jefferyshadowcmwl-dot/my-introduce`（已创建）
+2. `git remote add origin https://github.com/jefferyshadowcmwl-dot/my-introduce.git`
+3. `git push -u origin master`
+4. 仓库 Settings → Pages → Source: master / root
+5. 访问：`https://jefferyshadowcmwl-dot.github.io/my-introduce/`

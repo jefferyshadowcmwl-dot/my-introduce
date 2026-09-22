@@ -173,19 +173,19 @@ img,svg{max-width:100%;display:block}
   height:calc(3px * var(--s,1));
   border-radius:50%;
   background:radial-gradient(circle,
-    rgba(255,255,255,.95) 0%,
-    rgba(186,140,255,.5) 40%,
-    rgba(120,40,214,.2) 70%,
+    rgba(255,255,255,.85) 0%,
+    rgba(186,140,255,.4) 40%,
+    rgba(120,40,214,.15) 70%,
     transparent 100%);
   box-shadow:
-    0 0 calc(6px * var(--s,1)) rgba(186,140,255,.6),
-    0 0 calc(12px * var(--s,1)) rgba(120,40,214,.25);
-  animation:twinkle 3.5s ease-in-out infinite var(--d,0s);
-  opacity:.4;
+    0 0 calc(5px * var(--s,1)) rgba(186,140,255,.45),
+    0 0 calc(10px * var(--s,1)) rgba(120,40,214,.2);
+  animation:twinkle 8s ease-in-out infinite var(--d,0s);
+  opacity:.55;
 }
 @keyframes twinkle{
-  0%,100%{opacity:.25;transform:scale(.85)}
-  50%{opacity:1;transform:scale(1.2)}
+  0%,100%{opacity:.5;transform:scale(.95)}
+  50%{opacity:.75;transform:scale(1.05)}
 }
 
 .intro-brand{

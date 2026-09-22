@@ -20,7 +20,34 @@
 
   <!-- ==================== 启动页 ==================== -->
   <section class="intro-gate" aria-labelledby="intro-title">
+    <canvas id="cosmos-canvas" aria-hidden="true"></canvas>
     <div class="intro-bg-grid" aria-hidden="true"></div>
+    <!-- 星空渐变小星星 -->
+    <div class="intro-stars" aria-hidden="true">
+      <i style="--x:4%;--y:12%;--s:1;--d:0s"></i>
+      <i style="--x:11%;--y:34%;--s:.7;--d:-.7s"></i>
+      <i style="--x:22%;--y:8%;--s:1.2;--d:-1.5s"></i>
+      <i style="--x:30%;--y:55%;--s:.8;--d:-2.3s"></i>
+      <i style="--x:42%;--y:18%;--s:.6;--d:-.5s"></i>
+      <i style="--x:54%;--y:42%;--s:1;--d:-3.1s"></i>
+      <i style="--x:62%;--y:75%;--s:.7;--d:-1.8s"></i>
+      <i style="--x:70%;--y:22%;--s:1.1;--d:-2.6s"></i>
+      <i style="--x:82%;--y:48%;--s:.8;--d:-.9s"></i>
+      <i style="--x:92%;--y:10%;--s:1;--d:-3.5s"></i>
+      <i style="--x:88%;--y:68%;--s:.6;--d:-1.2s"></i>
+      <i style="--x:8%;--y:78%;--s:.9;--d:-2s"></i>
+      <i style="--x:18%;--y:65%;--s:.7;--d:-.4s"></i>
+      <i style="--x:38%;--y:88%;--s:1.3;--d:-2.8s"></i>
+      <i style="--x:68%;--y:92%;--s:.7;--d:-1.4s"></i>
+      <i style="--x:48%;--y:62%;--s:.5;--d:-3s"></i>
+      <i style="--x:78%;--y:30%;--s:.9;--d:-.6s"></i>
+      <i style="--x:28%;--y:42%;--s:.8;--d:-2.1s"></i>
+      <i style="--x:96%;--y:35%;--s:.6;--d:-1s"></i>
+      <i style="--x:2%;--y:48%;--s:.7;--d:-2.4s"></i>
+      <i style="--x:14%;--y:18%;--s:.5;--d:-1.7s"></i>
+      <i style="--x:58%;--y:8%;--s:.8;--d:-3.3s"></i>
+    </div>
+
     <div class="intro-brand"><span>LZY</span> ENGINEER STATION · 0303</div>
     <p class="intro-eyebrow">SIGNAL LZY-0303 · ACQUISITION ONLINE</p>
     <h1 id="intro-title">用代码<br /><span>连接数据、硬件与商业。</span></h1>
@@ -33,11 +60,13 @@
       <span class="character-halo" aria-hidden="true"></span>
       <span class="intro-photo-sticker" aria-hidden="true">
         <img src="assets/liuzhiyuan.jpg" alt="刘致远肖像" decoding="async" fetchpriority="high" />
+        <span class="sticker-label">刘致远 · ENGINEER 0303</span>
       </span>
-      <span class="sticker-label" aria-hidden="true">刘致远 · ENGINEER 0303</span>
     </button>
+
     <p class="intro-hint"><span>点我</span>，接收第一束信号 <i>↗</i><small>并开启工程师信号台</small></p>
     <button class="intro-skip" type="button">跳过启动程序 →</button>
+
     <div class="intro-deco deco-one">⚡</div>
     <div class="intro-deco deco-two">{ }</div>
     <div class="intro-deco deco-three">&lt;/&gt;</div>

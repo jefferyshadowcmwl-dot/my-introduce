@@ -28,12 +28,13 @@
 .internship-media{display:flex;flex-direction:column}
 .award-evidence{cursor:pointer}
 
-/* 字体三档 + 衬线标题 + 行楷 */
+/* 字体三档 + 衬线标题 + 行楷 + 霓虹 */
   --font-display:'Fraunces','Noto Serif SC','Songti SC','STSong',Georgia,serif;
   --font-sans:'DM Sans','Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --font-mono:'JetBrains Mono','Fira Code','Courier New',monospace;
   --font-cn:'Noto Serif SC','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
   --font-xingkai:'ZCOOL XiaoWei','Ma Shan Zheng','Fraunces','Noto Serif SC',cursive,serif;
+  --font-neon:'Monoton','Noto Sans SC','PingFang SC',cursive,sans-serif;
 
   /* 间距 4px 网格 */
   --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px;
@@ -359,12 +360,48 @@ img,svg{max-width:100%;display:block}
 
 .intro-hint{
   position:relative;z-index:1;margin-top:64px;
-  font-family:var(--font-display);font-size:14px;color:var(--muted);
+  font-family:var(--font-neon);
+  font-size:18px;letter-spacing:.06em;
+  text-align:center;
+  color:transparent;
+  -webkit-text-stroke:1.2px var(--cyan);
+  text-shadow:
+    0 0 6px var(--cyan),
+    0 0 12px var(--cyan),
+    0 0 22px rgba(0,217,255,.55),
+    0 0 32px rgba(0,217,255,.3);
   animation:hintFloat 2.6s ease-in-out infinite;
 }
-.intro-hint span{color:var(--orange);font-weight:600;margin-right:4px}
-.intro-hint i{font-style:normal;color:var(--cyan);margin:0 4px;font-family:var(--font-mono)}
-.intro-hint small{display:block;margin-top:6px;font-size:11px;color:var(--purple-3);font-family:var(--font-mono);letter-spacing:.15em}
+.intro-hint span{
+  color:transparent;
+  -webkit-text-stroke:1.2px var(--orange);
+  text-shadow:
+    0 0 6px var(--orange),
+    0 0 14px rgba(255,107,53,.6);
+  font-weight:400;margin-right:4px;
+  font-style:normal;
+}
+.intro-hint i{
+  font-style:normal;
+  color:transparent;
+  -webkit-text-stroke:1px var(--purple-3);
+  text-shadow:
+    0 0 6px var(--purple-3),
+    0 0 14px rgba(120,40,214,.6);
+  margin:0 4px;
+  font-family:var(--font-mono);
+}
+.intro-hint small{
+  display:block;margin-top:8px;
+  font-size:12px;
+  color:transparent;
+  -webkit-text-stroke:1px var(--purple-3);
+  text-shadow:
+    0 0 6px var(--purple-3),
+    0 0 14px rgba(120,40,214,.55);
+  font-family:var(--font-mono);
+  letter-spacing:.18em;
+}
 
 .intro-skip{
   position:absolute;bottom:32px;right:32px;z-index:1;

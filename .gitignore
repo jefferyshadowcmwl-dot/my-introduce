@@ -14,4 +14,4 @@ pictute_source/
 
 # 构建产物（如果有）
 node_modules/
-dist/
+dist/*.stackdump

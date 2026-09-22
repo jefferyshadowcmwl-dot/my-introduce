@@ -302,29 +302,36 @@ img,svg{max-width:100%;display:block}
 
 .question{
   position:absolute;font-family:var(--font-display);
-  font-size:14px;color:var(--ink-2);font-weight:600;
+  font-size:13px;color:var(--ink-2);font-weight:600;
   display:flex;align-items:center;gap:6px;
-  padding:6px 14px;border-radius:20px;
-  background:rgba(15,8,32,.85);backdrop-filter:blur(8px);
-  border:1px solid var(--line);
-  opacity:0;animation:questionCycle 12s ease-in-out infinite;
+  padding:5px 12px;border-radius:18px;
+  background:rgba(15,8,32,.45);backdrop-filter:blur(4px);
+  border:1px solid rgba(186,140,255,.25);
+  opacity:0;
+  animation:questionCycle 8s ease-in-out infinite;
+  transform:rotate(var(--rot,0deg));
+  box-shadow:0 4px 14px rgba(0,0,0,.3);
+  font-style:italic;
+  white-space:nowrap;
+  z-index:3;
 }
 .question small{
   font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;
-  color:var(--cyan);font-weight:500;
+  color:var(--cyan);font-weight:500;font-style:normal;
 }
 .question i{
   font-style:normal;font-family:var(--font-mono);
   color:var(--orange);font-size:11px;font-weight:700;
 }
-.question-one{top:5%;left:-180px;animation-delay:0s}
-.question-two{top:5%;right:-180px;animation-delay:3s}
-.question-three{bottom:5%;right:-180px;animation-delay:6s}
-.question-four{bottom:5%;left:-180px;animation-delay:9s}
+}
+.question-one{top:10%;left:-150px;animation-delay:0s;--rot:-3deg}
+.question-two{top:18%;right:-200px;animation-delay:2s;--rot:2.5deg}
+.question-three{bottom:12%;right:-170px;animation-delay:4s;--rot:-2deg}
+.question-four{bottom:20%;left:-190px;animation-delay:6s;--rot:4deg}
 @keyframes questionCycle{
-  0%,20%{opacity:0;transform:translateY(10px)}
-  25%,95%{opacity:1;transform:translateY(0)}
-  100%{opacity:0;transform:translateY(-10px)}
+  0%,8%{opacity:0}
+  12%,38%{opacity:1}
+  42%,100%{opacity:0}
 }
 
 .intro-hint{
@@ -1190,6 +1197,7 @@ img,svg{max-width:100%;display:block}
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
   .cosmic-field i,.intro-deco,.signal-pulse,.spark,.character-halo,.hero-orbit i{animation:none}
+  .question{animation:none;opacity:1}
 }
 
 /* ============================================================

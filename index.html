@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="LZY Engineer Station · 0303 — 刘致远的个人简历信号台。从数据分析到嵌入式开发，用代码连接数据、硬件与商业。" />
+  <meta name="robots" content="index, follow" />
+  <title>LZY · 工程师信号台 | 刘致远</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- 装饰背景层 -->
+  <div class="cosmic-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <canvas id="cosmos-canvas" aria-hidden="true"></canvas>
+
+  <!-- ==================== 启动页 ==================== -->
+  <section class="intro-gate" aria-labelledby="intro-title">
+    <div class="intro-bg-grid" aria-hidden="true"></div>
+    <div class="intro-brand"><span>LZY</span> ENGINEER STATION · 0303</div>
+    <p class="intro-eyebrow">SIGNAL LZY-0303 · ACQUISITION ONLINE</p>
+    <h1 id="intro-title">用代码<br /><span>连接数据、硬件与商业。</span></h1>
+
+    <button class="character-button" type="button" aria-label="点击进入工程师信号台">
+      <span class="question question-one"><small>ORIGIN</small>第一条信号：数据分析<i></i></span>
+      <span class="question question-two"><small>STACK</small>Python · MySQL · Arduino<i></i></span>
+      <span class="question question-three"><small>ACTION</small>5 段实习 · 国家级立项<i></i></span>
+      <span class="question question-four"><small>DESTINATION</small>工程师 × 创业者 × 创客<i></i></span>
+      <span class="character-halo"></span>
+      <span class="intro-photo-sticker" aria-hidden="true">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="av" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7828d6"/>
+              <stop offset="100%" stop-color="#00d9ff"/>
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="20" fill="url(#av)"/>
+          <text x="50" y="62" font-size="48" font-family="DM Sans, sans-serif" font-weight="800" fill="#fff" text-anchor="middle">LZY</text>
+          <text x="50" y="82" font-size="14" font-family="JetBrains Mono, monospace" fill="rgba(255,255,255,.7)" text-anchor="middle">0303</text>
+        </svg>
+        <span class="sticker-label">刘致远 · ENGINEER 0303</span>
+      </span>
+    </button>
+    <p class="intro-hint"><span>点我</span>，接收第一束信号 <i>↗</i><small>并开启工程师信号台</small></p>
+    <button class="intro-skip" type="button">跳过启动程序 →</button>
+    <div class="intro-deco deco-one">⚡</div>
+    <div class="intro-deco deco-two">{ }</div>
+    <div class="intro-deco deco-three">&lt;/&gt;</div>
+    <div class="formula formula-one" aria-hidden="true">λ = h/p</div>
+    <div class="formula formula-two" aria-hidden="true">O(n log n)</div>
+    <div class="formula formula-three" aria-hidden="true">∇ · E = ρ/ε₀</div>
+  </section>
+
+  <!-- ==================== 浮动导航（迷你角色） ==================== -->
+  <aside class="mini-guide" aria-label="快速导航">
+    <button class="mini-character" type="button" aria-expanded="false" aria-controls="mini-menu">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="20" fill="#7828d6"/><text x="50" y="62" font-size="48" font-family="DM Sans, sans-serif" font-weight="800" fill="#fff" text-anchor="middle">L</text></svg>
+      <i>+</i>
+    </button>
+    <nav id="mini-menu" class="mini-menu">
+      <p>你想先了解哪一面？</p>
+      <a href="#about">👋 关于我</a>
+      <a href="#internship">💼 实习轨道</a>
+      <a href="#projects">🧪 构建现场</a>
+      <a href="#awards">🏆 信号脉冲</a>
+      <a href="#skills">⚙️ 技能矩阵</a>
+      <a href="#contact">📡 联系</a>
+    </nav>
+  </aside>
+
+  <!-- ==================== 信号收集进度 ==================== -->
+  <aside class="signal-dock" aria-label="LZY-0303 信号收集进度">
+    <div class="signal-dock-head">
+      <span></span>
+      <div><b>LZY-0303 SIGNALS</b><small>点亮工程师的五束光</small></div>
+      <strong id="signal-count">0/5</strong>
+    </div>
+    <div class="signal-nodes">
+      <i data-signal-node="origin" title="起点：第一段实习">01</i>
+      <i data-signal-node="builder" title="创造：把想法做出来">02</i>
+      <i data-signal-node="leader" title="担当：国家级立项负责人">03</i>
+      <i data-signal-node="maker" title="创客：Arduino + 3D 打印">04</i>
+      <i data-signal-node="future" title="未来：持续建造">05</i>
+    </div>
+    <a href="#contact">前往联系坐标 <span>↘</span></a>
+  </aside>
+
+  <!-- 信号解锁提示 -->
+  <div class="unlock-toast" role="status" aria-live="polite">
+    <span>✦</span>
+    <div><b>接收到一束新信号</b><p>继续探索，点亮 LZY-0303 星座。</p></div>
+  </div>
+
+  <!-- ==================== 页面柔光 ==================== -->
+  <div class="page-glow glow-one"></div>
+  <div class="page-glow glow-two"></div>
+
+  <!-- ==================== 顶部导航 ==================== -->
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="返回首页">
+      <span>LZY</span><b>LZY-0303</b><small>工程师信号台</small>
+    </a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+      <i></i><i></i><span class="sr-only">打开导航</span>
+    </button>
+    <nav id="site-nav" class="site-nav" aria-label="主导航">
+      <a href="#about">关于</a>
+      <a href="#internship">实习</a>
+      <a href="#projects">项目</a>
+      <a href="#awards">荣誉</a>
+      <a href="#skills">技能</a>
+      <a href="#contact">联系</a>
+      <button class="theme-button" type="button" aria-label="切换主题">
+        <span class="sun">☀</span><span class="moon">☾</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ==================== 主内容 ==================== -->
+  <main id="top">
+
+    <!-- ========== Hero ========== -->
+    <section class="hero shell">
+      <div class="hero-copy reveal">
+        <div class="status"><span></span> SIGNAL LZY-0303 · ONLINE</div>
+        <p class="hello">欢迎来到 LZY 工程师信号台</p>
+        <h1>刘致远<span class="spark">⚡</span></h1>
+        <p class="hero-mission">用代码<br /><span>连接数据、硬件与商业。</span></p>
+        <p class="hero-intro">计算机科学与技术本科，从 MySQL 数据分析到 Arduino 嵌入式开发，从 SEO 营销到国家级双创立项——5 段实习、4 项省级以上奖项、1 项实用新型专利，持续把想法做出来。</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="#internship">接收第一束信号 <span>↘</span></a>
+          <a class="under-link" href="#contact">直接联系我 →</a>
+        </div>
+      </div>
+      <div class="identity-card reveal" data-delay="1">
+        <div class="id-top"><span>ENGINEER ID · LZY-0303</span><span>ACTIVE</span></div>
+        <div class="avatar">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs><linearGradient id="ag" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7828d6"/><stop offset="100%" stop-color="#00d9ff"/></linearGradient></defs>
+            <rect width="100" height="100" rx="14" fill="url(#ag)"/>
+            <text x="50" y="58" font-size="40" font-family="DM Sans, sans-serif" font-weight="800" fill="#fff" text-anchor="middle">LZY</text>
+            <text x="50" y="78" font-size="12" font-family="JetBrains Mono, monospace" fill="rgba(255,255,255,.75)" text-anchor="middle">ENG · 0303</text>
+          </svg>
+        </div>
+        <div class="id-name"><strong>LIUZHIYUAN</strong><span>刘致远</span></div>
+        <div class="id-meta"><span>2003.03</span><span>群众</span><span>SHANGHAI</span></div>
+        <div class="tape tape-one"></div>
+        <div class="tape tape-two"></div>
+      </div>
+      <a class="first-signal reveal" href="#internship" data-signal="origin">
+        <span class="signal-pulse"></span>
+        <div>
+          <small>FIRST SIGNAL / ORIGIN</small>
+          <strong>第一段实习，从 MySQL 数据库的增删改查开始。</strong>
+          <p>5 段实习持续积累，把"会做"变成"做成"。</p>
+        </div>
+        <i>接收 ↘</i>
+      </a>
+      <div class="hero-orbit" aria-hidden="true">
+        <span></span><i>CODE · DATA · HARDWARE · SEO · STARTUP ·</i>
+      </div>
+    </section>
+
+    <!-- ========== Quick Stats ========== -->
+    <section class="quick-stats shell reveal" aria-label="个人数据">
+      <article><strong data-count="5" data-suffix="+">0<small>+</small></strong><span>技术实习段数</span></article>
+      <article><strong data-count="4" data-suffix="+">0<small>+</small></strong><span>省级以上奖项</span></article>
+      <article><strong data-count="1">0</strong><span>国家级双创项目立项</span></article>
+      <article><strong data-count="2" data-suffix="+">0<small>+</small></strong><span>专利 / 软件著作权</span></article>
+    </section>
+
+    <!-- ========== About ========== -->
+    <section id="about" class="about shell section-pad">
+      <div class="section-kicker reveal"><span>01</span> ABOUT ME</div>
+      <div class="about-grid">
+        <div class="about-title reveal">
+          <h2>一个工程师视角，<br />许多种<span>动手方式。</span></h2>
+          <div class="doodle">观察 · 提问 · 落地 ↗</div>
+        </div>
+        <div class="about-copy reveal" data-delay="1">
+          <p class="lead">我关注的不是"技术多炫"，而是"它能不能解决一个真实问题，并被做出来"。</p>
+          <p>计算机科学与技术专业本科，从 MySQL 数据分析、Python 自动化脚本起步，逐步拓展到 Arduino 嵌入式、YOLO 视觉、3D 建模、SEO/GEO 营销——既写代码也接项目，既做工程也做落地。</p>
+          <p>作为 PaddlePaddle 团长与程序设计社社长，我愿意把学到的整理出来、分享出去；作为双创项目第一负责人，我完成了从市级立项到国家级立项的跃迁。</p>
+        </div>
+      </div>
+      <div class="role-cloud reveal">
+        <span class="hot">PaddlePaddle 团长</span>
+        <span class="hot">程序设计社社长</span>
+        <span>双创项目第一负责人</span>
+        <span>数据分析工程师</span>
+        <span>嵌入式 / 创客</span>
+        <span>Python · SQL · OpenCV</span>
+        <span>Arduino · 3D 建模</span>
+      </div>
+    </section>
+
+    <!-- ========== 实习经历 ========== -->
+    <section id="internship" class="internship section-pad">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker"><span>02</span> INTERNSHIP ORBIT</div>
+            <h2>5 段实习，<br /><span>从分析到建造。</span></h2>
+          </div>
+          <p>每段实习都补上一块能力：从数据查询到脚本自动化，从测试用例到嵌入式开发。</p>
+        </div>
+
+        <div class="internship-route reveal" role="tablist" aria-label="选择实习">
+          <i class="route-line"></i><i class="route-progress"></i>
+          <button class="internship-tab active" type="button" role="tab" aria-selected="true" data-intern="lianSuo" data-signal="builder">
+            <b>2025.1</b><span>数据分析</span><small>SEO 营销</small>
+          </button>
+          <button class="internship-tab" type="button" role="tab" aria-selected="false" data-intern="biFu">
+            <b>2024.6</b><span>QA 实施</span><small>测试用例</small>
+          </button>
+          <button class="internship-tab" type="button" role="tab" aria-selected="false" data-intern="hongJing">
+            <b>2024.1</b><span>嵌入式</span><small>Arduino · YOLO</small>
+          </button>
+          <button class="internship-tab" type="button" role="tab" aria-selected="false" data-intern="puZhe">
+            <b>2023.7</b><span>Python 开发</span><small>云 API · OCR</small>
+          </button>
+          <button class="internship-tab" type="button" role="tab" aria-selected="false" data-intern="jingFei" data-signal="origin">
+            <b>2022.7</b><span>数据分析</span><small>数据可视化</small>
+          </button>
+        </div>
+
+        <div class="internship-panels">
+          <!-- 上海连索 -->
+          <article class="internship-panel active" data-panel="lianSuo">
+            <div class="internship-copy">
+              <div class="internship-index">01 / LATEST</div>
+              <h3>上海连索网络信息科技有限公司</h3>
+              <p class="internship-role">数据分析 & GEO 优化 & SEO 营销</p>
+              <p class="internship-time">2025.01 - 2026.03</p>
+              <ul>
+                <li><b>脚本自动化</b><span>负责公司各项周/月/年报脚本自动化</span></li>
+                <li><b>SEO</b><span>搜索引擎营销优化，提升自然流量</span></li>
+                <li><b>GEO</b><span>网站前后端功能优化与开发</span></li>
+              </ul>
+            </div>
+            <div class="internship-media">
+              <div class="media-card">
+                <small>STACK</small>
+                <div class="stack-chips"><span>Python</span><span>SQL</span><span>SEO</span><span>GEO</span><span>Web</span></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 宁波比孚 -->
+          <article class="internship-panel" data-panel="biFu" hidden>
+            <div class="internship-copy">
+              <div class="internship-index">02 / QA</div>
+              <h3>宁波比孚信息科技有限公司</h3>
+              <p class="internship-role">专家实施（实习生）</p>
+              <p class="internship-time">2024.06 - 2024.09</p>
+              <ul>
+                <li><b>测试用例</b><span>设计并维护测试用例，覆盖核心业务流</span></li>
+                <li><b>TAPD</b><span>熟练使用腾讯 TAPD 质量检测平台</span></li>
+                <li><b>交付报表</b><span>项目质量交付报表 + 邮件输出</span></li>
+              </ul>
+            </div>
+            <div class="internship-media">
+              <div class="media-card">
+                <small>STACK</small>
+                <div class="stack-chips"><span>TAPD</span><span>测试用例</span><span>缺陷管理</span><span>邮件自动化</span></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 上海鸿惊 -->
+          <article class="internship-panel" data-panel="hongJing" hidden>
+            <div class="internship-copy">
+              <div class="internship-index">03 / EMBEDDED</div>
+              <h3>上海鸿惊科技智能有限公司</h3>
+              <p class="internship-role">arduino 嵌入式开发（实习生）</p>
+              <p class="internship-time">2024.01 - 2024.03</p>
+              <ul>
+                <li><b>智能视觉</b><span>Arduino + YOLO v3 套件开发</span></li>
+                <li><b>开源</b><span>GitHub + 立创开源广场创客项目开发</span></li>
+                <li><b>软硬一体</b><span>软硬件结合的完整项目交付</span></li>
+              </ul>
+            </div>
+            <div class="internship-media">
+              <div class="media-card">
+                <small>STACK</small>
+                <div class="stack-chips"><span>Arduino</span><span>YOLO v3</span><span>Python</span><span>GitHub</span><span>立创开源</span></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 上海璞哲 -->
+          <article class="internship-panel" data-panel="puZhe" hidden>
+            <div class="internship-copy">
+              <div class="internship-index">04 / PYTHON</div>
+              <h3>上海璞哲网络科技有限公司</h3>
+              <p class="internship-role">Python 技术开发（实习生）</p>
+              <p class="internship-time">2023.07 - 2023.12</p>
+              <ul>
+                <li><b>云 API</b><span>百度智能云 + 阿里云 API 接口脚本开发</span></li>
+                <li><b>OCR</b><span>OCR 图文识别落地</span></li>
+                <li><b>语音识别</b><span>语音识别模块集成</span></li>
+                <li><b>OpenCV</b><span>基于 OpenCV 传统视觉的边缘检测</span></li>
+              </ul>
+            </div>
+            <div class="internship-media">
+              <div class="media-card">
+                <small>STACK</small>
+                <div class="stack-chips"><span>Python</span><span>百度智能云</span><span>阿里云</span><span>OCR</span><span>OpenCV</span></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 上海鲸飞 -->
+          <article class="internship-panel" data-panel="jingFei" hidden>
+            <div class="internship-copy">
+              <div class="internship-index">05 / ORIGIN</div>
+              <h3>上海鲸飞电子有限公司</h3>
+              <p class="internship-role">数据分析（实习生）</p>
+              <p class="internship-time">2022.07 - 2022.11</p>
+              <ul>
+                <li><b>数据操作</b><span>MySQL 数据库增删改查</span></li>
+                <li><b>可视化</b><span>PowerBI 数据报表分析</span></li>
+                <li><b>表结构</b><span>创建表结构 + 需求分析</span></li>
+              </ul>
+            </div>
+            <div class="internship-media">
+              <div class="media-card">
+                <small>STACK</small>
+                <div class="stack-chips"><span>MySQL</span><span>Navigate</span><span>Python</span><span>Excel</span><span>PowerBI</span></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 项目经历 ========== -->
+    <section id="projects" class="projects section-pad">
+      <div class="shell">
+        <div class="project-head reveal">
+          <div class="section-kicker"><span>03</span> BUILD SITE</div>
+          <p>不是互不相关的项目，而是同一个问题在不同阶段不断生长的轨迹。</p>
+          <h2>构建现场，<br />从<span>一个想法</span>到<span>可交付的产物。</span></h2>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card reveal" data-signal="leader">
+            <div class="project-no">01 / FLAGSHIP</div>
+            <h3>双创项目：市级 → 国家级立项</h3>
+            <p>作为第一负责人带领团队完成双创项目，从 2023 年市级立项到 2024 年国家级立项。</p>
+            <div class="project-tags"><span>项目负责人</span><span>国家级立项</span><span>2024</span></div>
+          </article>
+
+          <article class="project-card reveal" data-delay="1" data-signal="leader">
+            <div class="project-no">02 / STAGE</div>
+            <h3>1000 人漫展营销规划</h3>
+            <p>参与 1000 人级漫展组织规划与现场安排，独立完成市场营销规划与执行。</p>
+            <div class="project-tags"><span>营销</span><span>活动执行</span><span>2025.01</span></div>
+          </article>
+
+          <article class="project-card reveal" data-delay="2">
+            <div class="project-no">03 / SHOWCASE</div>
+            <h3>全国大学生创业年会入选</h3>
+            <p>项目入选全国大学生创业年会，与全国高校创业者同台展示。</p>
+            <div class="project-tags"><span>年会入选</span><span>2025.10</span></div>
+          </article>
+
+          <article class="project-card reveal" data-signal="maker">
+            <div class="project-no">04 / RESEARCH</div>
+            <h3>AI 视觉 + 准工业机械臂</h3>
+            <p>励志科研项目：完成人工智能视觉 + 准工业机械臂的软硬件开发。</p>
+            <div class="project-tags"><span>YOLO</span><span>机械臂</span><span>2024.01-04</span></div>
+          </article>
+
+          <article class="project-card reveal" data-delay="1" data-signal="maker">
+            <div class="project-no">05 / DESKTOP</div>
+            <h3>上位机软件 + 软著</h3>
+            <p>开发并设计上位机软件，结合 UI 界面适配移动端，已获软件著作权。</p>
+            <div class="project-tags"><span>OpenCV</span><span>Django</span><span>软著</span><span>2024.03-06</span></div>
+          </article>
+
+          <article class="project-card reveal" data-delay="2" data-signal="builder">
+            <div class="project-no">06 / STARTUP</div>
+            <h3>校园外送到寝服务</h3>
+            <p>自主组织完成校园外送到寝服务，半年做出口碑与品牌，验证从 0 到 1 的产品力。</p>
+            <div class="project-tags"><span>创业</span><span>校园运营</span><span>2023.03-06</span></div>
+          </article>
+
+          <article class="project-card reveal" data-signal="maker">
+            <div class="project-no">07 / MAKER</div>
+            <h3>3D 建模 + 3D 打印生产</h3>
+            <p>完成 SW / UG 建模软件学习，熟练运用 3D 建模及 3D 打印机完成生产。</p>
+            <div class="project-tags"><span>SolidWorks</span><span>UG</span><span>3D 打印</span><span>2024.07-09</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 荣誉 / 获奖 ========== -->
+    <section id="awards" class="awards section-pad">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker"><span>04</span> SIGNAL PULSES</div>
+            <h2>每一束<span>信号脉冲</span>，<br />都是一次确认。</h2>
+          </div>
+          <p>每个奖项背后，都是一次主动尝试、一次团队协作，以及把想法做成现实的坚持。</p>
+        </div>
+
+        <div class="award-grid">
+          <button class="award-card reveal award-evidence" type="button" data-signal="leader"
+            data-title="第 19 届上海市大学生创新创业大赛" data-result="银奖 · 我敢闯，我敢拼"
+            data-year="2024" data-story="作为第一负责人带队参赛，获得上海市级银奖。">
+            <div class="award-icon">🏆</div>
+            <div class="award-meta"><span>2024</span><span>上海市</span></div>
+            <h3>上海市大学生双创大赛</h3>
+            <p>"我敢闯，我敢拼" 银奖</p>
+            <small>FIRST LEADER</small>
+          </button>
+
+          <button class="award-card reveal award-evidence" type="button" data-delay="1"
+            data-title="第 16 届全国大学生计算机应用能力大赛" data-result="国赛二等奖"
+            data-year="2023" data-story="第一负责人参赛，获得国家级二等奖。">
+            <div class="award-icon">🥈</div>
+            <div class="award-meta"><span>2023</span><span>国家级</span></div>
+            <h3>全国计算机应用能力大赛</h3>
+            <p>国赛二等奖</p>
+            <small>FIRST LEADER</small>
+          </button>
+
+          <button class="award-card reveal award-evidence" type="button" data-delay="2"
+            data-title="2024 年大学生创新创业训练计划" data-result="国家级立项"
+            data-year="2024" data-story="作为项目负责人完成双创项目国家级立项。">
+            <div class="award-icon">🚀</div>
+            <div class="award-meta"><span>2024</span><span>国家级</span></div>
+            <h3>国家级双创立项</h3>
+            <p>大创项目立项</p>
+            <small>FLAGSHIP</small>
+          </button>
+
+          <button class="award-card reveal award-evidence" type="button" data-delay="3"
+            data-title="上海市浦东新区第二届新势力大赛" data-result="一等奖"
+            data-year="2024" data-story="浦东新区新势力大赛一等奖。">
+            <div class="award-icon">🥇</div>
+            <div class="award-meta"><span>2024</span><span>浦东新区</span></div>
+            <h3>浦东新势力大赛</h3>
+            <p>一等奖</p>
+            <small>REGIONAL</small>
+          </button>
+
+          <button class="award-card reveal award-evidence" type="button" data-delay="4"
+            data-title="第 16 / 17 届上海市计算机应用能力大赛" data-result="市赛三等奖 × 2"
+            data-year="2023 / 2024" data-story="连续两届获得上海市赛三等奖。">
+            <div class="award-icon">💻</div>
+            <div class="award-meta"><span>2023 / 2024</span><span>上海市</span></div>
+            <h3>上海市计算机应用能力大赛</h3>
+            <p>第 16 届 · 第 17 届 市赛三等奖</p>
+            <small>CITY ×2</small>
+          </button>
+
+          <button class="award-card reveal award-evidence" type="button" data-delay="5"
+            data-title="2021-2022 学年谢希德奖学金" data-result="三等奖"
+            data-year="2022" data-story="大一学年综合奖学金。">
+            <div class="award-icon">🎓</div>
+            <div class="award-meta"><span>2022</span><span>校级</span></div>
+            <h3>谢希德奖学金</h3>
+            <p>三等奖</p>
+            <small>SCHOLARSHIP</small>
+          </button>
+
+          <button class="award-card reveal" data-delay="6" data-signal="builder">
+            <div class="award-icon">📜</div>
+            <div class="award-meta"><span>2024</span><span>知识产权</span></div>
+            <h3>实用新型专利</h3>
+            <p>已获得</p>
+            <small>PATENT</small>
+          </button>
+
+          <button class="award-card reveal" data-delay="7" data-signal="builder">
+            <div class="award-icon">⚙️</div>
+            <div class="award-meta"><span>2024</span><span>知识产权</span></div>
+            <h3>软件著作权</h3>
+            <p>基于 OpenCV + Django 架构</p>
+            <small>SOFTWARE</small>
+          </button>
+
+          <button class="award-card reveal" data-delay="8">
+            <div class="award-icon">🎯</div>
+            <div class="award-meta"><span>Google</span><span>认证</span></div>
+            <h3>Google ADS 双认证</h3>
+            <p>Display · AI-powered Shopping</p>
+            <small>CERTIFIED</small>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 技能矩阵 ========== -->
+    <section id="skills" class="skills section-pad">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker"><span>05</span> SKILL MATRIX</div>
+            <h2>技能<span>矩阵</span></h2>
+          </div>
+          <p>从编程到硬件、从数据到营销——跨域动手能力。</p>
+        </div>
+
+        <div class="skill-grid">
+          <article class="skill-card reveal">
+            <header><span class="skill-icon">🐍</span><h3>编程 & 脚本</h3></header>
+            <div class="skill-bars">
+              <div class="skill-row"><span>Python</span><i style="--w:90%"></i></div>
+              <div class="skill-row"><span>SQL</span><i style="--w:85%"></i></div>
+              <div class="skill-row"><span>JavaScript</span><i style="--w:60%"></i></div>
+            </div>
+          </article>
+
+          <article class="skill-card reveal" data-delay="1">
+            <header><span class="skill-icon">📊</span><h3>数据 & 可视化</h3></header>
+            <div class="skill-bars">
+              <div class="skill-row"><span>MySQL</span><i style="--w:90%"></i></div>
+              <div class="skill-row"><span>PowerBI</span><i style="--w:80%"></i></div>
+              <div class="skill-row"><span>Excel</span><i style="--w:85%"></i></div>
+            </div>
+          </article>
+
+          <article class="skill-card reveal" data-delay="2">
+            <header><span class="skill-icon">🤖</span><h3>AI & 视觉</h3></header>
+            <div class="skill-bars">
+              <div class="skill-row"><span>OpenCV</span><i style="--w:80%"></i></div>
+              <div class="skill-row"><span>YOLO v3</span><i style="--w:70%"></i></div>
+              <div class="skill-row"><span>OCR / 语音</span><i style="--w:70%"></i></div>
+            </div>
+          </article>
+
+          <article class="skill-card reveal" data-delay="3">
+            <header><span class="skill-icon">🔌</span><h3>硬件 & 创客</h3></header>
+            <div class="skill-bars">
+              <div class="skill-row"><span>Arduino</span><i style="--w:75%"></i></div>
+              <div class="skill-row"><span>3D 建模 SW</span><i style="--w:70%"></i></div>
+              <div class="skill-row"><span>3D 建模 UG</span><i style="--w:65%"></i></div>
+            </div>
+          </article>
+
+          <article class="skill-card reveal" data-delay="4">
+            <header><span class="skill-icon">🌐</span><h3>营销 & Web</h3></header>
+            <div class="skill-bars">
+              <div class="skill-row"><span>SEO</span><i style="--w:80%"></i></div>
+              <div class="skill-row"><span>GEO 优化</span><i style="--w:75%"></i></div>
+              <div class="skill-row"><span>Google ADS</span><i style="--w:70%"></i></div>
+            </div>
+          </article>
+
+          <article class="skill-card reveal" data-delay="5">
+            <header><span class="skill-icon">🛠️</span><h3>办公 & 协作</h3></header>
+            <div class="skill-bars">
+              <div class="skill-row"><span>Word / PPT</span><i style="--w:90%"></i></div>
+              <div class="skill-row"><span>TAPD</span><i style="--w:75%"></i></div>
+              <div class="skill-row"><span>GitHub</span><i style="--w:80%"></i></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 联系 ========== -->
+    <section id="contact" class="contact section-pad">
+      <div class="shell">
+        <div class="contact-wrap reveal">
+          <div class="section-kicker"><span>06</span> CONTACT</div>
+          <h2>下一段信号，<br />从这里<span>开始。</span></h2>
+          <p class="contact-lead">无论是实习机会、项目合作、还是技术交流——都欢迎来一束信号。</p>
+
+          <div class="contact-grid">
+            <a class="contact-card" href="mailto:3107190237@qq.com">
+              <div class="contact-icon">✉️</div>
+              <small>EMAIL</small>
+              <strong>3107190237@qq.com</strong>
+              <i>发送邮件 ↗</i>
+            </a>
+            <a class="contact-card" href="tel:15026727430">
+              <div class="contact-icon">📞</div>
+              <small>PHONE</small>
+              <strong>15026727430</strong>
+              <i>拨打电话 ↗</i>
+            </a>
+            <a class="contact-card" href="https://github.com/jefferyshadowcmwl-dot" target="_blank" rel="noopener">
+              <div class="contact-icon">🐙</div>
+              <small>GITHUB</small>
+              <strong>jefferyshadowcmwl-dot</strong>
+              <i>访问主页 ↗</i>
+            </a>
+            <a class="contact-card" href="https://gitee.com/liu-zhiyuan123456cmwl" target="_blank" rel="noopener">
+              <div class="contact-icon">🌿</div>
+              <small>GITEE</small>
+              <strong>liu-zhiyuan123456cmwl</strong>
+              <i>访问主页 ↗</i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="shell">
+        <p>© 2026 LZY Engineer Station · 0303 · 由 <a href="https://github.com/jefferyshadowcmwl-dot" target="_blank" rel="noopener">刘致远</a> 亲手点亮</p>
+        <p class="footer-signal"><span></span> SIGNAL · LIVE</p>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1277,6 +1277,10 @@ img,svg{max-width:100%;display:block}
   display:grid;
   grid-template-columns:minmax(240px,.82fr) 1.42fr;
   grid-template-areas:"case title" "case copy";
+  /* 行高必须显式声明：展柜跨两行且高于右栏内容，若两行都是 auto 会把
+     多余高度平分，导致标题与正文之间裂开一大段空隙。auto + 1fr 让
+     余量全部落到第二行底部。 */
+  grid-template-rows:auto 1fr;
   gap:32px 48px;align-items:start;margin-bottom:36px;
 }
 .mu-vitrine{grid-area:case}
@@ -1843,79 +1847,118 @@ img,svg{max-width:100%;display:block}
 }
 .gallery-meta b{color:var(--orange-2);font-weight:700;}
 
+/* 展厅挂画墙：12 栏 + 中心挂高线
+   align-items:center 是设计核心 —— 美术馆挂画惯例是所有画心对齐同一条中心线，
+   而非顶端对齐。这一条把「网页卡片墙」变成「挂画墙」。 */
 .photo-wall{
   display:grid;
-  grid-template-columns:repeat(6,1fr);
-  grid-auto-rows:120px;
-  gap:14px;
+  grid-template-columns:repeat(12,1fr);
+  column-gap:var(--s-3);
+  row-gap:var(--s-16);
+  grid-auto-rows:minmax(420px,auto);
+  align-items:center;
+  grid-auto-flow:dense;
   margin-top:8px;
 }
 .photo-card{
   position:relative;
-  border-radius:14px;overflow:hidden;
-  background:radial-gradient(ellipse at center, rgba(120,40,214,.08) 0%, transparent 70%), var(--bg-2);
-  border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:var(--s-3);
+  background:none;border:0;padding:0;
   text-align:left;cursor:pointer;
-  transition:transform var(--t-med), border-color var(--t-med), box-shadow var(--t-med);
-  padding:0;
 }
-.photo-card img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:contain;              /* 关键：不裁剪 */
-  object-position:center;
-  background:var(--bg-2);
-  padding:8px;
-  transition:transform var(--t-med);
+/* 挂线 + 吊钩 */
+.photo-card::before{
+  content:'';position:absolute;left:50%;top:calc(-1*var(--s-6));
+  width:1px;height:var(--s-6);
+  background:linear-gradient(to bottom,transparent,var(--line));
 }
-.photo-card b{
-  position:absolute;top:10px;left:12px;
-  font-family:var(--font-mono);
-  font-size:11px;color:var(--cyan);
-  background:rgba(15,8,32,.7);padding:2px 6px;border-radius:6px;
-  z-index:2;letter-spacing:.1em;
+.photo-card::after{
+  content:'';position:absolute;left:50%;top:calc(-1*var(--s-6) - 3px);
+  width:5px;height:5px;border-radius:50%;transform:translateX(-50%);
+  background:var(--purple-3);opacity:.45;
 }
-.photo-card span{
-  position:absolute;left:0;right:0;bottom:0;
-  padding:14px 12px 12px;
-  background:linear-gradient(to top, rgba(15,8,32,.92) 0%, rgba(15,8,32,.7) 60%, transparent 100%);
-  color:var(--ink-2);
-  font-family:var(--font-display);  /* A v2 fix: 衬线（Fraunces + Noto Serif SC），与启动页 hero-title 衬线统一 */
-  font-size:14px;font-weight:600;line-height:1.45;
-  letter-spacing:.01em;
-  display:flex;flex-direction:column;gap:2px;
-  z-index:2;
-  transform:translateY(0);
-  transition:transform var(--t-med);
-}
-.photo-card span small{
-  font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;
-  color:var(--cyan);
-}
-.photo-card span em{
-  font-style:normal;font-family:var(--font-mono);
-  font-size:10px;color:var(--orange-2);letter-spacing:.15em;
-  margin-top:2px;
-}
-.photo-card:hover{
-  transform:translateY(-3px);
-  border-color:var(--cyan);
-  box-shadow:0 12px 32px rgba(0,217,255,.18);
-}
-.photo-card:hover img{transform:scale(1.04)}
-.photo-card:hover span{transform:translateY(-2px)}
+/* 横竖统一 span 4：12 项 × 4 列 = 48，正好 4 整行，不留空缺列。
+   视觉层次由高度差（ar 1.45 vs .70）+ align-items:center 承载，而非宽度差 ——
+   宽度混排会让总列数除不尽 12，每行尾部裂出空洞。 */
+.photo-card.is-landscape{grid-column:span 4;--ar:var(--ar-landscape)}
+.photo-card.is-portrait {grid-column:span 4;--ar:var(--ar-portrait)}
+/* 入场 stagger 延迟归 CSS，reduced-motion 才能整体关掉 */
+.photo-card.reveal{transition-delay:calc(var(--i,0) * 60ms)}
 
-/* 9 种 grid 占位 */
-.photo-feature    { grid-column:span 3; grid-row:span 2; }
-.photo-portrait   { grid-column:span 2; grid-row:span 2; }
-.photo-landscape  { grid-column:span 3; grid-row:span 1; }
-.photo-square     { grid-column:span 2; grid-row:span 1; }
-.photo-slim       { grid-column:span 1; grid-row:span 2; }
-.photo-campus     { grid-column:span 2; grid-row:span 1; }
-.photo-finale     { grid-column:span 3; grid-row:span 1; }
-.photo-certificate{ grid-column:span 2; grid-row:span 2; }
-.photo-medal      { grid-column:span 2; grid-row:span 1; }
-.photo-small      { grid-column:span 1; grid-row:span 1; }
+/* 画框 = 卡纸 + 铜边 + 投影（复用「光晕描边三明治」配方思路） */
+.photo-frame{
+  position:relative;display:block;
+  aspect-ratio:var(--ar,1.45);
+  overflow:hidden;border-radius:2px;
+  background:var(--hall-bg);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.05),
+    0 0 0 1px color-mix(in srgb,var(--purple-3) 30%,transparent),
+    0 0 0 7px var(--hall-mat),
+    0 0 0 8px color-mix(in srgb,var(--purple-3) 22%,transparent),
+    0 24px 50px rgba(120,40,214,.30);
+  transition:box-shadow var(--t-med);
+}
+.photo-frame img{
+  display:block;width:100%;height:100%;
+  object-fit:contain;                /* 关键：不裁剪 */
+  object-position:center;
+  padding:10px;                      /* 卡纸留白 */
+  transition:transform var(--t-med);
+}
+/* 顶灯光锥 —— 常驻微光 + hover 增强（受 KB 约束：卡片内局部，不做 fixed 层） */
+.photo-frame::before{
+  content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(130% 78% at var(--mx,50%) var(--my,-14%),
+    var(--hall-cone) 0%,
+    color-mix(in srgb,var(--hall-cone) 32%,transparent) 34%,transparent 62%);
+  opacity:.55;transition:opacity var(--t-med);
+}
+/* 玻璃斜向反光 */
+.photo-frame::after{
+  content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(112deg,rgba(255,255,255,.09) 0%,transparent 26%,
+    transparent 74%,rgba(255,255,255,.04) 100%);
+}
+.mu-frame-no{
+  position:absolute;top:var(--s-3);left:var(--s-3);z-index:4;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;
+  color:var(--ink-2);background:var(--hall-plate);
+  padding:2px 7px;border-radius:var(--s-1);
+}
+
+/* 展签 —— 从「压在照片上的渐变遮罩」改为画框下方的独立展签板 */
+.photo-plate{
+  display:flex;flex-direction:column;gap:2px;
+  padding-top:var(--s-3);
+  border-top:1px solid var(--line);
+}
+.photo-plate strong{
+  font-family:var(--font-display);
+  font-size:14px;font-weight:600;line-height:1.45;color:var(--ink-2);
+  transition:color var(--t-fast);
+}
+.photo-plate small{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.13em;
+  color:var(--muted);
+}
+.photo-plate em{
+  font-style:normal;font-family:var(--font-mono);
+  font-size:10px;letter-spacing:.15em;color:var(--orange-2);margin-top:2px;
+}
+
+/* hover：加强聚光 + 提亮展签（不位移，避免与 .reveal 的 transition 打架） */
+.photo-card:hover .photo-frame::before{opacity:1}
+.photo-card:hover .photo-frame{
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.08),
+    0 0 0 1px color-mix(in srgb,var(--cyan) 45%,transparent),
+    0 0 0 7px var(--hall-mat),
+    0 0 0 8px color-mix(in srgb,var(--cyan) 28%,transparent),
+    0 26px 56px rgba(120,40,214,.42);
+}
+.photo-card:hover .photo-frame img{transform:scale(1.03)}
+.photo-card:hover .photo-plate strong{color:var(--cyan-2)}
 
 /* ---- Lightbox 全屏查看 ---- */
 .lightbox{
@@ -1969,22 +2012,21 @@ img,svg{max-width:100%;display:block}
 
 /* ---- 移动端响应式 ---- */
 @media (max-width:991px){
-  .photo-wall{grid-template-columns:repeat(4,1fr);grid-auto-rows:100px;}
-  .photo-feature,.photo-certificate{grid-column:span 2;grid-row:span 2;}
+  .photo-wall{grid-template-columns:repeat(6,1fr);grid-auto-rows:minmax(320px,auto);row-gap:var(--s-12)}
+  .photo-card.is-landscape{grid-column:span 3}
+  .photo-card.is-portrait {grid-column:span 2}
 }
 @media (max-width:767px){
-  .photo-wall{grid-template-columns:repeat(2,1fr);grid-auto-rows:90px;gap:10px;}
-  .photo-feature,.photo-portrait,.photo-landscape,.photo-square,.photo-slim,
-  .photo-campus,.photo-finale,.photo-certificate,.photo-medal,.photo-small{
-    grid-column:span 1;grid-row:span 1;
-  }
-  .photo-card{min-height:140px;}
+  .photo-wall{grid-template-columns:repeat(2,1fr);grid-auto-rows:auto;row-gap:var(--s-10)}
+  .photo-card.is-landscape,
+  .photo-card.is-portrait{grid-column:span 1}
   .lightbox-content img{max-height:70vh;}
   .lightbox-close{top:14px;right:14px;}
 }
 @media (max-width:575px){
   .gallery-meta{font-size:10px;gap:10px;}
-  .photo-wall{gap:8px;}
+  .photo-wall{column-gap:var(--s-2);row-gap:var(--s-8)}
+  .photo-plate strong{font-size:13px}
 }
 
 /* ============================================================
@@ -2146,64 +2188,83 @@ img,svg{max-width:100%;display:block}
 /* ============================================================
    Archive 折叠式证据库（33 张图全部归档）
    ============================================================ */
+/* 库房目录：单列堆叠，读起来像登记册 */
 .archive-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);
-  gap:16px;margin-top:24px;
+  display:grid;grid-template-columns:1fr;
+  gap:var(--s-3);margin-top:24px;
 }
 .archive-group{
-  background:radial-gradient(ellipse at top left, rgba(120,40,214,.05) 0%, transparent 70%), var(--surface);
+  position:relative;
+  background:var(--hall-bg-2);
   border:1px solid var(--line);
-  border-radius:14px;overflow:hidden;
+  border-left:3px solid var(--accent,var(--purple-3));
+  border-radius:0 var(--s-2) var(--s-2) 0;
+  overflow:hidden;
   transition:border-color var(--t-med);
 }
-.archive-group:hover{border-color:var(--purple-3)}
+/* 抽屉按内容语义定色 */
+.archive-group[data-accent="national"]{--accent:var(--orange)}
+.archive-group[data-accent="city"]    {--accent:var(--cyan)}
+.archive-group[data-accent="school"]  {--accent:var(--purple-3)}
+.archive-group[data-accent="practice"]{--accent:var(--green)}
+.archive-group:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
 .archive-group summary{
-  padding:18px 22px;
+  padding:var(--s-4) var(--s-5);
   cursor:pointer;
-  display:flex;align-items:center;justify-content:space-between;
-  font-family:var(--font-display);color:var(--ink-2);
-  font-size:15px;font-weight:600;
-  list-style:none;
-  user-select:none;
+  display:grid;grid-template-columns:auto 1fr auto auto;
+  gap:var(--s-3);align-items:center;
+  color:var(--ink-2);
+  list-style:none;user-select:none;
 }
 .archive-group summary::-webkit-details-marker{display:none}
+.drawer-no{color:var(--accent,var(--cyan))}
+.drawer-label{
+  font-family:var(--font-display);
+  font-size:15px;font-weight:600;
+}
 .archive-group summary b{
   font-family:var(--font-mono);
-  font-size:22px;color:var(--cyan);
-  margin-right:10px;letter-spacing:.05em;
+  font-size:20px;color:var(--accent,var(--cyan));letter-spacing:.04em;
+  display:inline-flex;align-items:baseline;gap:2px;
 }
+.archive-group summary b small{font-size:10px;color:var(--muted)}
 .archive-group summary em{
   font-style:normal;font-family:var(--font-mono);
-  font-size:11px;color:var(--orange-2);letter-spacing:.2em;
+  font-size:10px;color:var(--muted);letter-spacing:.16em;
 }
 .archive-group summary em::before{content:'展开 ＋'}
 .archive-group[open] summary em::before{content:'收起 －'}
 .archive-list{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
-  padding:0 22px 22px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:var(--s-2);padding:0 var(--s-5) var(--s-5);
+  background:color-mix(in srgb,var(--hall-bg) 55%,transparent);
 }
+/* 抽屉打开时的内衬投影 */
+.archive-group[open] .archive-list{
+  box-shadow:inset 0 12px 24px -14px rgba(0,0,0,.55);
+}
+/* 编目卡 */
 .archive-item{
-  display:flex;align-items:center;gap:12px;
-  padding:10px;border-radius:10px;
-  background:rgba(120,40,214,.06);
-  border:1px solid var(--line);
+  display:grid;grid-template-columns:64px 1fr;gap:var(--s-3);align-items:center;
+  padding:var(--s-2);border-radius:var(--s-1);
+  background:transparent;
+  border:1px solid var(--line);border-left:2px solid transparent;
   text-align:left;cursor:pointer;
-  transition:all var(--t-fast);
+  transition:border-color var(--t-fast),background var(--t-fast),transform var(--t-fast);
   color:var(--ink-2);
 }
 .archive-item:hover{
-  border-color:var(--purple-3);
-  background:rgba(120,40,214,.14);
-  transform:translateX(2px);
+  border-left-color:var(--accent,var(--purple-3));
+  background:color-mix(in srgb,var(--accent,var(--purple)) 10%,transparent);
+  transform:translateX(3px);
 }
 .archive-item img{
-  width:56px;height:56px;
+  width:64px;height:64px;
   object-fit:contain;object-position:center;
-  background:var(--bg-2);border-radius:6px;
+  background:var(--hall-mat);border-radius:var(--s-1);
   padding:2px;
-  flex-shrink:0;
 }
-.archive-item-info{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.archive-item-info{display:flex;flex-direction:column;gap:2px;min-width:0}
 .archive-item-info small{
   font-family:var(--font-mono);font-size:9px;letter-spacing:.15em;
   color:var(--cyan);
@@ -2287,26 +2348,31 @@ body.category-linking .award-star{
 /* ============================================================
    ✨ 圆形 Canvas 节点图（constellation / gallery 顶部）
    ============================================================ */
+/* 藏品索引条 —— 在展墙上保持克制，只留上下发丝线 */
 .node-canvas-wrap{
-  position:relative;
   width:100%;
-  margin:0 0 32px;
-  padding:24px 0;
-  background:radial-gradient(ellipse at center, rgba(120,40,214,.08) 0%, transparent 70%);
-  border-radius:18px;
-  border:1px solid var(--line);
-  overflow:hidden;
+  margin:0 0 var(--s-10);
+  padding:var(--s-4) 0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
 }
-.node-canvas-wrap canvas{
-  display:block;
-  width:100%;
-  height:200px;
+.node-canvas-label{
+  display:block;text-align:center;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;
+  color:var(--muted);text-transform:uppercase;
+  margin-bottom:var(--s-3);
 }
 .node-canvas-legend{
-  position:absolute;bottom:8px;right:14px;
-  display:flex;align-items:center;gap:12px;
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:var(--s-2) var(--s-5);
   font-family:var(--font-mono);font-size:10px;
   color:var(--muted);letter-spacing:.1em;
+}
+.node-canvas-legend b{color:var(--cyan);font-weight:700;margin-left:3px}
+/* 导览图叠加层（原实现靠 element.style.cssText 内联，现收归 CSS） */
+.constellation-bg-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;
 }
 .node-canvas-legend i{
   display:inline-block;width:8px;height:8px;border-radius:50%;
@@ -2355,48 +2421,6 @@ body.category-linking .award-star{
 }
 
 /* ============================================================
-   ✨ photo-wall Bento 强化（更多层次 + 视觉冲击）
-   ============================================================ */
-.photo-card{
-  position:relative;
-  border-radius:16px;
-  overflow:hidden;
-}
-.photo-card::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg, transparent 0%, rgba(120,40,214,.06) 100%);
-  pointer-events:none;
-  opacity:0;transition:opacity var(--t-med);
-}
-.photo-card:hover::after{opacity:1}
-
-/* ---- Archive 视觉强化 ---- */
-.archive-group{
-  position:relative;
-  transition:all var(--t-med);
-}
-.archive-group summary{
-  position:relative;
-}
-.archive-group summary::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:linear-gradient(180deg, var(--purple) 0%, var(--cyan) 100%);
-  opacity:0;transition:opacity var(--t-med);
-}
-.archive-group:hover summary::before,
-.archive-group[open] summary::before{opacity:1}
-.archive-item{
-  position:relative;
-  overflow:hidden;
-}
-.archive-item::after{
-  content:'↗';position:absolute;top:8px;right:10px;
-  font-family:var(--font-mono);font-size:14px;color:var(--orange-2);
-  opacity:0;transition:opacity var(--t-fast), transform var(--t-fast);
-}
-.archive-item:hover::after{opacity:1;transform:translate(2px,-2px)}
-
-/* ============================================================
    ✨ 5 大分类色调（用于 hover 联动态的边框色）
    ============================================================ */
 [data-cat="competition"]{--cat-color:#ff6b35}
@@ -2419,7 +2443,7 @@ body.category-linking .award-star{
   body.detail-active > main > section:not(.is-active){
     opacity:1;filter:none;pointer-events:auto;
   }
-  .node-canvas-wrap canvas{height:140px}
+  .node-canvas-legend{gap:var(--s-1) var(--s-3);font-size:9px}
   .award-star{width:48px;height:48px}
 }
 
@@ -2443,6 +2467,11 @@ body.category-linking .award-star{
   --hall-plate:rgba(10,6,18,.72);         /* 展签底（浅色模式翻转） */
   --hall-cone:rgba(255,246,255,.20);      /* 顶灯光锥（浅色模式翻转） */
   --hall-brass:color-mix(in srgb,var(--orange-2) 55%,var(--purple-3));  /* 铜边 */
+
+  /* 画框制式 —— 把连续的真实像素比量化成两个标准幅面。
+     不直接使用像素比：那会让每行行高都不同，且竖图高度溢出网格。 */
+  --ar-landscape:1.45;
+  --ar-portrait:.70;
 }
 
 /* ---- H7 浅色模式：展厅保持暗厅，只翻转展签与光锥 -------------------------

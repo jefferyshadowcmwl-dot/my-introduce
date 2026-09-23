@@ -94,20 +94,21 @@
     { cardKey:'googleAds',     imgId:null }                    // 9 Google ADS（无图 → 降级）
   ];
 
-  /* #gallery photo-wall 12 张精选（按用户偏好"故事性强"） */
+  /* #gallery photo-wall 12 张精选（按用户偏好"故事性强"）
+     幅面（横/竖）不在此指定 —— 由 IMG_CATALOG.aspect 驱动，避免两处真相源失同步 */
   const GALLERY_PICKS = [
-    { imgId:'comp_2024_intl_nat',  variant:'photo-feature' },     // 国家级双创
-    { imgId:'campus_paddle_1024',  variant:'photo-portrait' },    // PaddlePaddle 程序员节
-    { imgId:'startup_pudong_2',    variant:'photo-landscape' },   // 浦东一等奖 + 奖杯
-    { imgId:'campus_chairman',     variant:'photo-square' },      // 程序设计社长
-    { imgId:'practice_efg_group',  variant:'photo-slim' },        // EFG 小组
-    { imgId:'comp_2024_17nat_1',   variant:'photo-campus' },      // 国赛现场
-    { imgId:'startup_tongji',      variant:'photo-finale' },      // 同济一等奖
-    { imgId:'campus_top10',        variant:'photo-certificate' }, // 校园十大
-    { imgId:'startup_huangpu',     variant:'photo-medal' },       // 黄浦三等奖
-    { imgId:'ip_ruanzhuquan',      variant:'photo-small' },       // 软件著作权
-    { imgId:'campus_biye_2025',    variant:'photo-feature' },     // 本科毕业
-    { imgId:'campus_yanjiusheng_2026',variant:'photo-portrait' }  // 研究生录取
+    { imgId:'comp_2024_intl_nat' },       // 国家级双创
+    { imgId:'campus_paddle_1024' },       // PaddlePaddle 程序员节
+    { imgId:'startup_pudong_2' },         // 浦东一等奖 + 奖杯
+    { imgId:'campus_chairman' },          // 程序设计社长
+    { imgId:'practice_efg_group' },       // EFG 小组
+    { imgId:'comp_2024_17nat_1' },        // 国赛现场
+    { imgId:'startup_tongji' },           // 同济一等奖
+    { imgId:'campus_top10' },             // 校园十大
+    { imgId:'startup_huangpu' },          // 黄浦三等奖
+    { imgId:'ip_ruanzhuquan' },           // 软件著作权
+    { imgId:'campus_biye_2025' },         // 本科毕业
+    { imgId:'campus_yanjiusheng_2026' }   // 研究生录取
   ];
 
   /* #constellation 5 大分类星点 */
@@ -265,7 +266,20 @@
         }
       });
     },{threshold:.12,rootMargin:'0px 0px -60px 0px'});
-    $$('.reveal').forEach(el=>revealObserver.observe(el));
+    observeReveals();
+  }
+
+  /* 注册所有尚未观察的 .reveal —— 带 is-observed 去重。
+     注入型渲染函数（initGallery / initArchive / initConstellation）在自己的
+     innerHTML 之后各调一次，这样 onReady 末尾那次全局扫描从「唯一保障」
+     降级为兜底：将来任何人新增晚于该行执行的注入函数，也不会让元素永远
+     停在 opacity:0。 */
+  function observeReveals(){
+    if(!revealObserver) return;
+    $$('.reveal:not(.is-observed)').forEach(el => {
+      el.classList.add('is-observed');
+      revealObserver.observe(el);
+    });
   }
 
   /* ---------- 实习 Tab 切换 ---------- */
@@ -592,20 +606,26 @@
     wall.innerHTML = GALLERY_PICKS.map((pick, i) => {
       const img = IMG_BY_ID[pick.imgId];
       if(!img){ console.warn('Gallery 缺失图片：', pick.imgId); return ''; }
-      const n = String(i+1).padStart(2,'0');
-      return `<button class="photo-card ${pick.variant} reveal" type="button"
+      const no = String(i+1).padStart(2,'0');
+      const orient = img.aspect === 'portrait' ? 'is-portrait' : 'is-landscape';
+      return `<button class="photo-card ${orient} reveal" type="button"
               data-img-id="${img.id}" data-caption="${img.caption}"
-              data-cat="${img.category}"
-              style="transition-delay:${i*60}ms">
-              <img src="${assetUrl(img)}" alt="${img.caption}" loading="lazy" decoding="async" />
-              <b>${n}</b>
-              <span>
-                <small>${categoryLabel(img.category)} · ${img.year}</small>
-                ${img.caption}
+              data-cat="${img.category}" data-no="${no}"
+              style="--i:${i}"
+              aria-label="展品 ${no} · ${img.caption}">
+              <span class="photo-frame">
+                <img src="${assetUrl(img)}" alt="${img.caption}" loading="lazy" decoding="async" />
+                <b class="mu-frame-no">${no}</b>
+              </span>
+              <span class="photo-plate">
+                <span class="mu-no">EXHIBIT ${no}</span>
+                <strong>${img.caption}</strong>
+                <small>${img.year} · ${categoryLabel(img.category)} · ${tierLabel(img.tier)}</small>
                 <em>打开故事 ↗</em>
               </span>
             </button>`;
     }).join('');
+    observeReveals();
     wall.addEventListener('click', e => {
       const btn = e.target.closest('.photo-card');
       if(!btn) return;
@@ -689,33 +709,44 @@
     });
   }
 
-  /* ---------- Archive 折叠式证据库（4 个 details 分组） ---------- */
+  /* ---------- Archive 折叠式证据库（4 个库房抽屉） ---------- */
+  const ARCHIVE_ACCENTS = ['national','city','school','practice'];
   function initArchive(){
     const grid = $('.archive-grid');
     if(!grid) return;
     grid.innerHTML = ARCHIVE_GROUPS.map((group, gi) => {
       const items = group.imgIds.map(id => IMG_BY_ID[id]).filter(Boolean);
       if(!items.length){ console.warn('Archive 分组为空：', group.key); return ''; }
-      return `<details class="archive-group reveal" data-group="${group.key}" ${gi===0?'open':''}>
+      const drawerNo = String(gi + 1).padStart(2,'0');
+      const letter   = String.fromCharCode(65 + gi);   // 编目字头 A/B/C/D
+      return `<details class="archive-group reveal" data-group="${group.key}"
+                 data-accent="${ARCHIVE_ACCENTS[gi] || 'school'}" ${gi === 0 ? 'open' : ''}>
         <summary>
-          <span><b>${items.length}</b> 张 · ${group.label}</span>
+          <span class="drawer-no mu-no">柜 ${drawerNo}</span>
+          <span class="drawer-label">${group.label}</span>
+          <b>${items.length}<small>件</small></b>
           <em></em>
         </summary>
         <div class="archive-list">
-          ${items.map(img => `
+          ${items.map((img, ii) => {
+            const catNo = `${letter}-${String(ii + 1).padStart(2,'0')}`;
+            return `
             <button class="archive-item" type="button"
                     data-img-id="${img.id}" data-caption="${img.caption}"
-                    data-cat="${img.category}">
+                    data-cat="${img.category}" data-no="${catNo}"
+                    style="--i:${ii}">
               <img src="${assetUrl(img)}" alt="${img.caption}" loading="lazy" decoding="async" />
-              <div class="archive-item-info">
-                <small>${img.year} · ${tierLabel(img.tier)}</small>
+              <span class="archive-item-info">
+                <small>${catNo} · ${img.year} · ${tierLabel(img.tier)}</small>
                 <strong>${img.caption}</strong>
                 <span>打开凭证 ↗</span>
-              </div>
-            </button>`).join('')}
+              </span>
+            </button>`;
+          }).join('')}
         </div>
       </details>`;
     }).join('');
+    observeReveals();
     // 点击 archive-item 进 lightbox
     grid.addEventListener('click', e => {
       const btn = e.target.closest('.archive-item');
@@ -859,78 +890,87 @@
     });
   }
 
-  /* ---------- 圆形 Canvas 节点图（#gallery + #constellation） ---------- */
-  function initNodeCanvas(){
-    // 定义 6 大分类的色调
-    const COLORS = {
-      competition:'#ff6b35', campus:'#00d9ff', project:'#7828d6',
-      practice:'#ffb347', startup:'#ff4d8d', ip:'#7ee787'
-    };
+  /* 6 大分类色调 —— initConstellation 的展签换色也要用，故提到 IIFE 作用域 */
+  const CAT_COLORS = {
+    competition:'#ff6b35', campus:'#00d9ff', project:'#7828d6',
+    practice:'#ffb347', startup:'#ff4d8d', ip:'#7ee787'
+  };
 
+  /* 确定性伪随机（mulberry32）—— 取代 Math.random。
+     原实现每次刷新构图都不同，滚动回展区会看到节点"跳"到新位置。 */
+  function mulberry32(seed){
+    return function(){
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* ---------- Canvas 节点图（#constellation 展厅导览图叠加层） ---------- */
+  function initNodeCanvas(){
+    /* 绘制导览图叠加层。返回 stop()，调用方可取消 rAF。 */
     function drawNetwork(canvas, items, options = {}){
-      if(!canvas) return;
+      if(!canvas) return () => {};
       const ctx = canvas.getContext('2d');
-      if(!ctx) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      if(!ctx) return () => {};
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
+      if(w < 4 || h < 4) return () => {};      // 未布局 / 隐藏时退出，避免 0 尺寸位图
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = w * dpr;
       canvas.height = h * dpr;
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // 把节点按 category 分组
+      const rnd = mulberry32(options.seed || 0x0324);
+
       const groups = {};
       items.forEach(it => {
         if(!groups[it.category]) groups[it.category] = [];
         groups[it.category].push(it);
       });
-
       const cats = Object.keys(groups);
+
       const cx = w / 2, cy = h / 2;
       const ringR = Math.min(w, h) * 0.32;
 
-      // 把每个 category 放到一个角度上
       const catAngle = {};
       cats.forEach((c, i) => { catAngle[c] = (i / cats.length) * Math.PI * 2 - Math.PI / 2; });
 
-      // 节点位置（每个 category 在环上随机分布几个点）
       const nodes = [];
-      cats.forEach((c, ci) => {
+      const catCenters = {};
+      cats.forEach(c => {
         const arr = groups[c];
         const ang = catAngle[c];
+        catCenters[c] = {
+          x: cx + Math.cos(ang) * ringR * 0.4,
+          y: cy + Math.sin(ang) * ringR * 0.4,
+          color: CAT_COLORS[c] || '#fff'
+        };
         arr.forEach((it, idx) => {
-          const offset = (idx - (arr.length - 1) / 2) * 0.35;
-          const a = ang + offset;
-          const r = ringR * (0.7 + Math.random() * 0.25);
+          const a = ang + (idx - (arr.length - 1) / 2) * 0.35;
+          const r = ringR * (0.7 + rnd() * 0.25);
           nodes.push({
             x: cx + Math.cos(a) * r,
             y: cy + Math.sin(a) * r,
-            color: COLORS[c] || '#fff',
+            color: CAT_COLORS[c] || '#fff',
             cat: c,
-            label: it.label,
-            phase: Math.random() * Math.PI * 2
+            phase: rnd() * Math.PI * 2
           });
         });
       });
 
-      let tick = 0;
-      function frame(){
-        tick += 0.016;
+      function render(tick){
         ctx.clearRect(0, 0, w, h);
 
-        // 类别中心点（环上 + 同类用连线连到中心）
-        const catCenters = {};
-        cats.forEach(c => {
-          const ang = catAngle[c];
-          catCenters[c] = { x: cx + Math.cos(ang) * ringR * 0.4, y: cy + Math.sin(ang) * ringR * 0.4, color: COLORS[c] || '#fff' };
-        });
-
-        // 同类连线（节点到中心）
+        // 同类连线（节点 → 分类中心）
         nodes.forEach(n => {
           const cc = catCenters[n.cat];
-          const alpha = 0.18 + 0.12 * Math.sin(tick * 1.5 + n.phase);
+          if(!cc) return;
+          ctx.globalAlpha = 0.18 + 0.12 * Math.sin(tick * 1.5 + n.phase);
           ctx.strokeStyle = n.color;
-          ctx.globalAlpha = alpha;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(n.x, n.y);
@@ -938,81 +978,91 @@
           ctx.stroke();
         });
 
-        // 中心点（5 个分类的圆点）
+        // 分类中心点
         Object.values(catCenters).forEach((cc, i) => {
-          const pulse = 1 + 0.15 * Math.sin(tick * 2 + i);
-          const r = 6 * pulse;
-          // 外环
+          const r = 5 * (1 + 0.15 * Math.sin(tick * 2 + i));
           ctx.globalAlpha = 0.25;
           ctx.fillStyle = cc.color;
-          ctx.beginPath();
-          ctx.arc(cc.x, cc.y, r * 2.5, 0, Math.PI * 2);
-          ctx.fill();
-          // 中心
+          ctx.beginPath(); ctx.arc(cc.x, cc.y, r * 2.5, 0, Math.PI * 2); ctx.fill();
           ctx.globalAlpha = 1;
-          ctx.beginPath();
-          ctx.arc(cc.x, cc.y, r, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(cc.x, cc.y, r, 0, Math.PI * 2); ctx.fill();
         });
 
-        // 节点（每张图 = 一个点）
+        // 节点（每个分类一颗）
         nodes.forEach(n => {
           const pulse = 1 + 0.25 * Math.sin(tick * 2.5 + n.phase);
           ctx.globalAlpha = 0.9;
           ctx.fillStyle = n.color;
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, 3 * pulse, 0, Math.PI * 2);
-          ctx.fill();
-          // 白色内核
+          ctx.beginPath(); ctx.arc(n.x, n.y, 3 * pulse, 0, Math.PI * 2); ctx.fill();
           ctx.globalAlpha = 1;
           ctx.fillStyle = '#fff';
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, 1.2, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(n.x, n.y, 1.2, 0, Math.PI * 2); ctx.fill();
         });
-
-        requestAnimationFrame(frame);
       }
-      frame();
+
+      render(0);                                  // 先出一帧静态：reduced-motion 下也有内容
+      if(REDUCED_MOTION.matches) return () => {};
+
+      let rafId = 0, running = false, tick = 0;
+      const step = () => { if(!running) return; tick += 0.016; render(tick); rafId = requestAnimationFrame(step); };
+      const start = () => { if(running) return; running = true; rafId = requestAnimationFrame(step); };
+      const stop  = () => { running = false; cancelAnimationFrame(rafId); };
+
+      // 只在本体进入视口时跑；标签页切走也停（原实现是无条件无限 rAF）
+      const io = new IntersectionObserver(([e]) => e.isIntersecting ? start() : stop(), { rootMargin:'120px' });
+      io.observe(canvas);
+      const onVis = () => document.hidden ? stop() : start();
+      document.addEventListener('visibilitychange', onVis);
+
+      return () => { stop(); io.disconnect(); document.removeEventListener('visibilitychange', onVis); };
     }
 
-    // #constellation 加 canvas（在 SVG 之上叠加）
-    const cStage = $('.constellation-stage');
-    if(cStage){
-      const cvs = document.createElement('canvas');
-      cvs.className = 'constellation-bg-canvas';
-      cvs.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;';
-      cStage.prepend(cvs);
-      // 等一帧让 clientWidth/Height 就绪
-      requestAnimationFrame(() => {
-        drawNetwork(cvs, CONSTELLATION_NODES.map(n => ({
-          category: n.category, label: n.category
-        })));
+    let stopper = null, resizeTimer;
+
+    function mount(){
+      if(stopper){ stopper(); stopper = null; }
+      const cStage = $('.constellation-stage');
+      if(!cStage) return;
+      let cvs = cStage.querySelector('.constellation-bg-canvas');
+      if(!cvs){
+        cvs = document.createElement('canvas');
+        cvs.className = 'constellation-bg-canvas';
+        cvs.setAttribute('aria-hidden', 'true');
+        cStage.prepend(cvs);
+      }
+      /* 分类色要用 IMG_CATALOG 的英文 key 查表，而 CONSTELLATION_NODES.category
+         是中文标签（'创新创业' 等）—— 直接拿它查 CAT_COLORS 会全部 fallback 成白色。
+         故经 imgId 反查真实分类。 */
+      const items = CONSTELLATION_NODES.map(n => {
+        const img = IMG_BY_ID[n.imgId];
+        return { category: img ? img.category : n.category };
       });
+      stopper = drawNetwork(cvs, items, { seed: 0x0324 });
     }
 
-    // #gallery 加 canvas（33 张图的网络图）
+    /* #gallery 顶部：藏品索引条。
+       不放 canvas —— 环形构图在 1180×120 的扁条上半径只有 ~38px，
+       33 个节点会挤成中心一团；分类构成用文字图例反而更清楚。 */
     const gWall = $('.photo-wall');
     if(gWall && gWall.parentNode){
+      const counts = {};
+      IMG_CATALOG.forEach(img => { counts[img.category] = (counts[img.category] || 0) + 1; });
+      const legend = Object.keys(CAT_COLORS).map(c =>
+        `<span><i class="cat-${c}"></i>${categoryLabel(c)} <b>${counts[c] || 0}</b></span>`).join('');
       const wrap = document.createElement('div');
       wrap.className = 'node-canvas-wrap';
-      wrap.innerHTML = `<canvas></canvas>
-        <div class="node-canvas-legend">
-          <span><i class="cat-competition"></i>创新创业</span>
-          <span><i class="cat-campus"></i>校园</span>
-          <span><i class="cat-project"></i>项目</span>
-          <span><i class="cat-practice"></i>实践</span>
-          <span><i class="cat-startup"></i>创领</span>
-          <span><i class="cat-ip"></i>知产</span>
-        </div>`;
+      wrap.innerHTML =
+        `<span class="node-canvas-label">藏品索引 · ${IMG_CATALOG.length} 件 / ${Object.keys(counts).length} 类</span>
+         <div class="node-canvas-legend">${legend}</div>`;
       gWall.parentNode.insertBefore(wrap, gWall);
-      const cvs = wrap.querySelector('canvas');
-      requestAnimationFrame(() => {
-        drawNetwork(cvs, IMG_CATALOG.map(img => ({
-          category: img.category, label: img.caption.slice(0, 12)
-        })));
-      });
     }
+
+    // 首绘 + 防抖重绘（原实现 resize 后位图尺寸不更新，构图被拉伸变形）
+    requestAnimationFrame(mount);
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(mount, 200);
+    });
   }
 
   /* ---------- 全局 Lightbox（多个区块复用） ---------- */
@@ -1069,8 +1119,20 @@
     });
   }
 
+  /* ---------- 数量注入：消除正文里的硬编码数字 ----------
+     原先文案写死「12 MEMORY FRAMES」「所有 33 张图」，但 ARCHIVE_GROUPS 实际
+     只有 31 项（分组间有重叠，去重后才覆盖 33 张）—— 改数组即失同步。
+     HTML 里保留当前值作为占位，no-JS 下也正确。 */
+  function initCounters(){
+    const set = (sel, n) => $$(sel).forEach(el => { el.textContent = n; });
+    set('[data-count-total]',   IMG_CATALOG.length);
+    set('[data-count-gallery]', GALLERY_PICKS.length);
+    set('[data-count-archive]', ARCHIVE_GROUPS.reduce((a, g) => a + g.imgIds.length, 0));
+  }
+
   /* ---------- 启动 ---------- */
   onReady(()=>{
+    initCounters();
     initCanvas();
     initReveal();
     initInternshipTabs();
@@ -1092,7 +1154,7 @@
     initNodeCanvas();
     initKeys();
     // 关键：JS 注入的 .reveal 需补 observe（晚于滚动 reveal 初始化）
-    $$('.reveal').forEach(el => revealObserver.observe(el));
+    observeReveals();
   });
 
 })();

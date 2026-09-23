@@ -1098,18 +1098,22 @@ body.is-intro{overflow:hidden}
    .primary-button / .under-link 本身零改动，只换容器与上边距。 */
 .about-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:24px}
 
-.role-cloud{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.role-cloud span{
-  font-size:13px;padding:8px 16px;border-radius:20px;
-  background:rgba(120,40,214,.1);color:var(--ink);
-  border:1px solid var(--line);
-  transition:all var(--t-fast);
+/* 展签式三行 —— 与展柜铭牌 .mu-spec-* 同一套排版语言（mono 小字键 +
+   正文值 + 发丝分隔线）。
+   取代原 .role-cloud 的 7 个药丸标签：那版把四类东西平铺成一条云，
+   并对其中 2 个加了无依据的高亮（.hot 自 v1.0 起无任何说明，
+   且漏掉同属负责人角色的「双创项目第一负责人」）。 */
+.about-roles{margin-top:var(--s-8);border-top:1px solid var(--line)}
+.about-role-row{
+  display:grid;grid-template-columns:72px minmax(0,1fr);gap:var(--s-5);
+  align-items:baseline;padding:var(--s-4) 0;
+  border-bottom:1px solid var(--line);
 }
-.role-cloud span:hover{background:rgba(120,40,214,.25);transform:translateY(-2px)}
-.role-cloud span.hot{
-  background:linear-gradient(120deg,var(--purple),var(--purple-2));
-  color:#fff;border-color:transparent;font-weight:600;
+.about-role-key{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;
+  color:var(--cyan);
 }
+.about-role-val{font-size:var(--fs-body);line-height:1.7;color:var(--ink)}
 
 /* ============================================================
    Section Head（通用）

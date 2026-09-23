@@ -157,6 +157,12 @@ img,svg{max-width:100%;display:block}
 .shell{width:var(--shell-w);margin-inline:auto}
 .section-pad{padding-top:110px;padding-bottom:110px}
 
+/* 原生锚点跳转（<a href="#x"> / location.hash）不会为 sticky 顶栏留位 ——
+   浏览器把目标区块的顶边对齐到视口顶边，于是顶部被 .site-header 盖住。
+   72px = 顶栏高度(~56) + 16 余量，与信号站 focusSignal 的落点公式一致，
+   这样两种跳转方式停在同一个位置。 */
+main > section[id]{scroll-margin-top:72px}
+
 /* 柔光背景层（fixed） */
 .page-glow{position:fixed;border-radius:50%;filter:blur(120px);opacity:.22;pointer-events:none;z-index:-2;transition:background var(--t-med)}
 .glow-one{width:480px;height:480px;background:var(--purple);right:-200px;top:80px}
@@ -190,6 +196,13 @@ img,svg{max-width:100%;display:block}
 /* ============================================================
    启动页（Intro Gate）— 照参考站布局
    ============================================================ */
+/* 启动页展示期间锁住主站滚动。
+   .intro-gate 是 position:fixed，盖在页面上但不阻止底层滚动 ——
+   用户在启动页上滚轮会带动主站，点进去时就不在顶部
+   （连带首屏展柜开帘动画已在屏幕外播完、信号站指示点提前点亮）。
+   body.is-intro 由 script.js 在启动页期间挂上，leaveIntro 时摘除。 */
+body.is-intro{overflow:hidden}
+
 .intro-gate{
   position:fixed;inset:0;z-index:50;
   display:flex;flex-direction:column;align-items:center;justify-content:center;

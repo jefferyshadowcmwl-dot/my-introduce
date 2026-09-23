@@ -172,6 +172,15 @@
   const header = $('.site-header');
   const miniGuide = $('.mini-guide');
 
+  /* 启动页展示期间锁住主站滚动。
+     .intro-gate 是 position:fixed —— 它盖在页面上，但**不阻止底层滚动**。
+     用户在启动页上滚轮会带动主站，点进去时就停在那个位置：
+       · 首屏不在顶部（视口顶部可能是 awards 之类的中段区块）
+       · 展柜开帘 / 首屏 reveal 动画已经在屏幕外播完，用户看不到
+       · 信号站的指示点会因为中段区块可见而提前点亮
+     故在启动页期间给 body 加 is-intro 锁滚动，离开时解锁并强制回顶。 */
+  document.body.classList.add('is-intro');
+
   function leaveIntro(){
     if(!introGate) return;
     // 方案 A v2：5 阶段仪式感过渡（与 styles.css .is-leaving/.is-bursting/.is-streaming/.is-arrive/.is-opacity-out 配合）
@@ -192,6 +201,12 @@
     }, 900);
     setTimeout(()=>{
       introGate.style.display='none';
+      // 解锁滚动并强制回顶。
+      // 正常路径下（is-intro 生效期间锁了滚动）位置本就是 0，这里是双保险：
+      // 覆盖浏览器"刷新后恢复上次滚动位置"的情况。必须显式 instant ——
+      // 站点有 scroll-behavior:smooth，否则回顶会变成一段长动画。
+      document.body.classList.remove('is-intro');
+      window.scrollTo({top:0,behavior:'instant'});
       header?.classList.add('is-visible');
       miniGuide?.classList.add('is-visible');
       // 只让首屏（#about）的 reveal 元素立即可见（启动页 → 主站的衔接）
@@ -296,10 +311,19 @@
      注入型渲染函数（initGallery / initArchive / initConstellation）在自己的
      innerHTML 之后各调一次，这样 onReady 末尾那次全局扫描从「唯一保障」
      降级为兜底：将来任何人新增晚于该行执行的注入函数，也不会让元素永远
-     停在 opacity:0。 */
+     停在 opacity:0。
+
+     ⚠️ 启动页展示期间**跳过 #about 的 reveal**。
+     #about 就在首屏，只是被 position:fixed 的启动页盖着 ——
+     IntersectionObserver 在 DOM ready 那一刻就判定它"可见"并加上 is-visible，
+     于是展柜开帘 / 首屏入场动画全部在启动页遮罩后面播完，
+     用户点进来只看到已经展开的静态画面（动画"消失"）。
+     交给 leaveIntro 在 T=1100（启动页真正隐藏时）再点亮。 */
   function observeReveals(){
     if(!revealObserver) return;
+    const introShowing = document.body.classList.contains('is-intro');
     $$('.reveal:not(.is-observed)').forEach(el => {
+      if(introShowing && el.closest('#about')) return;
       el.classList.add('is-observed');
       revealObserver.observe(el);
     });

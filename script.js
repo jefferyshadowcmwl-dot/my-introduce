@@ -24,7 +24,7 @@
     /* ---- 比赛获奖 (13) ---- */
     { id:'comp_2023_15city',    file:'202315届上海市大学生计算机能力大赛.jpg',                       caption:'第 15 届上海市大学生计算机能力大赛',               category:'competition', year:'2023', tier:'city',     size:349521, aspect:'landscape' },
     { id:'comp_2023_16nat',     file:'202316届中国计算机能力大赛.jpg',                                 caption:'第 16 届中国计算机能力大赛',                       category:'competition', year:'2023', tier:'national', size:285667, aspect:'landscape' },
-    { id:'comp_2023_design2',   file:'2023年(第16届)中国大学生计算机设计大赛二等奖.jpg',              caption:'第 16 届中国大学生计算机设计大赛 · 二等奖',       category:'competition', year:'2023', tier:'national', size:245229, aspect:'landscape' },
+    { id:'comp_2023_design2',   file:'2023年(第16届》中国大学生计算机设计大赛二等奖.jpg',            caption:'第 16 届中国大学生计算机设计大赛 · 二等奖',       category:'competition', year:'2023', tier:'national', size:245229, aspect:'landscape' },
     { id:'comp_2023_apply3',    file:'2023年(第十五届)上海市大学生计算机应用能力大赛3等奖.jpg',       caption:'第 15 届上海市大学生计算机应用能力大赛 · 三等奖', category:'competition', year:'2023', tier:'city',     size:354238, aspect:'landscape' },
     { id:'comp_2024_17nat_1',   file:'202417届全国计算机能留大赛1.jpg',                                caption:'第 17 届全国计算机能力大赛 · 现场 1',             category:'competition', year:'2024', tier:'national', size:398753, aspect:'landscape' },
     { id:'comp_2024_17nat_2',   file:'202417届全国计算机能留大赛2.jpg',                                caption:'第 17 届全国计算机能力大赛 · 现场 2',             category:'competition', year:'2024', tier:'national', size:487355, aspect:'landscape' },
@@ -331,9 +331,17 @@
     showUnlockToast();
   }
 
-  function showUnlockToast(){
+  function showUnlockToast(title, desc){
     const toast = $('.unlock-toast');
     if(!toast) return;
+    if(title){
+      const b = toast.querySelector('b');
+      if(b) b.textContent = title;
+    }
+    if(desc){
+      const p = toast.querySelector('p');
+      if(p) p.textContent = desc;
+    }
     toast.classList.add('is-shown');
     clearTimeout(showUnlockToast._t);
     showUnlockToast._t = setTimeout(()=>toast.classList.remove('is-shown'),2400);
@@ -470,12 +478,12 @@
     update();
   }
 
-  /* ---------- 奖项详情弹层 ---------- */
+  /* ---------- 奖项详情弹层（双栏：图片视觉区 + 文案） ---------- */
   function initAwards(){
     const cards = $$('.award-evidence');
     if(!cards.length) return;
 
-    // 动态创建 modal
+    // 动态创建 modal（双栏布局：左 visual + 右 copy）
     const modal = document.createElement('div');
     modal.className = 'award-modal';
     modal.setAttribute('role','dialog');
@@ -485,37 +493,97 @@
       <div class="award-modal-backdrop" data-award-close></div>
       <div class="award-modal-card">
         <button class="award-modal-close" type="button" aria-label="关闭" data-award-close>✕</button>
-        <div class="award-modal-head">
-          <span class="award-modal-year" id="awardYear"></span>
-          <span class="award-modal-tag" id="awardTag"></span>
+        <div class="award-modal-visual">
+          <img id="awardImg" alt="" decoding="async" />
         </div>
-        <h3 id="awardTitle" class="award-modal-title"></h3>
-        <p id="awardResult" class="award-modal-result"></p>
-        <div class="award-modal-story" id="awardStory"></div>
+        <div class="award-modal-copy">
+          <p id="awardProject" class="award-modal-project"></p>
+          <div class="award-modal-head">
+            <span class="award-modal-year" id="awardYear"></span>
+            <span class="award-modal-tag" id="awardTag"></span>
+          </div>
+          <h2 id="awardTitle" class="award-modal-title"></h2>
+          <strong id="awardResult" class="award-modal-result"></strong>
+          <div class="award-modal-evidence-state" id="awardEvidenceBox">
+            <i></i><span id="awardEvidence"></span>
+          </div>
+          <div id="awardStory" class="award-modal-story"></div>
+          <a id="awardLink" class="award-modal-link" target="_blank" rel="noopener" hidden>查看官方公示 ↗</a>
+          <span class="award-modal-footer">VERIFIED MOMENT · LIUZHIYUAN</span>
+        </div>
       </div>
     `;
     document.body.appendChild(modal);
 
-    const yearEl = modal.querySelector('#awardYear');
-    const tagEl = modal.querySelector('#awardTag');
-    const titleEl = modal.querySelector('#awardTitle');
-    const resultEl = modal.querySelector('#awardResult');
-    const storyEl = modal.querySelector('#awardStory');
+    const imgEl       = modal.querySelector('#awardImg');
+    const visualEl    = modal.querySelector('.award-modal-visual');
+    const projectEl   = modal.querySelector('#awardProject');
+    const yearEl      = modal.querySelector('#awardYear');
+    const tagEl       = modal.querySelector('#awardTag');
+    const titleEl     = modal.querySelector('#awardTitle');
+    const resultEl    = modal.querySelector('#awardResult');
+    const evidenceBox = modal.querySelector('#awardEvidenceBox');
+    const evidenceEl  = modal.querySelector('#awardEvidence');
+    const storyEl     = modal.querySelector('#awardStory');
+    const linkEl      = modal.querySelector('#awardLink');
 
     function open(card){
-      yearEl.textContent = card.dataset.year || '';
-      tagEl.textContent = card.dataset.tag || 'AWARD';
-      titleEl.textContent = card.dataset.title || '';
-      resultEl.textContent = card.dataset.result || '';
-      storyEl.textContent = card.dataset.story || '暂无更多细节。';
+      const cardKey = card.dataset.awardKey || '';
+      const binding = AWARD_BINDINGS.find(b => b.cardKey === cardKey);
+      const img     = binding && binding.imgId ? findImg(binding.imgId) : null;
+
+      // 图片视觉区：有图则显示，无图降级为 📜
+      if(img){
+        imgEl.src = assetUrl(img);
+        imgEl.alt = img.caption;
+        visualEl.classList.remove('is-empty');
+      } else {
+        imgEl.removeAttribute('src');
+        imgEl.alt = '';
+        visualEl.classList.add('is-empty');
+      }
+
+      // 文案右栏
+      projectEl.textContent = card.dataset.project || 'AWARD';
+      yearEl.textContent    = card.dataset.year || '';
+      tagEl.textContent     = card.dataset.tag || 'AWARD';
+      titleEl.textContent   = card.dataset.title || '';
+      resultEl.textContent  = card.dataset.result || '';
+      storyEl.textContent   = card.dataset.story || '暂无更多细节。';
+
+      // 证据状态徽章
+      if(img){
+        evidenceBox.classList.remove('is-empty');
+        evidenceEl.textContent = `已匹配原始照片 · ${img.file.length > 20 ? img.file.slice(0,18)+'…' : img.file}`;
+      } else {
+        evidenceBox.classList.add('is-empty');
+        evidenceEl.textContent = '仅文字档案 · 当前未匹配照片凭证';
+      }
+
+      // 公示链接（如果有 data-link）
+      const link = card.dataset.link;
+      if(link){
+        linkEl.href = link;
+        linkEl.hidden = false;
+      } else {
+        linkEl.hidden = true;
+      }
+
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden','false');
       document.body.style.overflow = 'hidden';
+      // 聚焦态：标记当前 section 激活，其他区降透明度
+      const activeSection = card.closest('section');
+      if(activeSection) activeSection.classList.add('is-active');
+      document.body.classList.add('detail-active');
     }
     function close(){
       modal.classList.remove('is-open');
       modal.setAttribute('aria-hidden','true');
       document.body.style.overflow = '';
+      // 移除聚焦态
+      $$('.is-active').forEach(s => s.classList.remove('is-active'));
+      document.body.classList.remove('detail-active');
     }
 
     cards.forEach(card=>{
@@ -534,6 +602,422 @@
     });
     document.addEventListener('keydown',(e)=>{
       if(e.key==='Escape'&&modal.classList.contains('is-open')) close();
+    });
+  }
+
+  /* ---------- 详情证据墙：Photo Wall ---------- */
+  function initGallery(){
+    const wall = $('.photo-wall');
+    if(!wall) return;
+    wall.innerHTML = GALLERY_PICKS.map((pick, i) => {
+      const img = IMG_BY_ID[pick.imgId];
+      if(!img){ console.warn('Gallery 缺失图片：', pick.imgId); return ''; }
+      const n = String(i+1).padStart(2,'0');
+      return `<button class="photo-card ${pick.variant} reveal" type="button"
+              data-img-id="${img.id}" data-caption="${img.caption}"
+              data-cat="${img.category}"
+              style="transition-delay:${i*60}ms">
+              <img src="${assetUrl(img)}" alt="${img.caption}" loading="lazy" decoding="async" />
+              <b>${n}</b>
+              <span>
+                <small>${categoryLabel(img.category)} · ${img.year}</small>
+                ${img.caption}
+                <em>打开故事 ↗</em>
+              </span>
+            </button>`;
+    }).join('');
+    wall.addEventListener('click', e => {
+      const btn = e.target.closest('.photo-card');
+      if(!btn) return;
+      openLightbox(btn.dataset.imgId, btn.dataset.caption);
+    });
+  }
+
+  /* ---------- 星座实验室：5 大分类星点 ---------- */
+  function initConstellation(){
+    const stage = $('.constellation-stage');
+    if(!stage) return;
+    const detail = {
+      cat:   $('#star-category'),
+      title: $('#star-title'),
+      result:$('#star-result')
+    };
+    CONSTELLATION_NODES.forEach((node, i) => {
+      const img = IMG_BY_ID[node.imgId];
+      if(!img){ console.warn('Constellation 缺失图片：', node.imgId); return; }
+      const btn = document.createElement('button');
+      btn.className = 'award-star' + (i===0 ? ' active' : '');
+      btn.type = 'button';
+      btn.style.setProperty('--x', node.x + '%');
+      btn.style.setProperty('--y', node.y + '%');
+      btn.setAttribute('aria-label', img.caption);
+      btn.dataset.imgId = img.id;
+      btn.dataset.cat = img.category;
+      btn.innerHTML = `<i>✦</i><span>${node.category}</span>`;
+      btn.addEventListener('click', () => {
+        stage.querySelectorAll('.award-star').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        if(detail.cat)    detail.cat.textContent   = node.category + ' · ' + img.year;
+        if(detail.title)  detail.title.textContent = img.caption;
+        if(detail.result) detail.result.textContent = categoryLabel(img.category);
+        openLightbox(img.id, img.caption);
+      });
+      stage.appendChild(btn);
+    });
+  }
+
+  /* ---------- Project / Internship 图片证据注入 ---------- */
+  function initProjectMedia(){
+    const bindings = [
+      { sel:'.project-grid .project-card:nth-child(1)', imgId:'comp_2024_intl_nat' },     // 国家级双创 → 国家级立项图
+      { sel:'.project-grid .project-card:nth-child(4)', imgId:'project_zhilian_1' },      // AI 视觉机械臂 → 智联工翼过程1
+      { sel:'.project-grid .project-card:nth-child(5)', imgId:'ip_ruanzhuquan' },         // 上位机软件 → 软著
+      { sel:'.project-grid .project-card:nth-child(7)', imgId:'project_zhilian_4' }       // 3D 打印 → 智联工翼过程4
+    ];
+    bindings.forEach(b => {
+      const card = $(b.sel);
+      if(!card){ console.warn('Project 卡片缺失：', b.sel); return; }
+      const img = IMG_BY_ID[b.imgId];
+      if(!img){ console.warn('Project 图片缺失：', b.imgId); return; }
+      const media = document.createElement('div');
+      media.className = 'project-media';
+      media.innerHTML = `<img src="${assetUrl(img)}" alt="${img.caption}" loading="lazy" decoding="async" />`;
+      card.prepend(media);
+    });
+  }
+
+  function initInternshipMedia(){
+    const bindings = [
+      { panel:'hongJing', imgId:'practice_zhiteng' },       // 嵌入式实习 → 致远鲸腾
+      { panel:'puZhe',    imgId:'practice_luntan' }         // Python 实习 → 科技论坛
+    ];
+    bindings.forEach(b => {
+      const panel = $(`.internship-panel[data-panel="${b.panel}"] .internship-media`);
+      if(!panel){ console.warn('Internship panel 缺失：', b.panel); return; }
+      const img = IMG_BY_ID[b.imgId];
+      if(!img){ console.warn('Internship 图片缺失：', b.imgId); return; }
+      const ev = document.createElement('div');
+      ev.className = 'internship-evidence';
+      ev.innerHTML = `<img src="${assetUrl(img)}" alt="${img.caption}" loading="lazy" decoding="async"
+                       data-img-id="${img.id}" data-caption="${img.caption}" />
+                      <small>实习凭证 · ${img.year}</small>`;
+      panel.appendChild(ev);
+      // 点击实习图片直接进 lightbox
+      ev.querySelector('img').addEventListener('click', () => {
+        openLightbox(img.id, img.caption);
+      });
+    });
+  }
+
+  /* ---------- Archive 折叠式证据库（4 个 details 分组） ---------- */
+  function initArchive(){
+    const grid = $('.archive-grid');
+    if(!grid) return;
+    grid.innerHTML = ARCHIVE_GROUPS.map((group, gi) => {
+      const items = group.imgIds.map(id => IMG_BY_ID[id]).filter(Boolean);
+      if(!items.length){ console.warn('Archive 分组为空：', group.key); return ''; }
+      return `<details class="archive-group reveal" data-group="${group.key}" ${gi===0?'open':''}>
+        <summary>
+          <span><b>${items.length}</b> 张 · ${group.label}</span>
+          <em></em>
+        </summary>
+        <div class="archive-list">
+          ${items.map(img => `
+            <button class="archive-item" type="button"
+                    data-img-id="${img.id}" data-caption="${img.caption}"
+                    data-cat="${img.category}">
+              <img src="${assetUrl(img)}" alt="${img.caption}" loading="lazy" decoding="async" />
+              <div class="archive-item-info">
+                <small>${img.year} · ${tierLabel(img.tier)}</small>
+                <strong>${img.caption}</strong>
+                <span>打开凭证 ↗</span>
+              </div>
+            </button>`).join('')}
+        </div>
+      </details>`;
+    }).join('');
+    // 点击 archive-item 进 lightbox
+    grid.addEventListener('click', e => {
+      const btn = e.target.closest('.archive-item');
+      if(!btn) return;
+      openLightbox(btn.dataset.imgId, btn.dataset.caption);
+    });
+  }
+
+  /* ---------- signal-dock 5 节点点击 → 真实联动 ---------- */
+  function initSignalDockClick(){
+    // 每个 signal name 映射到一个滚动目标选择器
+    const TARGETS = {
+      origin:  '.first-signal',                 // 起点：hero 第一段实习卡片
+      builder: '.internship-tab.active',        // 创造：当前激活的实习 Tab
+      leader:  '#awards .award-card[data-signal="leader"]',  // 担当：国家级立项奖项
+      maker:   '#projects .project-card[data-signal="maker"]', // 创客：硬件项目
+      future:  '#contact'                       // 未来：联系坐标
+    };
+    const NAMES = {
+      origin:  '起点 · 第一段实习',
+      builder: '创造 · 把想法做出来',
+      leader:  '担当 · 国家级立项负责人',
+      maker:   '创客 · Arduino + 3D 打印',
+      future:  '未来 · 持续建造'
+    };
+
+    $$('.signal-nodes i[data-signal-node]').forEach(node => {
+      const sig = node.dataset.signalNode;
+      node.setAttribute('role', 'button');
+      node.setAttribute('tabindex', '0');
+      node.addEventListener('click', () => focusSignal(sig, node));
+      node.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          focusSignal(sig, node);
+        }
+      });
+    });
+
+    function focusSignal(sig, sourceNode){
+      const target = $(TARGETS[sig]);
+      if(!target){
+        showUnlockToast(`信号 ${sig} 暂未配置目标`);
+        return;
+      }
+      // 解锁信号（视觉反馈）
+      unlockSignal(sig);
+      // 源节点脉冲
+      sourceNode.classList.add('is-pulse');
+      setTimeout(() => sourceNode.classList.remove('is-pulse'), 1400);
+      // 平滑滚动到目标（考虑顶部 fixed header 高度）
+      const headerH = $('.site-header')?.offsetHeight || 80;
+      const y = target.getBoundingClientRect().top + window.scrollY - headerH - 16;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      // 目标高亮脉冲
+      target.classList.add('is-pulse-target');
+      setTimeout(() => target.classList.remove('is-pulse-target'), 1600);
+      // toast 提示
+      showUnlockToast(NAMES[sig] || sig);
+    }
+  }
+
+  /* ---------- 同类联动：hover 一张 → 同类高亮、异类降透明度 ---------- */
+  function initCategoryLink(){
+    const targets = '.photo-card, .archive-item, .award-star';
+
+    document.body.addEventListener('mouseover', e => {
+      const el = e.target.closest(targets);
+      if(!el || !el.dataset.cat) return;
+      const cat = el.dataset.cat;
+      document.body.classList.add('category-linking');
+      $$(targets).forEach(node => {
+        if(!node.dataset.cat) return;
+        node.classList.toggle('is-related', node.dataset.cat === cat);
+      });
+    });
+    document.body.addEventListener('mouseout', e => {
+      const el = e.target.closest(targets);
+      if(!el) return;
+      // 检查鼠标是否真的移到了外部（不是移到子元素）
+      const related = e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(targets);
+      if(related) return;
+      document.body.classList.remove('category-linking');
+      $$(targets).forEach(node => node.classList.remove('is-related'));
+    });
+  }
+
+  /* ---------- 圆形 Canvas 节点图（#gallery + #constellation） ---------- */
+  function initNodeCanvas(){
+    // 定义 6 大分类的色调
+    const COLORS = {
+      competition:'#ff6b35', campus:'#00d9ff', project:'#7828d6',
+      practice:'#ffb347', startup:'#ff4d8d', ip:'#7ee787'
+    };
+
+    function drawNetwork(canvas, items, options = {}){
+      if(!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if(!ctx) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.scale(dpr, dpr);
+
+      // 把节点按 category 分组
+      const groups = {};
+      items.forEach(it => {
+        if(!groups[it.category]) groups[it.category] = [];
+        groups[it.category].push(it);
+      });
+
+      const cats = Object.keys(groups);
+      const cx = w / 2, cy = h / 2;
+      const ringR = Math.min(w, h) * 0.32;
+
+      // 把每个 category 放到一个角度上
+      const catAngle = {};
+      cats.forEach((c, i) => { catAngle[c] = (i / cats.length) * Math.PI * 2 - Math.PI / 2; });
+
+      // 节点位置（每个 category 在环上随机分布几个点）
+      const nodes = [];
+      cats.forEach((c, ci) => {
+        const arr = groups[c];
+        const ang = catAngle[c];
+        arr.forEach((it, idx) => {
+          const offset = (idx - (arr.length - 1) / 2) * 0.35;
+          const a = ang + offset;
+          const r = ringR * (0.7 + Math.random() * 0.25);
+          nodes.push({
+            x: cx + Math.cos(a) * r,
+            y: cy + Math.sin(a) * r,
+            color: COLORS[c] || '#fff',
+            cat: c,
+            label: it.label,
+            phase: Math.random() * Math.PI * 2
+          });
+        });
+      });
+
+      let tick = 0;
+      function frame(){
+        tick += 0.016;
+        ctx.clearRect(0, 0, w, h);
+
+        // 类别中心点（环上 + 同类用连线连到中心）
+        const catCenters = {};
+        cats.forEach(c => {
+          const ang = catAngle[c];
+          catCenters[c] = { x: cx + Math.cos(ang) * ringR * 0.4, y: cy + Math.sin(ang) * ringR * 0.4, color: COLORS[c] || '#fff' };
+        });
+
+        // 同类连线（节点到中心）
+        nodes.forEach(n => {
+          const cc = catCenters[n.cat];
+          const alpha = 0.18 + 0.12 * Math.sin(tick * 1.5 + n.phase);
+          ctx.strokeStyle = n.color;
+          ctx.globalAlpha = alpha;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y);
+          ctx.lineTo(cc.x, cc.y);
+          ctx.stroke();
+        });
+
+        // 中心点（5 个分类的圆点）
+        Object.values(catCenters).forEach((cc, i) => {
+          const pulse = 1 + 0.15 * Math.sin(tick * 2 + i);
+          const r = 6 * pulse;
+          // 外环
+          ctx.globalAlpha = 0.25;
+          ctx.fillStyle = cc.color;
+          ctx.beginPath();
+          ctx.arc(cc.x, cc.y, r * 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          // 中心
+          ctx.globalAlpha = 1;
+          ctx.beginPath();
+          ctx.arc(cc.x, cc.y, r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // 节点（每张图 = 一个点）
+        nodes.forEach(n => {
+          const pulse = 1 + 0.25 * Math.sin(tick * 2.5 + n.phase);
+          ctx.globalAlpha = 0.9;
+          ctx.fillStyle = n.color;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 3 * pulse, 0, Math.PI * 2);
+          ctx.fill();
+          // 白色内核
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 1.2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        requestAnimationFrame(frame);
+      }
+      frame();
+    }
+
+    // #constellation 加 canvas（在 SVG 之上叠加）
+    const cStage = $('.constellation-stage');
+    if(cStage){
+      const cvs = document.createElement('canvas');
+      cvs.className = 'constellation-bg-canvas';
+      cvs.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+      cStage.prepend(cvs);
+      // 等一帧让 clientWidth/Height 就绪
+      requestAnimationFrame(() => {
+        drawNetwork(cvs, CONSTELLATION_NODES.map(n => ({
+          category: n.category, label: n.category
+        })));
+      });
+    }
+
+    // #gallery 加 canvas（33 张图的网络图）
+    const gWall = $('.photo-wall');
+    if(gWall && gWall.parentNode){
+      const wrap = document.createElement('div');
+      wrap.className = 'node-canvas-wrap';
+      wrap.innerHTML = `<canvas></canvas>
+        <div class="node-canvas-legend">
+          <span><i class="cat-competition"></i>创新创业</span>
+          <span><i class="cat-campus"></i>校园</span>
+          <span><i class="cat-project"></i>项目</span>
+          <span><i class="cat-practice"></i>实践</span>
+          <span><i class="cat-startup"></i>创领</span>
+          <span><i class="cat-ip"></i>知产</span>
+        </div>`;
+      gWall.parentNode.insertBefore(wrap, gWall);
+      const cvs = wrap.querySelector('canvas');
+      requestAnimationFrame(() => {
+        drawNetwork(cvs, IMG_CATALOG.map(img => ({
+          category: img.category, label: img.caption.slice(0, 12)
+        })));
+      });
+    }
+  }
+
+  /* ---------- 全局 Lightbox（多个区块复用） ---------- */
+  window.openLightbox = function(imgId, caption){
+    const img = IMG_BY_ID[imgId];
+    const lb = $('.lightbox');
+    if(!img || !lb){ console.warn('Lightbox 缺失图片：', imgId); return; }
+    lb.querySelector('img').src = assetUrl(img);
+    lb.querySelector('img').alt = img.caption;
+    lb.querySelector('p').textContent = caption || img.caption;
+    lb.classList.add('is-open');
+    lb.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    // 聚焦态：找到触发源所属 section，加 .is-active
+    document._lightboxSource = document.activeElement && document.activeElement.closest
+      ? document.activeElement.closest('section')
+      : null;
+    if(document._lightboxSource) document._lightboxSource.classList.add('is-active');
+    document.body.classList.add('detail-active');
+  };
+  function closeLightbox(){
+    const lb = $('.lightbox');
+    if(!lb) return;
+    lb.classList.remove('is-open');
+    lb.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+    // 移除聚焦态
+    $$('.is-active').forEach(s => s.classList.remove('is-active'));
+    document.body.classList.remove('detail-active');
+    // 延迟清 src，避免动画中图片突然消失
+    setTimeout(() => { lb.querySelector('img').src = ''; }, 400);
+  }
+  function initLightbox(){
+    const lb = $('.lightbox');
+    if(!lb) return;
+    lb.addEventListener('click', e => {
+      if(e.target.classList.contains('lightbox') ||
+         e.target.classList.contains('lightbox-close')) closeLightbox();
+    });
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape' && lb.classList.contains('is-open')) closeLightbox();
     });
   }
 
@@ -561,7 +1045,18 @@
     initMobileMenu();
     initScrollSpy();
     initAwards();
+    initGallery();
+    initConstellation();
+    initArchive();
+    initProjectMedia();
+    initInternshipMedia();
+    initLightbox();
+    initSignalDockClick();
+    initCategoryLink();
+    initNodeCanvas();
     initKeys();
+    // 关键：JS 注入的 .reveal 需补 observe（晚于滚动 reveal 初始化）
+    $$('.reveal').forEach(el => revealObserver.observe(el));
   });
 
 })();

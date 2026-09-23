@@ -127,6 +127,15 @@ h1,h2,h3,h4,h5,h6{
   font-feature-settings:"ss01","ss02","ss03";
   font-variation-settings:"opsz" 144,"SOFT" 30;
 }
+/* 字号阶梯兜底。此前这里不设 font-size，尺寸全靠各区块硬编码。
+   已逐处核对：index.html 与 script.js 注入的全部 h1-h6 每一处都有
+   (0,1,1) 以上的显式规则覆盖（含 JS 注入的 .mu-wall-head h3），
+   所以补上兜底不产生任何视觉变化 —— 纯粹防止将来新增无类标题时尺寸炸掉。 */
+h1{font-size:var(--fs-h1)}
+h2{font-size:var(--fs-h2)}
+h3{font-size:var(--fs-h3)}
+h4{font-size:var(--fs-h4)}
+h5,h6{font-size:var(--fs-h5)}
 body{
   margin:0;
   background:var(--bg);

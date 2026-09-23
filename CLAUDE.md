@@ -51,22 +51,34 @@ intro-gate (固定全屏，点击 character-button 触发 leaveIntro 跳转)
 ├── site-header (顶部导航)
 ├── signal-dock (右下浮动信号收集，5/5 nodes)
 ├── mini-guide (左下浮动快速导航)
-├── .hero (含 identity-card arch 照片 + first-signal 卡片)
-├── .quick-stats (4 个 KPI)
-├── #about (个人简介 + role-cloud)
+├── #about (首屏：h1 + CTA + 展柜 + 数据带 + role-cloud)
 ├── #internship (5 段实习 Tab 切换)
 ├── #projects (7 项目卡片 grid)
 ├── #awards (9 荣誉卡片，6 张带 award-evidence modal)
+├── #gallery (全册 33 张挂画墙)
+├── #constellation (5 站点导览图)
+├── #archive (4 抽屉库房目录)
 ├── #skills (6 技能卡 + skill-bars)
 ├── #contact (4 联系卡片)
 └── .site-footer
 ```
 
+> 原 `.hero` 与 `.quick-stats` 两个区块已于 2026-09-23 删除/并入：
+> hero 与 #about 内容重复（同一张肖像、同一段自述），
+> quick-stats 并入 #about 成为 `.about-stats` 数据带。
+> 编号 01–09 连续，删 hero 不需要重排。
+
 ### 样式系统（styles.css）
-- **`@root` 变量层**：颜色 / 间距（4px 网格） / 字体三档+衬线+行楷+霓虹 / 阴影 / 过渡
-- **全局标题**：h1-h6 用 `--font-display` (Fraunces + Noto Serif SC)
+- **`@root` 变量层**：颜色 / 间距（4px 网格） / **字号阶梯（9 档）** / 字体 / 阴影 / 过渡
+- **字号阶梯**：`--fs-display/-h1/-h2/-h3/-h4/-h5/-lead/-body/-micro` 是全站字号的唯一来源。
+  新增标题一律用令牌，**不要写死 px**。三处刻意豁免：`#intro-title`（启动页独立全屏层）、
+  `.award-modal-*`（脱离文档流的独立密度层）、展陈层 9–10px 展签微字（铭牌物理尺寸）
+- **全局标题**：h1-h6 用 `--font-display` (Fraunces + Noto Serif SC)，字号由阶梯兜底
+- **两种语言**：博物馆展陈（`--hall-*` / `.mu-*`，见下）与编辑杂志（`--ed-*` / `.ed-*`）
+- **背景节奏**：`about(暗厅) → internship(坡) → projects(bg) → awards(bg-2) → gallery/constellation/archive(暗厅×3 展翼) → skills(坡) → contact(bg-2)`
+  —— 规则是「**出展厅用坡，进展厅用切**」，两个方向的差异是有意的
 - **`@media` 响应式断点**：991 / 767 / 575
-- **`prefers-reduced-motion`**：关闭所有动画
+- **`prefers-reduced-motion`**：关闭所有动画（5+2 个块，分散在启动页 / 展陈层 / 编辑层）
 
 ### 脚本交互（script.js IIFE 封装）
 | 函数 | 功能 |
@@ -150,6 +162,35 @@ intro-gate (固定全屏，点击 character-button 触发 leaveIntro 跳转)
 **验证方式**：本机 Playwright 浏览器未安装且下载会卡住。
 用系统 Chrome + CDP（脚本见 `%TEMP%\shots\verify.mjs`）：契约状态 smoke test、
 站点-折线对齐、reduced-motion、4 视口横向溢出。提交前应跑到全绿。
+
+## 编辑杂志层（EDITORIAL LAYER）约定
+
+`#internship` / `#projects` / `#awards` / `#skills` / `#contact` 五个**叙事类**区块
+走「编辑杂志」语境（大留白 · 衬线正文 · 不对称 · 纸面直角），
+与 HALL LAYER 的**证据类**区块（`#about`/`#gallery`/`#constellation`/`#archive`）
+构成两种语言 —— **统一靠色调，不靠手法趋同**。
+
+**命名空间**：`--ed-*` / `.ed-*`（与 `mu-` 同构，两个字母便于扫读分离）。
+纪律同 HALL LAYER：单类 (0,1,0)、状态最多两段、禁 `#id` 前缀、不新增 `!important`、
+不新增色相、不新增 fixed 装饰层。
+
+**三个「靠色调统一」的装置**（可逐条验收，不是笼统的"色板一致"）：
+1. 正文换真衬线（`--font-editorial` = Noto Serif SC 优先）—— body 用的
+   `--font-xingkai`（ZCOOL XiaoWei）是**展示体**，做正文天然偏"海报"
+2. **记号笔底纹代替霓虹渐变** —— `h2 span` 的 cyan→purple 渐变正是"科技落地页"
+   的声纹。改为 `--orange-2` 的 `box-shadow:inset 0 -.16em 0`。
+   色相没变（`--orange-2` 是 `--hall-brass` 的母色之一），**处理方式变了**
+3. 章节顶线与 `.mu-hall::after` 地脚线用**逐字相同**的 `linear-gradient` ——
+   全站只有一种横线
+
+**⚠️ E 层必须位于 `styles.css` 末尾**：`.section-head.ed h2 span` 与
+`.section-head h2 span` 特异性平局（都是 (0,2,1)），只能靠源码顺序取胜。
+挪到中段会被霓虹渐变覆盖回来，**且不报错**。反向验证：把 E 层临时前移，
+确认渐变会回来。
+
+**不对称用 `grid-column` 显式放置，不要用 `order`** —— 这些是文本节点，
+`order` 会让视觉顺序与 DOM/读屏顺序不一致。
+变体：`.ed-indent`（标题缩进）/ `.ed-flip`（镜像）/ `.ed-closing`（收尾堆叠）。
 
 ## 本地 memory
 

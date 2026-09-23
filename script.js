@@ -135,14 +135,10 @@
       console.error(`⚠️ 挂画墙漏图：${GALLERY_ITEMS.length} / ${IMG_CATALOG.length}`);
   })();
 
-  /* #constellation 5 大分类星点 */
-  const CONSTELLATION_NODES = [
-    { category:'创新创业', imgId:'startup_pudong_1',       x:12, y:70 },
-    { category:'校园荣誉', imgId:'campus_top10',           x:32, y:22 },
-    { category:'项目实践', imgId:'project_zhilian_2',      x:50, y:60 },
-    { category:'实践探索', imgId:'practice_efg_group',     x:68, y:24 },
-    { category:'知识产权', imgId:'ip_ruanzhuquan',         x:88, y:66 }
-  ];
+  /* #constellation 的星点已不再手工维护 —— 它直接由 IMG_CATALOG 按 category
+     派生（见 initConstellation）。原先的 CONSTELLATION_NODES 只有 5 项，
+     漏掉了最大的一类 competition（13 张，占 39%），那 13 张图在本区块进不去。
+     派生后 33 张一张不少，且不再有第二处真相源。 */
 
   /* #archive 4 个 details 分组（覆盖剩余 18+ 张） */
   const ARCHIVE_GROUPS = [
@@ -159,7 +155,6 @@
     const ids = new Set();
     AWARD_BINDINGS.forEach(b => b.imgId && ids.add(b.imgId));
     GALLERY_ITEMS.forEach(it => ids.add(it.img.id));
-    CONSTELLATION_NODES.forEach(n => ids.add(n.imgId));
     ARCHIVE_GROUPS.forEach(g => g.imgIds.forEach(i => ids.add(i)));
     console.log(`📊 图像覆盖率：${ids.size} / ${IMG_CATALOG.length}`);
     if(ids.size < IMG_CATALOG.length){
@@ -576,8 +571,11 @@
       modal.classList.remove('is-open');
       modal.setAttribute('aria-hidden','true');
       document.body.style.overflow = '';
-      // 移除聚焦态
-      $$('.is-active').forEach(s => s.classList.remove('is-active'));
+      // 移除聚焦态。**必须限定到 section** —— 原先写的是全站
+      // `$$('.is-active')`，它假设 is-active 只有 section 聚焦态在用；
+      // 但 .sky-star 的选中态也是 is-active，全站清场会把它一起抹掉
+      // （表现为：开一次灯箱，星点选中就没了）。
+      $$('main > section.is-active').forEach(s => s.classList.remove('is-active'));
       document.body.classList.remove('detail-active');
     }
 
@@ -663,75 +661,154 @@
   }
 
   /* ---------- 星座实验室：5 大分类星点 ---------- */
+  /* ---------- 星座图：33 张履历 = 6 个星座 ----------
+     取代原「5 大分类导览图」。原设计有两处问题：
+       1. 视觉双写 —— canvas 画的 5 个分类节点 与 5 个 S-01~S-05 站点标记
+          是同一批东西的两套画法，且互不对应，看起来像散落的杂讯。
+       2. 覆盖漏洞 —— 原 CONSTELLATION_NODES 只有 5 项，漏掉了最大的一类
+          competition（13 张，占 39%），那 13 张图在本区块根本进不去。
+     现在星点直接由 IMG_CATALOG 按 category 派生（单一真相源），33 张一张不少。
+
+     排布：每个分类占星空里的一「星座区」，区内星点用黄金角螺旋
+     （phyllotaxis）确定性散布 —— 不用 Math.random，否则每次刷新星座形状都变。
+     连线：同区内每颗星连到最近的 1-2 颗（张数多时连 2 条，免得 13 颗太稀疏），
+     线的透明度随距离衰减（远则淡出），这是本项目 cosmos-canvas 已验证的手法。 */
+
+  /* 各分类的星座区：中心 + 椭圆半径（百分比坐标）。半径按张数缩放。 */
+  const SKY_ZONES = {
+    competition:{ cx:23, cy:29, rx:17, ry:15 },   /* 13 张，最大 */
+    campus:     { cx:67, cy:22, rx:14, ry:13 },   /* 7 张 */
+    project:    { cx:44, cy:56, rx:12, ry:11 },   /* 4 张 */
+    practice:   { cx:80, cy:55, rx:12, ry:11 },   /* 4 张 */
+    startup:    { cx:20, cy:73, rx:12, ry:11 },   /* 4 张 */
+    ip:         { cx:60, cy:84, rx:0,  ry:0  }    /* 1 张 —— 孤星 */
+  };
+
   function initConstellation(){
-    const stage = $('.constellation-stage');
-    if(!stage) return;
+    const sky = $('.sky');
+    if(!sky) return;
+    const svg       = $('.sky-lines', sky);
+    const legendBox = $('.sky-legend', sky);
     const detail = {
-      box:   $('.star-detail'),
+      box:   $('.sky-plate'),
       cat:   $('#star-category'),
       title: $('#star-title'),
       result:$('#star-result'),
       open:  $('.star-open')
     };
 
-    /* SVG 折线改为按 CONSTELLATION_NODES 的 x/y 动态生成。
-       原来 points 是手工对应节点百分比坐标的硬编码串，动一个节点就错位。
-       viewBox 同时从 "0 0 100 58" 修正为 "0 0 100 100" —— 原值 y 却取到 70，
-       是靠 preserveAspectRatio="none" 拉伸兜出来的假对齐；统一为 0 0 100 100 后
-       y=70 严格等于盒高 70%，与 .award-star{top:70%} 数学上重合。 */
-    const svg = stage.querySelector('svg');
+    /* 按 category 分组 —— 星点由 IMG_CATALOG 派生，不再手工维护节点表 */
+    const groups = {};
+    IMG_CATALOG.forEach(img => {
+      (groups[img.category] = groups[img.category] || []).push(img);
+    });
+
+    const rnd = mulberry32(0x0324);              /* 确定性伪随机 */
+    const GA  = Math.PI * (3 - Math.sqrt(5));    /* 黄金角 */
+
+    /* 1. 星点坐标 */
+    const stars = [];
+    Object.keys(groups).forEach(cat => {
+      const z = SKY_ZONES[cat];
+      if(!z){ console.error('⚠️ 星空缺少分类配置，该类星点会消失：', cat); return; }
+      const arr = groups[cat], n = arr.length;
+      arr.forEach((img, i) => {
+        let x = z.cx, y = z.cy;
+        if(n > 1){
+          const t = Math.sqrt((i + 0.5) / n);          /* 螺旋：外圈越疏 */
+          const a = i * GA;
+          x = z.cx + z.rx * t * Math.cos(a) + (rnd() - .5) * z.rx * .24;
+          y = z.cy + z.ry * t * Math.sin(a) + (rnd() - .5) * z.ry * .24;
+        }
+        stars.push({ img, cat, x, y });
+      });
+    });
+
+    /* 2. 星座线：同区内每颗星连到最近的 k 颗 */
+    const edges = [], seen = new Set();
+    Object.keys(groups).forEach(cat => {
+      const mine = stars.filter(s => s.cat === cat);
+      if(mine.length < 2) return;                     /* 孤星不连线 */
+      const k = mine.length > 8 ? 2 : 1;
+      mine.forEach((a, i) => {
+        mine.map((b, j) => ({ j, d: Math.hypot(a.x - b.x, a.y - b.y) }))
+            .filter(o => o.j !== i)
+            .sort((p, q) => p.d - q.d)
+            .slice(0, k)
+            .forEach(o => {
+              const key = [a.img.id, mine[o.j].img.id].sort().join('|');
+              if(seen.has(key)) return;
+              seen.add(key);
+              edges.push({ a, b: mine[o.j], d: o.d, cat });
+            });
+      });
+    });
+
     if(svg){
       svg.setAttribute('viewBox', '0 0 100 100');
-      const poly = svg.querySelector('polyline');
-      if(poly) poly.setAttribute('points', CONSTELLATION_NODES.map(n => `${n.x},${n.y}`).join(' '));
+      const NS = 'http://www.w3.org/2000/svg';
+      edges.forEach(e => {
+        const ln = document.createElementNS(NS, 'line');
+        ln.setAttribute('x1', e.a.x.toFixed(2));
+        ln.setAttribute('y1', e.a.y.toFixed(2));
+        ln.setAttribute('x2', e.b.x.toFixed(2));
+        ln.setAttribute('y2', e.b.y.toFixed(2));
+        ln.setAttribute('vector-effect', 'non-scaling-stroke');  /* 1px 发丝线 */
+        ln.setAttribute('stroke', CAT_COLORS[e.cat] || '#fff');
+        /* 透明度随距离衰减：远则淡出，避免视觉噪声 */
+        ln.setAttribute('stroke-opacity', Math.max(.1, Math.min(.45, .62 - e.d / 110)).toFixed(2));
+        svg.appendChild(ln);
+      });
     }
 
+    /* 3. 星点（真实可点元素，不是 canvas 画上去的 —— 这样有 hover / 焦点 / 无障碍） */
+    stars.forEach(s => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sky-star';
+      btn.style.setProperty('--x', s.x.toFixed(2) + '%');
+      btn.style.setProperty('--y', s.y.toFixed(2) + '%');
+      btn.style.setProperty('--cat-color', CAT_COLORS[s.cat] || '');
+      btn.dataset.imgId = s.img.id;
+      btn.dataset.cat = s.cat;
+      btn.dataset.caption = s.img.caption;
+      btn.setAttribute('aria-label', `${categoryLabel(s.cat)} · ${s.img.caption}`);
+      btn.innerHTML = '<i></i>';
+      btn.addEventListener('click', () => selectStar(s, btn));
+      sky.appendChild(btn);
+      s.el = btn;
+    });
+
+    /* 4. 图例（6 个分类 + 颜色 + 张数） */
+    if(legendBox){
+      legendBox.innerHTML = Object.keys(groups).map(cat =>
+        `<span class="sky-leg" data-cat="${cat}"><i style="background:${CAT_COLORS[cat] || '#fff'}"></i>${categoryLabel(cat)}<b>${groups[cat].length}</b></span>`
+      ).join('');
+    }
+
+    /* 5. 交互：点星点 → 换展签（不直接弹灯箱，看展节奏是先读签再决定） */
     let current = null;
-
-    function paint(node, img){
-      if(detail.box)    detail.box.style.setProperty('--cat-color', CAT_COLORS[img.category] || '');
-      if(detail.cat)    detail.cat.textContent    = node.category + ' · ' + img.year;
-      if(detail.title)  detail.title.textContent  = img.caption;
-      if(detail.result) detail.result.textContent = tierLabel(img.tier) + ' · ' + categoryLabel(img.category);
-      current = { imgId: img.id, caption: img.caption };
+    function paint(s){
+      if(detail.box)    detail.box.style.setProperty('--cat-color', CAT_COLORS[s.cat] || '');
+      if(detail.cat)    detail.cat.textContent    = categoryLabel(s.cat) + ' · ' + s.img.year;
+      if(detail.title)  detail.title.textContent  = s.img.caption;
+      if(detail.result) detail.result.textContent = tierLabel(s.img.tier);
+      current = { imgId: s.img.id, caption: s.img.caption };
     }
-
-    function selectNode(btn, node, img){
-      stage.querySelectorAll('.award-star').forEach(s => s.classList.remove('active'));
-      btn.classList.add('active');
-      // 换牌过渡：先压暗，140ms 后换文本再恢复 —— 像展签被重新打印
+    function selectStar(s, btn){
+      stars.forEach(o => o.el && o.el.classList.remove('is-active'));
+      if(btn) btn.classList.add('is-active');
+      /* 换牌过渡：先压暗，140ms 后换文本再恢复 —— 像展签被重新打印 */
       if(detail.box) detail.box.classList.add('is-swapping');
       setTimeout(() => {
-        paint(node, img);
+        paint(s);
         if(detail.box) detail.box.classList.remove('is-swapping');
       }, 140);
     }
 
-    CONSTELLATION_NODES.forEach((node, i) => {
-      const img = IMG_BY_ID[node.imgId];
-      if(!img){ console.warn('Constellation 缺失图片：', node.imgId); return; }
-      const no  = String(i + 1).padStart(2, '0');
-      const btn = document.createElement('button');
-      btn.className = 'award-star' + (i === 0 ? ' active' : '');
-      btn.type = 'button';
-      btn.style.setProperty('--x', node.x + '%');
-      btn.style.setProperty('--y', node.y + '%');
-      btn.setAttribute('aria-label', `站点 S-${no} · ${img.caption}`);
-      btn.dataset.imgId = img.id;
-      btn.dataset.cat = img.category;
-      btn.innerHTML =
-        `<b class="star-no">S-${no}</b><i>✦</i>
-         <span class="star-name">${node.category}<small>${img.year}</small></span>`;
-      /* 行为变更：点站点只换展签，不再直接弹灯箱 —— 看展节奏是先读签再决定看不看 */
-      btn.addEventListener('click', () => selectNode(btn, node, img));
-      stage.appendChild(btn);
-    });
+    const first = stars[0];
+    if(first){ paint(first); if(first.el) first.el.classList.add('is-active'); }
 
-    // 首屏展签先按第 1 个站点填好（原来的静态占位文案与数据无关）
-    const firstImg = IMG_BY_ID[CONSTELLATION_NODES[0].imgId];
-    if(firstImg) paint(CONSTELLATION_NODES[0], firstImg);
-
-    // 由展签上的「查看展品」进 lightbox
     if(detail.open){
       detail.open.addEventListener('click', () => {
         if(current) openLightbox(current.imgId, current.caption);
@@ -938,7 +1015,7 @@
 
   /* ---------- 同类联动：hover 一张 → 同类高亮、异类降透明度 ---------- */
   function initCategoryLink(){
-    const targets = '.photo-card, .archive-item, .award-star';
+    const targets = '.photo-card, .archive-item, .sky-star';
 
     document.body.addEventListener('mouseover', e => {
       const el = e.target.closest(targets);
@@ -988,163 +1065,12 @@
     };
   }
 
-  const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  /* ---------- Canvas 节点图（#constellation 展厅导览图叠加层） ---------- */
-  function initNodeCanvas(){
-    /* 绘制导览图叠加层。返回 stop()，调用方可取消 rAF。 */
-    function drawNetwork(canvas, items, options = {}){
-      if(!canvas) return () => {};
-      const ctx = canvas.getContext('2d');
-      if(!ctx) return () => {};
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      if(w < 4 || h < 4) return () => {};      // 未布局 / 隐藏时退出，避免 0 尺寸位图
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const rnd = mulberry32(options.seed || 0x0324);
-
-      const groups = {};
-      items.forEach(it => {
-        if(!groups[it.category]) groups[it.category] = [];
-        groups[it.category].push(it);
-      });
-      const cats = Object.keys(groups);
-
-      const cx = w / 2, cy = h / 2;
-      const ringR = Math.min(w, h) * 0.32;
-
-      const catAngle = {};
-      cats.forEach((c, i) => { catAngle[c] = (i / cats.length) * Math.PI * 2 - Math.PI / 2; });
-
-      const nodes = [];
-      const catCenters = {};
-      cats.forEach(c => {
-        const arr = groups[c];
-        const ang = catAngle[c];
-        catCenters[c] = {
-          x: cx + Math.cos(ang) * ringR * 0.4,
-          y: cy + Math.sin(ang) * ringR * 0.4,
-          color: CAT_COLORS[c] || '#fff'
-        };
-        arr.forEach((it, idx) => {
-          const a = ang + (idx - (arr.length - 1) / 2) * 0.35;
-          const r = ringR * (0.7 + rnd() * 0.25);
-          nodes.push({
-            x: cx + Math.cos(a) * r,
-            y: cy + Math.sin(a) * r,
-            color: CAT_COLORS[c] || '#fff',
-            cat: c,
-            phase: rnd() * Math.PI * 2
-          });
-        });
-      });
-
-      function render(tick){
-        ctx.clearRect(0, 0, w, h);
-
-        // 同类连线（节点 → 分类中心）
-        nodes.forEach(n => {
-          const cc = catCenters[n.cat];
-          if(!cc) return;
-          ctx.globalAlpha = 0.18 + 0.12 * Math.sin(tick * 1.5 + n.phase);
-          ctx.strokeStyle = n.color;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(n.x, n.y);
-          ctx.lineTo(cc.x, cc.y);
-          ctx.stroke();
-        });
-
-        // 分类中心点
-        Object.values(catCenters).forEach((cc, i) => {
-          const r = 5 * (1 + 0.15 * Math.sin(tick * 2 + i));
-          ctx.globalAlpha = 0.25;
-          ctx.fillStyle = cc.color;
-          ctx.beginPath(); ctx.arc(cc.x, cc.y, r * 2.5, 0, Math.PI * 2); ctx.fill();
-          ctx.globalAlpha = 1;
-          ctx.beginPath(); ctx.arc(cc.x, cc.y, r, 0, Math.PI * 2); ctx.fill();
-        });
-
-        // 节点（每个分类一颗）
-        nodes.forEach(n => {
-          const pulse = 1 + 0.25 * Math.sin(tick * 2.5 + n.phase);
-          ctx.globalAlpha = 0.9;
-          ctx.fillStyle = n.color;
-          ctx.beginPath(); ctx.arc(n.x, n.y, 3 * pulse, 0, Math.PI * 2); ctx.fill();
-          ctx.globalAlpha = 1;
-          ctx.fillStyle = '#fff';
-          ctx.beginPath(); ctx.arc(n.x, n.y, 1.2, 0, Math.PI * 2); ctx.fill();
-        });
-      }
-
-      render(0);                                  // 先出一帧静态：reduced-motion 下也有内容
-      if(REDUCED_MOTION.matches) return () => {};
-
-      let rafId = 0, running = false, tick = 0;
-      const step = () => { if(!running) return; tick += 0.016; render(tick); rafId = requestAnimationFrame(step); };
-      const start = () => { if(running) return; running = true; rafId = requestAnimationFrame(step); };
-      const stop  = () => { running = false; cancelAnimationFrame(rafId); };
-
-      // 只在本体进入视口时跑；标签页切走也停（原实现是无条件无限 rAF）
-      const io = new IntersectionObserver(([e]) => e.isIntersecting ? start() : stop(), { rootMargin:'120px' });
-      io.observe(canvas);
-      const onVis = () => document.hidden ? stop() : start();
-      document.addEventListener('visibilitychange', onVis);
-
-      return () => { stop(); io.disconnect(); document.removeEventListener('visibilitychange', onVis); };
-    }
-
-    let stopper = null, resizeTimer;
-
-    function mount(){
-      if(stopper){ stopper(); stopper = null; }
-      const cStage = $('.constellation-stage');
-      if(!cStage) return;
-      let cvs = cStage.querySelector('.constellation-bg-canvas');
-      if(!cvs){
-        cvs = document.createElement('canvas');
-        cvs.className = 'constellation-bg-canvas';
-        cvs.setAttribute('aria-hidden', 'true');
-        cStage.prepend(cvs);
-      }
-      /* 分类色要用 IMG_CATALOG 的英文 key 查表，而 CONSTELLATION_NODES.category
-         是中文标签（'创新创业' 等）—— 直接拿它查 CAT_COLORS 会全部 fallback 成白色。
-         故经 imgId 反查真实分类。 */
-      const items = CONSTELLATION_NODES.map(n => {
-        const img = IMG_BY_ID[n.imgId];
-        return { category: img ? img.category : n.category };
-      });
-      stopper = drawNetwork(cvs, items, { seed: 0x0324 });
-    }
-
-    /* #gallery 顶部：藏品索引条。
-       不放 canvas —— 环形构图在 1180×120 的扁条上半径只有 ~38px，
-       33 个节点会挤成中心一团；分类构成用文字图例反而更清楚。 */
-    const gWall = $('.photo-wall');
-    if(gWall && gWall.parentNode){
-      const counts = {};
-      IMG_CATALOG.forEach(img => { counts[img.category] = (counts[img.category] || 0) + 1; });
-      const legend = Object.keys(CAT_COLORS).map(c =>
-        `<span><i class="cat-${c}"></i>${categoryLabel(c)} <b>${counts[c] || 0}</b></span>`).join('');
-      const wrap = document.createElement('div');
-      wrap.className = 'node-canvas-wrap';
-      wrap.innerHTML =
-        `<span class="node-canvas-label">藏品索引 · ${IMG_CATALOG.length} 件 / ${Object.keys(counts).length} 类</span>
-         <div class="node-canvas-legend">${legend}</div>`;
-      gWall.parentNode.insertBefore(wrap, gWall);
-    }
-
-    // 首绘 + 防抖重绘（原实现 resize 后位图尺寸不更新，构图被拉伸变形）
-    requestAnimationFrame(mount);
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(mount, 200);
-    });
-  }
+  /* ---------- Canvas 节点图：已删除 ----------
+     它只服务 .constellation-stage 的叠加层。星座图改版后（星点改为真实的
+     HTML button + SVG 连线），canvas 成了「视觉双写」—— 与站点标记画的是
+     同一批分类却互不对应，读起来像散落的杂讯，故整体移除。
+     drawNetwork / initNodeCanvas 一并删除；mulberry32 保留（星点排布在用）。
+     .constellation-bg-canvas 的 CSS 随之删除。 */
 
   /* ---------- 全局 Lightbox（多个区块复用） ---------- */
   window.openLightbox = function(imgId, caption){
@@ -1170,8 +1096,9 @@
     lb.classList.remove('is-open');
     lb.setAttribute('aria-hidden','true');
     document.body.style.overflow = '';
-    // 移除聚焦态
-    $$('.is-active').forEach(s => s.classList.remove('is-active'));
+    // 移除聚焦态。**必须限定到 section** —— 见 initAwards 里同处的说明：
+    // 全站 `$$('.is-active')` 会连带抹掉 .sky-star 的选中态。
+    $$('main > section.is-active').forEach(s => s.classList.remove('is-active'));
     document.body.classList.remove('detail-active');
     // 延迟清 src，避免动画中图片突然消失
     setTimeout(() => { lb.querySelector('img').src = ''; }, 400);
@@ -1234,7 +1161,6 @@
     initLightbox();
     initStationIndex();     // 合并原 initMiniGuide + initSignalDockClick + initKeys
     initCategoryLink();
-    initNodeCanvas();
     // 关键：JS 注入的 .reveal 需补 observe（晚于滚动 reveal 初始化）
     observeReveals();
   });

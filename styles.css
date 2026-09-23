@@ -1737,48 +1737,113 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
 }
 
 /* ============================================================
-   Constellation Lab（5 大分类星座实验室）
+   星座图（33 张履历 = 6 个星座）
+   ------------------------------------------------------------
+   取代原「5 大分类导览图」+ canvas 叠加层的双写结构：那两套画的是同一批
+   分类却互不对应，读起来像散落的杂讯。
+   现在只有一种视觉语言 —— 星点是真实 HTML button（可 hover / 可聚焦 /
+   可读屏），连线是 SVG 发丝线。
+   律动：只用 transform 脉冲，不用 opacity 闪烁（项目明确反对）。
    ============================================================ */
-.constellation-grid{
-  display:grid;grid-template-columns:1fr 1.3fr;
-  gap:48px;align-items:center;
-  margin-top:24px;
+.sky{
+  position:relative;
+  margin-top:var(--s-8);
+  aspect-ratio:100/46;
+  border-radius:var(--s-3);
+  border:1px solid var(--line);
+  overflow:hidden;
+  /* 夜空：比展陈层的墙面更深一档，让星点真正"发亮" */
+  background:
+    radial-gradient(ellipse 70% 90% at 22% 28%, color-mix(in srgb,var(--purple) 24%,transparent), transparent 62%),
+    radial-gradient(ellipse 60% 80% at 70% 24%, color-mix(in srgb,var(--cyan) 11%,transparent), transparent 60%),
+    radial-gradient(ellipse 80% 70% at 50% 82%, color-mix(in srgb,var(--purple) 13%,transparent), transparent 65%),
+    #07040d;
 }
-.constellation-copy small{
-  font-family:var(--font-mono);font-size:11px;letter-spacing:.25em;
-  color:var(--cyan);display:block;margin-bottom:10px;
-}
-.constellation-copy h3{
-  font-family:var(--font-display);
-  font-size:var(--fs-h3);color:var(--ink-2);margin:0 0 18px;
+.sky-lines{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;
 }
 
-/* 展签详情牌 —— 点站点只换牌，不开灯箱（看展节奏：先读签，再决定要不要看展品） */
-.star-detail{
-  padding:var(--s-5);
-  border-radius:0 var(--s-2) var(--s-2) 0;
+/* 星点：外层 26px 是可点击/可聚焦区，视觉由内部 i 控制 */
+.sky-star{
+  position:absolute;left:var(--x);top:var(--y);
+  transform:translate(-50%,-50%);
+  width:26px;height:26px;
+  display:grid;place-items:center;
+  background:none;border:0;padding:0;cursor:pointer;
+}
+.sky-star > i{
+  display:block;width:7px;height:7px;border-radius:50%;
+  background:var(--cat-color,var(--cyan));
+  box-shadow:0 0 6px var(--cat-color,var(--cyan));
+  transition:transform var(--t-fast),box-shadow var(--t-fast);
+}
+.sky-star:hover > i{transform:scale(1.7);
+  box-shadow:0 0 14px var(--cat-color,var(--cyan))}
+.sky-star:focus-visible{outline:2px solid var(--cyan);outline-offset:1px;border-radius:50%}
+/* 选中的星：transform 脉冲（非 opacity） */
+.sky-star.is-active > i{
+  width:11px;height:11px;
+  box-shadow:0 0 16px var(--cat-color,var(--cyan)),
+             0 0 34px color-mix(in srgb,var(--cat-color,var(--cyan)) 55%,transparent);
+  animation:skyStarPulse 2.6s ease-in-out infinite;
+}
+@keyframes skyStarPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.35)}
+}
+/* hover 展签（纯 CSS，取 data-caption） */
+.sky-star::after{
+  content:attr(data-caption);
+  position:absolute;left:50%;top:calc(100% - 2px);
+  transform:translateX(-50%);
+  max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  padding:3px 8px;border-radius:6px;
+  background:var(--hall-plate);border:1px solid var(--line);
+  font-family:var(--font-mono);font-size:10px;color:var(--ink-2);
+  opacity:0;pointer-events:none;z-index:2;
+  transition:opacity var(--t-fast);
+}
+.sky-star:hover::after,.sky-star:focus-visible::after{opacity:1}
+
+/* 图例：6 个分类 + 颜色 + 张数 */
+.sky-legend{
+  position:absolute;left:var(--s-5);bottom:var(--s-4);
+  display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-5);
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;
+  color:var(--muted);
+}
+.sky-leg{display:inline-flex;align-items:center;gap:6px}
+.sky-leg i{display:block;width:7px;height:7px;border-radius:50%}
+.sky-leg b{color:var(--ink-2);font-weight:700}
+
+/* 当前星点的展签 —— 横向一条，与展陈层铭牌同一语言 */
+.sky-plate{
+  display:flex;align-items:baseline;gap:var(--s-4);flex-wrap:wrap;
+  margin-top:var(--s-5);
+  padding:var(--s-4) var(--s-5);
   border:1px solid var(--line);
   border-left:2px solid var(--cat-color,var(--purple-3));
+  border-radius:0 var(--s-2) var(--s-2) 0;
   background:var(--hall-plate);
-  display:flex;flex-direction:column;gap:var(--s-1);
   transition:border-color var(--t-med),opacity var(--t-fast);
 }
-/* 换牌时短暂压暗，像被重新打印 */
-.star-detail.is-swapping{opacity:.25}
-.star-detail span{
+/* 换牌过渡：先压暗，140ms 后换文本再恢复 —— 像展签被重新打印 */
+.sky-plate.is-swapping{opacity:.25}
+.sky-plate-cat{
   font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;
   color:var(--cat-color,var(--purple-3));
 }
-.star-detail strong{
+.sky-plate strong{
   font-family:var(--font-display);
-  font-size:18px;color:var(--ink-2);font-weight:700;
+  font-size:var(--fs-h4);color:var(--ink-2);font-weight:700;
 }
-.star-detail p{
-  font-size:13px;color:var(--orange-2);margin:0;
+.sky-plate p{
+  margin:0;font-size:13px;color:var(--orange-2);
   font-family:var(--font-mono);letter-spacing:.1em;
 }
 .star-open{
-  margin-top:var(--s-3);align-self:flex-start;
+  margin-left:auto;
   font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;
   color:var(--cyan);background:transparent;
   border:1px solid var(--line);border-radius:var(--s-1);
@@ -1790,102 +1855,15 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
   background:color-mix(in srgb,var(--cyan) 12%,transparent);
 }
 
-/* 导览图面板：平面图底纹 + 制版内框 + 暗角
-   注意：不要加 padding —— canvas 用 clientWidth 定位，padding 会让百分比基准错位 */
-.constellation-stage{
-  position:relative;
-  aspect-ratio:100/58;
-  overflow:hidden;border-radius:var(--s-3);
-  border:1px solid var(--line);
-  background:
-    repeating-linear-gradient(0deg,transparent 0 23px,
-      color-mix(in srgb,var(--line) 55%,transparent) 23px 24px),
-    repeating-linear-gradient(90deg,transparent 0 23px,
-      color-mix(in srgb,var(--line) 55%,transparent) 23px 24px),
-    radial-gradient(ellipse at 50% 45%,
-      color-mix(in srgb,var(--purple) 14%,transparent),transparent 68%),
-    var(--hall-bg);
-}
-.constellation-stage::before{
-  content:'';position:absolute;inset:var(--s-2);z-index:1;
-  border:1px solid var(--line);border-radius:var(--s-1);pointer-events:none;
-}
-.constellation-stage::after{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse at center,transparent 42%,var(--hall-plate) 100%);
-}
-.constellation-stage svg{
-  position:absolute;inset:0;width:100%;height:100%;
-  /* non-scaling-stroke 下 stroke-width 是 CSS px 而非用户单位 —— 原来的 .3
-     会细到看不见，1px 才是合适的发丝路线 */
-  stroke:var(--purple-3);stroke-width:1;fill:none;
-  stroke-dasharray:5 5;opacity:.45;
-  animation:pathStep 30s linear infinite;
-}
-/* 导览图左上角说明 */
-.mu-map-legend{
-  position:absolute;top:var(--s-3);left:var(--s-4);z-index:3;
-  display:inline-flex;align-items:center;gap:var(--s-2);
-  font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;
-  color:var(--muted);text-transform:uppercase;
-}
-.mu-map-legend i{
-  display:inline-block;width:6px;height:6px;border-radius:50%;
-  background:var(--cyan);box-shadow:0 0 8px var(--cyan);
-}
-@keyframes pathStep{
-  to{stroke-dashoffset:-30}
-}
-
-/* 站点标记 */
-.award-star{
-  position:absolute;
-  left:var(--x);top:var(--y);
-  transform:translate(-50%,-50%);
-  width:60px;height:60px;border-radius:50%;
-  background:radial-gradient(circle,color-mix(in srgb,var(--purple) 40%,transparent),transparent 70%);
-  border:1.5px solid var(--purple-3);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;
-  color:var(--cyan);
-  transition:transform var(--t-med), border-color var(--t-med), background var(--t-med);
-  animation:starTwinkle 4s ease-in-out infinite;
-  z-index:2;
-}
-.award-star i{
-  font-style:normal;font-size:18px;
-  filter:drop-shadow(0 0 8px var(--cyan));
-}
-.star-no{
-  position:absolute;top:-9px;left:50%;transform:translateX(-50%);
-  font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;
-  color:var(--hall-bg);background:var(--cyan);
-  padding:1px 5px;border-radius:5px;
-}
-.star-name{
-  position:absolute;top:calc(100% + 6px);left:50%;
-  transform:translateX(-50%);
-  white-space:nowrap;
-  display:flex;flex-direction:column;gap:1px;text-align:center;
-  font-family:var(--font-mono);font-size:10px;
-  color:var(--muted);letter-spacing:.15em;
-}
-.star-name small{color:var(--purple-3);font-size:9px}
-.award-star:hover{
-  transform:translate(-50%,-50%) scale(1.12);
-  border-color:var(--cyan);
-  background:radial-gradient(circle,color-mix(in srgb,var(--cyan) 25%,transparent),transparent 70%);
-}
-.award-star.active{
-  background:radial-gradient(circle, var(--purple), transparent 70%);
-  border-color:var(--cyan);
-  transform:translate(-50%,-50%) scale(1.25);
-  animation:none;
-}
-.award-star.active i{color:#fff}
-@keyframes starTwinkle{
-  0%,100%{box-shadow:0 0 12px rgba(120,40,214,.4);}
-  50%{box-shadow:0 0 24px rgba(0,217,255,.6);}
+/* 响应式：窄屏把星空拉高 —— 33 颗星挤在扁条里会糊成一团 */
+@media (max-width:991px){ .sky{aspect-ratio:100/62} }
+@media (max-width:767px){ .sky{aspect-ratio:100/104} }
+@media (max-width:575px){
+  .sky{aspect-ratio:100/128;border-radius:var(--s-2)}
+  .sky-star{width:30px;height:30px}
+  .sky-legend{left:var(--s-3);bottom:var(--s-3);gap:var(--s-1) var(--s-3);font-size:9px}
+  .sky-plate{padding:var(--s-3) var(--s-4);gap:var(--s-3)}
+  .star-open{margin-left:0}
 }
 
 /* ============================================================
@@ -1937,15 +1915,10 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
 
 /* ---- 移动端响应式 ---- */
 @media (max-width:991px){
-  .constellation-grid{grid-template-columns:1fr;gap:28px;}
-  .constellation-stage{aspect-ratio:100/70;}
   /* 触控目标下限 44px（WCAG 2.5.8），原为 42px */
-  .award-star{width:44px;height:44px;}
+  .sky-star{width:44px;height:44px;}
 }
 @media (max-width:575px){
-  .award-star{width:44px;height:44px;}
-  .award-star i{font-size:15px;}
-  .star-name{font-size:9px}
   .project-media{height:140px;}
   .internship-evidence img{height:120px;}
 }
@@ -2081,7 +2054,7 @@ body.detail-active .station-index{
    ============================================================ */
 .photo-card,
 .archive-item,
-.award-star{
+.sky-star{
   transition:opacity var(--t-med), filter var(--t-med), border-color var(--t-med), transform var(--t-med), box-shadow var(--t-med);
 }
 /* 只压暗「非同类」。
@@ -2092,13 +2065,13 @@ body.detail-active .station-index{
    用 :not(.is-related) 直接排除，不再依赖覆盖。 */
 body.category-linking .photo-card:not(.is-related),
 body.category-linking .archive-item:not(.is-related),
-body.category-linking .award-star:not(.is-related){
+body.category-linking .sky-star:not(.is-related){
   opacity:.28;
   filter:saturate(.5);
 }
+/* 盒式卡片（有边框、可整体上浮） */
 .photo-card.is-related,
-.archive-item.is-related,
-.award-star.is-related{
+.archive-item.is-related{
   /* 用分类色而非固定青色 —— 原来这里有第二份 .photo-card.is-related 声明
      （用 --cat-color）在 400 行后覆盖本规则，使本规则的 border-color/box-shadow
      成为死代码。已合并到这一处。 */
@@ -2110,12 +2083,15 @@ body.category-linking .award-star:not(.is-related){
 .archive-item.is-related img{
   transform:scale(1.04);
 }
-.award-star.is-related{
-  background:radial-gradient(circle, var(--cyan), transparent 70%);
-  border-color:var(--cyan);
-  transform:translate(-50%,-50%) scale(1.2);
+/* 星点不是盒子：它是 26px 的透明点击区，视觉全在内部的 i 上。
+   ⚠️ 这里**不能**用 transform —— .sky-star 靠 translate(-50%,-50%) 把
+   自身中心对准 --x/--y，任何 transform 都会覆盖它、把星点推偏。
+   高亮只加在内部 i 上。 */
+.sky-star.is-related > i{
+  transform:scale(1.7);
+  box-shadow:0 0 16px var(--cat-color,var(--cyan)),
+             0 0 34px color-mix(in srgb,var(--cat-color,var(--cyan)) 60%,transparent);
 }
-.award-star.is-related i{color:#fff}
 
 /* ============================================================
    ✨ 圆形 Canvas 节点图（constellation / gallery 顶部）
@@ -2141,11 +2117,6 @@ body.category-linking .award-star:not(.is-related){
   color:var(--muted);letter-spacing:.1em;
 }
 .node-canvas-legend b{color:var(--cyan);font-weight:700;margin-left:3px}
-/* 导览图叠加层（原实现靠 element.style.cssText 内联，现收归 CSS） */
-.constellation-bg-canvas{
-  position:absolute;inset:0;width:100%;height:100%;
-  pointer-events:none;z-index:0;
-}
 .node-canvas-legend i{
   display:inline-block;width:8px;height:8px;border-radius:50%;
   margin-right:4px;vertical-align:middle;
@@ -2177,7 +2148,6 @@ body.category-linking .award-star:not(.is-related){
     opacity:1;filter:none;pointer-events:auto;
   }
   .node-canvas-legend{gap:var(--s-1) var(--s-3);font-size:9px}
-  .award-star{width:48px;height:48px}
 }
 
 /* ============================================================================
@@ -2357,7 +2327,7 @@ body.category-linking .award-star:not(.is-related){
   .reveal.is-visible .vitrine-portrait{
     clip-path:none;transition:none;
   }
-  .star-detail,
+  .sky-plate,
   .star-open,
   .photo-frame,
   .photo-frame::before,
@@ -2365,7 +2335,7 @@ body.category-linking .award-star:not(.is-related){
   .archive-item,
   .archive-group,
   .mu-vitrine,
-  .award-star{
+  .sky-star{
     transition:none;
   }
   .photo-card.reveal{transition-delay:0s}

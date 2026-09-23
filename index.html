@@ -596,33 +596,37 @@
       </div>
     </section>
 
-    <!-- ========== 星座实验室：5 大分类 ========== -->
-    <section id="constellation" class="constellation-lab section-pad mu-hall">
+    <!-- ========== 星座图：33 张履历 = 6 个星座 ==========
+         原设计是「5 大分类导览图」+ 一层 canvas 节点图，两者画的是同一批
+         分类却各画各的（canvas 的彩色点与 S-01~S-05 站点互不对应），
+         读起来像散落的杂讯。现改为单一视觉语言：
+           6 个分类 = 6 个星座，33 张图 = 33 颗星，同分类内的近邻连成星座线。
+         顺带修掉一个覆盖漏洞：原 CONSTELLATION_NODES 只有 5 项，
+         漏掉了最大的一类 competition（13 张，占 39%）—— 那 13 张图
+         在本区块根本进不去。现在星点直接由 IMG_CATALOG 按 category 派生，
+         33 张一张不少。 -->
+    <section id="constellation" class="section-pad mu-hall">
       <div class="shell">
         <div class="section-head reveal">
-          <div>
+          <div class="section-head-main">
             <div class="section-kicker"><span>06</span> CONSTELLATION</div>
-            <h2>点击星星，<br />解锁一项<span>信号脉冲</span>。</h2>
+            <h2>33 张履历，<br />连成 <span>6 个星座</span>。</h2>
           </div>
-          <p>5 个站点 · 点击站点先换右侧展签，再由展签进入 lightbox 全屏查看。</p>
+          <p class="section-head-note">每个分类是一个星座，每颗星是一张图 · 点亮星点看展签，再由展签进入 lightbox 看原图。</p>
         </div>
-        <div class="constellation-grid">
-          <div class="constellation-copy">
-            <small>INTERACTIVE CONSTELLATION</small>
-            <h3>从一颗星点，<br />进入一段履历。</h3>
-            <div class="star-detail" aria-live="polite">
-              <span id="star-category">创新创业 · 2024</span>
-              <strong id="star-title">创领浦东 · 青年新势力</strong>
-              <p id="star-result">一等奖</p>
-              <button class="star-open" type="button">查看展品 ↗</button>
-            </div>
-          </div>
-          <div class="constellation-stage" aria-label="5 大分类导览图">
-            <span class="mu-map-legend"><i></i>5 个站点 · 点击查看展签</span>
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              <polyline points="12,70 32,22 50,60 68,24 88,66" vector-effect="non-scaling-stroke" />
-            </svg>
-          </div>
+
+        <!-- 星空：JS 注入 33 颗星（button.sky-star）+ 6 条星座连线（SVG） -->
+        <div class="sky reveal" id="sky" aria-label="33 张履历的星座图">
+          <svg class="sky-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="sky-legend" aria-hidden="true"></div>
+        </div>
+
+        <!-- 当前星点的展签（横向一条，与展陈层的铭牌同一语言） -->
+        <div class="sky-plate reveal" aria-live="polite">
+          <span class="sky-plate-cat" id="star-category">创新创业 · 2024</span>
+          <strong id="star-title">创领浦东 · 青年新势力</strong>
+          <p id="star-result">一等奖</p>
+          <button class="star-open" type="button">查看展品 ↗</button>
         </div>
       </div>
     </section>

@@ -149,7 +149,6 @@
   const introGate = $('.intro-gate');
   const header = $('.site-header');
   const miniGuide = $('.mini-guide');
-  const signalDock = $('.signal-dock');
 
   function leaveIntro(){
     if(!introGate) return;
@@ -173,7 +172,6 @@
       introGate.style.display='none';
       header?.classList.add('is-visible');
       miniGuide?.classList.add('is-visible');
-      signalDock?.classList.add('is-visible');
       // 只让 hero 区块的 reveal 元素立即可见（启动页 → 主站的衔接）
       // 其他区块（about/internship/...）保留 IntersectionObserver 滚动揭示
       $$('.hero .reveal').forEach(el=>el.classList.add('is-visible'));
@@ -319,32 +317,16 @@
   function unlockSignal(name){
     if(!name||litSignals.has(name)) return;
     litSignals.add(name);
-    // 点亮对应节点
-    const node = $(`.signal-nodes i[data-signal-node="${name}"]`);
+    // 点亮展开态按钮（青色边框 + 背景）
+    const node = $(`.signal-btn[data-signal-node="${name}"]`);
     if(node) node.classList.add('is-lit');
-    // 更新计数
-    const total = $$('.signal-nodes i').length;
-    const count = $$('.signal-nodes i.is-lit').length;
-    const counter = $('#signal-count');
-    if(counter) counter.textContent = `${count}/${total}`;
-    // 弹 toast
-    showUnlockToast();
-  }
-
-  function showUnlockToast(title, desc){
-    const toast = $('.unlock-toast');
-    if(!toast) return;
-    if(title){
-      const b = toast.querySelector('b');
-      if(b) b.textContent = title;
+    // 点亮折叠态指示点（origin/builder/leader/maker/future → 0-4 索引）
+    const SIG_INDEX = {origin:0, builder:1, leader:2, maker:3, future:4};
+    const idx = SIG_INDEX[name];
+    if(typeof idx === 'number'){
+      const dot = $$('.handle-dots i')[idx];
+      if(dot) dot.classList.add('is-lit');
     }
-    if(desc){
-      const p = toast.querySelector('p');
-      if(p) p.textContent = desc;
-    }
-    toast.classList.add('is-shown');
-    clearTimeout(showUnlockToast._t);
-    showUnlockToast._t = setTimeout(()=>toast.classList.remove('is-shown'),2400);
   }
 
   function initSignalAutoUnlock(){
@@ -744,15 +726,66 @@
     });
   }
 
-  /* ---------- signal-dock 5 节点点击 → 真实联动 ---------- */
+  /* ---------- signal-station 折叠/展开 + 5 节点真实联动 ---------- */
   function initSignalDockClick(){
-    // 每个 signal name 映射到一个滚动目标选择器
+    const station = $('.signal-station');
+    const handle  = $('.station-handle');
+    const closeBtn = $('.panel-close');
+    if(!station || !handle) return;
+
+    // 折叠/展开切换
+    function openStation(){
+      station.classList.add('is-open');
+      handle.setAttribute('aria-expanded','true');
+    }
+    function closeStation(){
+      station.classList.remove('is-open');
+      handle.setAttribute('aria-expanded','false');
+    }
+    function toggleStation(){
+      station.classList.contains('is-open') ? closeStation() : openStation();
+    }
+
+    // handle 点击（移动端） / hover（桌面端自动展开）
+    handle.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleStation();
+    });
+    // 桌面 hover 自动展开
+    handle.addEventListener('mouseenter', () => openStation());
+    station.addEventListener('mouseleave', () => {
+      // 仅当用户没有手动锁定为开（用 setTimeout 给用户时间移到 panel 上）
+      setTimeout(() => {
+        if(!station.matches(':hover')) closeStation();
+      }, 200);
+    });
+    // close 按钮
+    closeBtn?.addEventListener('click', e => {
+      e.stopPropagation();
+      closeStation();
+    });
+    // 兼容旧类名（如果 HTML 用了 .panel-close 或 .station-close）
+    $$('.panel-close').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); closeStation(); });
+    });
+    // 点外部关闭
+    document.addEventListener('click', e => {
+      if(!station.contains(e.target) && station.classList.contains('is-open')){
+        closeStation();
+      }
+    });
+    // ESC 关闭
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape' && station.classList.contains('is-open')) closeStation();
+    });
+
+    // TARGETS + NAMES（简化：每个信号 → 对应 section 的唯一 ID）
     const TARGETS = {
-      origin:  '.first-signal',                 // 起点：hero 第一段实习卡片
-      builder: '.internship-tab.active',        // 创造：当前激活的实习 Tab
-      leader:  '#awards .award-card[data-signal="leader"]',  // 担当：国家级立项奖项
-      maker:   '#projects .project-card[data-signal="maker"]', // 创客：硬件项目
-      future:  '#contact'                       // 未来：联系坐标
+      origin:  '#about',           // 起点：关于我
+      builder: '#internship',      // 创造：实习轨道
+      leader:  '#awards',          // 担当：荣誉奖项
+      maker:   '#projects',        // 创客：构建现场
+      future:  '#contact'          // 未来：联系坐标
     };
     const NAMES = {
       origin:  '起点 · 第一段实习',
@@ -762,11 +795,13 @@
       future:  '未来 · 持续建造'
     };
 
-    $$('.signal-nodes i[data-signal-node]').forEach(node => {
+    // 5 按钮绑定
+    $$('.signal-btn[data-signal-node]').forEach(node => {
       const sig = node.dataset.signalNode;
-      node.setAttribute('role', 'button');
-      node.setAttribute('tabindex', '0');
-      node.addEventListener('click', () => focusSignal(sig, node));
+      node.addEventListener('click', e => {
+        e.stopPropagation();
+        focusSignal(sig, node);
+      });
       node.addEventListener('keydown', e => {
         if(e.key === 'Enter' || e.key === ' '){
           e.preventDefault();
@@ -778,23 +813,26 @@
     function focusSignal(sig, sourceNode){
       const target = $(TARGETS[sig]);
       if(!target){
-        showUnlockToast(`信号 ${sig} 暂未配置目标`);
+        console.warn(`信号 ${sig} 暂未配置目标`);
         return;
       }
-      // 解锁信号（视觉反馈）
+      // 解锁信号（被动：is-lit 应用到 .signal-btn + .handle-dots 对应位）
       unlockSignal(sig);
+      // 单选切换：清除其他 is-active，再 toggle 当前
+      $$('.signal-btn.is-active').forEach(b => {
+        if(b !== sourceNode) b.classList.remove('is-active');
+      });
+      sourceNode.classList.toggle('is-active');
       // 源节点脉冲
       sourceNode.classList.add('is-pulse');
       setTimeout(() => sourceNode.classList.remove('is-pulse'), 1400);
-      // 平滑滚动到目标（考虑顶部 fixed header 高度）
+      // 平滑滚动到目标
       const headerH = $('.site-header')?.offsetHeight || 80;
       const y = target.getBoundingClientRect().top + window.scrollY - headerH - 16;
       window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
       // 目标高亮脉冲
       target.classList.add('is-pulse-target');
       setTimeout(() => target.classList.remove('is-pulse-target'), 1600);
-      // toast 提示
-      showUnlockToast(NAMES[sig] || sig);
     }
   }
 

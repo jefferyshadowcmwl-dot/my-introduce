@@ -120,27 +120,54 @@
   </aside>
 
   <!-- ==================== 信号收集进度 ==================== -->
-  <aside class="signal-dock" aria-label="LZY-0324 信号收集进度">
-    <div class="signal-dock-head">
-      <span></span>
-      <div><b>LZY-0324 SIGNALS</b><small>点亮工程师的五束光</small></div>
-      <strong id="signal-count">0/5</strong>
+  <aside class="signal-station" aria-label="LZY-0324 信号接收站">
+    <!-- 折叠态指示点（5 信号进度，初始全部暗态，由滚动解锁） -->
+    <div class="handle-dots" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i>
     </div>
-    <div class="signal-nodes">
-      <i data-signal-node="origin" title="起点：第一段实习">01</i>
-      <i data-signal-node="builder" title="创造：把想法做出来">02</i>
-      <i data-signal-node="leader" title="担当：国家级立项负责人">03</i>
-      <i data-signal-node="maker" title="创客：Arduino + 3D 打印">04</i>
-      <i data-signal-node="future" title="未来：持续建造">05</i>
+    <!-- 极简半圆按钮（折叠态） -->
+    <button class="station-handle" type="button" aria-label="展开信号接收站" aria-expanded="false" aria-controls="stationPanel">
+      <span class="handle-icon" aria-hidden="true">✦</span>
+    </button>
+
+    <!-- 紧凑面板（展开态） -->
+    <div class="station-panel" id="stationPanel" role="dialog" aria-label="5 路信号切换">
+      <div class="panel-head">
+        <span class="panel-title">信号接收站</span>
+        <button class="panel-close" type="button" aria-label="收起">✕</button>
+      </div>
+      <div class="signal-list" role="radiogroup" aria-label="5 路信号">
+        <button class="signal-btn" type="button" role="radio" aria-checked="false"
+                data-signal-node="origin"  data-target="#about"
+                data-title="起点 · 关于我">
+          <span class="sig-no">01</span><span class="sig-label">起点</span><i class="sig-dot"></i>
+        </button>
+        <button class="signal-btn" type="button" role="radio" aria-checked="false"
+                data-signal-node="builder" data-target="#internship"
+                data-title="创造 · 实习轨道">
+          <span class="sig-no">02</span><span class="sig-label">创造</span><i class="sig-dot"></i>
+        </button>
+        <button class="signal-btn" type="button" role="radio" aria-checked="false"
+                data-signal-node="leader"  data-target="#awards"
+                data-title="担当 · 荣誉奖项">
+          <span class="sig-no">03</span><span class="sig-label">担当</span><i class="sig-dot"></i>
+        </button>
+        <button class="signal-btn" type="button" role="radio" aria-checked="false"
+                data-signal-node="maker"   data-target="#projects"
+                data-title="创客 · 构建现场">
+          <span class="sig-no">04</span><span class="sig-label">创客</span><i class="sig-dot"></i>
+        </button>
+        <button class="signal-btn" type="button" role="radio" aria-checked="false"
+                data-signal-node="future"  data-target="#contact"
+                data-title="未来 · 联系坐标">
+          <span class="sig-no">05</span><span class="sig-label">未来</span><i class="sig-dot"></i>
+        </button>
+      </div>
+      <a href="#contact" class="panel-link">联系 ↘</a>
     </div>
-    <a href="#contact">前往联系坐标 <span>↘</span></a>
   </aside>
 
-  <!-- 信号解锁提示 -->
-  <div class="unlock-toast" role="status" aria-live="polite">
-    <span>✦</span>
-    <div><b>接收到一束新信号</b><p>继续探索，点亮 LZY-0324 星座。</p></div>
-  </div>
+  <!-- unlock-toast 已移除（避免遮挡） -->
 
   <!-- ==================== 页面柔光 ==================== -->
   <div class="page-glow glow-one"></div>

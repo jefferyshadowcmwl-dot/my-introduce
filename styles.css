@@ -30,11 +30,11 @@
 
 /* 字体三档 + 衬线标题 + 行楷 + 霓虹 */
   --font-display:'Fraunces','Noto Serif SC','Songti SC','STSong',Georgia,serif;
-  --font-sans:'DM Sans','Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-sans:'ZCOOL XiaoWei','DM Sans','Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
   --font-mono:'JetBrains Mono','Fira Code','Courier New',monospace;
-  --font-cn:'Noto Serif SC','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
-  --font-xingkai:'ZCOOL XiaoWei','Ma Shan Zheng','Fraunces','Noto Serif SC',cursive,serif;
-  --font-neon:'Monoton','Noto Sans SC','PingFang SC',cursive,sans-serif;
+  --font-cn:'ZCOOL XiaoWei','Noto Serif SC','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-xingkai:'ZCOOL XiaoWei','Ma Shan Zheng','KaiTi','STKaiti','Noto Serif SC','PingFang SC','Microsoft YaHei',cursive,serif;
+  --font-neon:'Monoton','ZCOOL XiaoWei','Noto Sans SC','PingFang SC',cursive,sans-serif;
 
   /* 间距 4px 网格 */
   --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px;
@@ -87,9 +87,9 @@ body{
   margin:0;
   background:var(--bg);
   color:var(--ink);
-  font-family:var(--font-sans);
+  font-family:var(--font-xingkai);
   font-size:16px;
-  line-height:1.7;
+  line-height:1.75;
   overflow-x:hidden;
   transition:background var(--t-med),color var(--t-med);
   -webkit-font-smoothing:antialiased;
@@ -592,7 +592,7 @@ img,svg{max-width:100%;display:block}
 
 /* 主站 stagger 入场（body.is-arrive 触发） */
 .is-arrive .site-header{animation:headerIn .55s cubic-bezier(.4,0,.2,1) .1s both}
-.is-arrive .signal-dock{animation:dockIn .55s cubic-bezier(.4,0,.2,1) .2s both}
+.is-arrive .signal-station{animation:dockIn .55s cubic-bezier(.4,0,.2,1) .2s both}
 .is-arrive .mini-guide{animation:guideIn .55s cubic-bezier(.4,0,.2,1) .3s both}
 .is-arrive .hero-copy{animation:heroCopyIn .7s cubic-bezier(.4,0,.2,1) .4s both}
 .is-arrive .identity-card{animation:identityCardIn .7s cubic-bezier(.4,0,.2,1) .55s both}
@@ -610,7 +610,7 @@ img,svg{max-width:100%;display:block}
   .is-leaving .question,.is-leaving .sticker-label,
   .is-bursting .intro-photo-sticker,.is-bursting .character-halo,
   .is-leaving .intro-deco,.is-leaving .formula{animation:none!important}
-  .is-arrive .site-header,.is-arrive .signal-dock,.is-arrive .mini-guide,
+  .is-arrive .site-header,.is-arrive .signal-station,.is-arrive .mini-guide,
   .is-arrive .hero-copy,.is-arrive .identity-card,.is-arrive .first-signal{
     animation:none!important;opacity:1!important;transform:none!important
   }
@@ -659,115 +659,244 @@ img,svg{max-width:100%;display:block}
 .mini-menu a:hover{background:rgba(120,40,214,.18);color:var(--purple-3)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 
-/* 信号 dock */
-.signal-dock{
-  position:fixed;bottom:24px;right:24px;z-index:30;
-  background:var(--surface);border:1px solid var(--line);border-radius:16px;
-  padding:14px 18px;min-width:240px;
-  box-shadow:var(--shadow);
-  opacity:0;pointer-events:none;transform:translateY(20px);
-  transition:all var(--t-med);
-}
-.signal-dock.is-visible{opacity:1;pointer-events:auto;transform:translateY(0)}
-
-.signal-dock-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.signal-dock-head > span:first-child{
-  width:8px;height:8px;border-radius:50%;background:var(--green);
-  box-shadow:0 0 12px var(--green);animation:pulse 1.5s ease-in-out infinite;
-}
-.signal-dock-head b{
-  display:block;font-size:13px;
-  font-family:var(--font-neon);letter-spacing:.12em;
-  color:var(--cyan);
-  text-shadow:0 0 8px rgba(0,217,255,.45);
-}
-.signal-dock-head small{
-  display:block;font-size:11px;
+/* ============================================================
+   📡 LZY-0324 信号接收站（macOS Dock 风 · 右侧竖条 · 行楷字体）
+   ============================================================ */
+.signal-station{
+  position:fixed;bottom:20px;right:0;z-index:30;
+  display:flex;flex-direction:column;align-items:flex-end;
   font-family:var(--font-xingkai);
-  color:var(--muted);letter-spacing:.04em;
-  margin-top:1px;
 }
-.signal-dock-head strong{
-  margin-left:auto;
-  font-family:var(--font-mono);font-size:14px;color:var(--orange-2);
-  padding:4px 10px;border-radius:10px;background:rgba(255,107,53,.1);
-}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-.signal-nodes{display:flex;gap:8px;margin-bottom:10px}
-.signal-nodes i{
-  position:relative;
-  width:36px;height:36px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display);font-size:13px;font-weight:700;
-  background:rgba(120,40,214,.1);color:var(--muted);
+/* ---------- 折叠态指示点（5 信号进度，紧贴 handle 上方） ---------- */
+.handle-dots{
+  display:flex;flex-direction:column;gap:3px;
+  margin-bottom:8px;
+  padding:5px 4px;border-radius:8px;
+  background:rgba(15,8,32,.7);
   border:1px solid var(--line);
-  cursor:pointer;
+}
+.handle-dots i{
+  display:block;width:5px;height:5px;border-radius:50%;
+  background:rgba(120,40,214,.35);
   transition:all var(--t-med);
   font-style:normal;
 }
-.signal-nodes i:hover{
-  background:rgba(120,40,214,.2);
-  border-color:var(--purple-3);
-  color:var(--ink);
-  transform:translateY(-2px);
-}
-.signal-nodes i::after{
-  content:attr(title);
-  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
-  font-family:var(--font-xingkai);font-size:11px;letter-spacing:.02em;
-  color:var(--ink-2);
-  background:var(--surface-2);border:1px solid var(--line);border-radius:8px;
-  padding:4px 10px;white-space:nowrap;
-  opacity:0;pointer-events:none;
-  transition:opacity var(--t-fast), transform var(--t-fast);
-  z-index:5;
-}
-.signal-nodes i:hover::after{
-  opacity:1;transform:translateX(-50%) translateY(-2px);
-}
-.signal-nodes i.is-lit{
-  background:linear-gradient(135deg,var(--purple),var(--cyan));
-  color:#fff;border-color:transparent;
-  box-shadow:0 0 16px rgba(0,217,255,.5);
-}
-.signal-nodes i.is-pulse{
-  animation:signalClickPulse 1.4s ease-out;
-}
-@keyframes signalClickPulse{
-  0%{box-shadow:0 0 0 0 rgba(0,217,255,.7)}
-  100%{box-shadow:0 0 0 24px rgba(0,217,255,0)}
+.handle-dots i.is-lit{
+  background:var(--cyan);
+  box-shadow:0 0 6px var(--cyan);
+  transform:scale(1.2);
 }
 
-/* 信号目标元素高亮（点击 signal-dock 节点时） */
+/* ---------- 折叠态：30px 极简圆形按钮（贴右边） ---------- */
+.station-handle{
+  position:relative;z-index:2;
+  width:32px;height:32px;
+  border-radius:14px 0 0 14px;       /* 左侧圆角，右侧直角贴边 */
+  background:linear-gradient(135deg, var(--purple) 0%, var(--cyan) 100%);
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-xingkai);
+  transition:all var(--t-med);
+  box-shadow:-2px 0 12px rgba(120,40,214,.4), 0 0 8px rgba(0,217,255,.3);
+  font-style:normal;
+  flex-shrink:0;
+}
+.station-handle:hover{
+  width:36px;
+  box-shadow:-2px 0 18px rgba(120,40,214,.6), 0 0 12px rgba(0,217,255,.5);
+}
+.station-handle .handle-icon{
+  font-size:14px;line-height:1;color:#fff;
+  text-shadow:0 0 4px rgba(0,0,0,.3);
+}
+
+/* ---------- 展开态：200px 紧凑面板（向上展开） ---------- */
+.station-panel{
+  position:absolute;
+  bottom:calc(100% + 10px);          /* 在 handle 上方 */
+  right:0;
+  width:220px;
+  display:flex;flex-direction:column;
+  padding:8px 10px;
+  background:var(--surface);
+  border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 -8px 28px rgba(0,0,0,.45);
+  opacity:0;visibility:hidden;
+  transform:translateY(8px) scale(.96);
+  pointer-events:none;
+  transition:opacity var(--t-med), transform var(--t-med), visibility 0s var(--t-med);
+  transform-origin:bottom right;
+}
+.signal-station.is-open .station-panel{
+  opacity:1;visibility:visible;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+  transition:opacity var(--t-med), transform var(--t-med), visibility 0s 0s;
+}
+
+/* 头部：紧凑 */
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:6px;margin-bottom:6px;
+  border-bottom:1px solid var(--line);
+}
+.panel-title{
+  font-size:11px;font-weight:600;letter-spacing:.08em;
+  color:var(--ink-2);
+  font-family:var(--font-xingkai);
+}
+.panel-close{
+  width:18px;height:18px;border-radius:50%;
+  background:transparent;color:var(--muted);
+  font-size:11px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:all var(--t-fast);
+}
+.panel-close:hover{background:var(--line);color:var(--orange-2)}
+
+/* 5 信号列表：紧凑 */
+.signal-list{
+  display:flex;flex-direction:column;gap:3px;
+}
+.signal-btn{
+  position:relative;
+  display:flex;align-items:center;gap:8px;
+  padding:5px 8px;
+  background:transparent;
+  border:1px solid var(--line);border-radius:6px;
+  color:var(--muted);
+  cursor:pointer;
+  font-family:var(--font-xingkai);
+  transition:all var(--t-fast);
+  font-style:normal;
+  overflow:hidden;
+  text-align:left;
+  font-size:0;
+}
+.signal-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg, var(--purple) 0%, var(--cyan) 100%);
+  opacity:0;transition:opacity var(--t-med);
+  z-index:0;
+}
+.signal-btn > *{position:relative;z-index:1}
+.signal-btn .sig-no{
+  font-size:10px;font-weight:700;
+  font-family:var(--font-xingkai);
+  color:var(--cyan);min-width:18px;
+}
+.signal-btn .sig-label{
+  font-size:11px;font-weight:600;letter-spacing:.04em;
+  font-family:var(--font-xingkai);
+  flex:1;color:var(--ink-2);
+}
+.signal-btn .sig-dot{
+  display:block;width:5px;height:5px;border-radius:50%;
+  background:var(--line);
+  transition:all var(--t-fast);
+  font-style:normal;
+}
+.signal-btn:hover{
+  border-color:var(--cyan);
+  color:var(--ink);
+  background:rgba(0,217,255,.05);
+}
+.signal-btn:hover .sig-no{color:var(--cyan)}
+.signal-btn:hover .sig-dot{background:var(--cyan);box-shadow:0 0 4px var(--cyan)}
+
+/* 滚动被动解锁（青色边框 + 文字变色，独立于手动 active） */
+.signal-btn.is-lit{
+  border-color:var(--cyan);
+  background:rgba(0,217,255,.08);
+}
+.signal-btn.is-lit .sig-no{color:var(--cyan)}
+.signal-btn.is-lit .sig-dot{background:var(--cyan);box-shadow:0 0 5px var(--cyan)}
+
+/* 手动激活（单选态：紫青渐变 + 白色文字） */
+.signal-btn.is-active{
+  border-color:transparent;color:#fff;
+  box-shadow:0 0 12px rgba(0,217,255,.4);
+  transform:translateX(-2px);
+}
+.signal-btn.is-active::before{opacity:1}
+.signal-btn.is-active .sig-no{color:#fff}
+.signal-btn.is-active .sig-label{color:#fff}
+.signal-btn.is-active .sig-dot{background:#fff;box-shadow:0 0 6px rgba(255,255,255,.8)}
+
+/* hover tooltip（左侧展开） */
+.signal-btn::after{
+  content:attr(data-title);
+  position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);
+  font-family:var(--font-xingkai);font-size:10px;
+  color:var(--ink-2);
+  background:var(--surface-2);border:1px solid var(--line);border-radius:6px;
+  padding:3px 8px;white-space:nowrap;z-index:5;
+  opacity:0;pointer-events:none;
+  transition:opacity var(--t-fast);
+}
+.signal-btn:hover::after{opacity:1}
+
+.signal-btn.is-pulse{animation:signalClickPulse 1s ease-out}
+@keyframes signalClickPulse{
+  0%{box-shadow:0 0 0 0 rgba(0,217,255,.7)}
+  100%{box-shadow:0 0 0 14px rgba(0,217,255,0)}
+}
+
+/* 底部联系链接（极简） */
+.panel-link{
+  display:block;margin-top:6px;padding:4px 8px;border-radius:6px;
+  background:transparent;
+  font-family:var(--font-xingkai);
+  font-size:10px;letter-spacing:.06em;color:var(--muted);
+  text-align:center;
+  transition:all var(--t-fast);
+}
+.panel-link:hover{background:rgba(0,217,255,.08);color:var(--cyan)}
+
+/* 目标元素高亮（点击站点按钮时） */
 [data-signal].is-pulse-target{
-  animation:signalTargetPulse 1.6s ease-out;
+  animation:signalTargetPulse 1.4s ease-out;
   position:relative;z-index:1;
 }
 @keyframes signalTargetPulse{
   0%{box-shadow:0 0 0 0 rgba(0,217,255,.7)}
-  40%{box-shadow:0 0 0 18px rgba(0,217,255,.25), 0 0 36px rgba(120,40,214,.4)}
+  40%{box-shadow:0 0 0 14px rgba(0,217,255,.25), 0 0 28px rgba(120,40,214,.4)}
   100%{box-shadow:0 0 0 0 rgba(0,217,255,0)}
 }
 
-.signal-dock a{
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:12px;color:var(--cyan);font-family:var(--font-mono);letter-spacing:.1em;
-  padding-top:8px;border-top:1px solid var(--line);
+/* ---------- 响应式 ---------- */
+@media (max-width:991px){
+  .signal-station{bottom:16px;right:16px}
 }
-.signal-dock a:hover{color:var(--orange-2)}
+@media (max-width:767px){
+  .signal-station{bottom:12px;right:12px}
+  .station-panel{width:180px}
+}
+@media (max-width:575px){
+  .station-panel{width:calc(100vw - 70px);max-width:200px}
+}
+
+/* 旧 .signal-dock 兼容 */
+.signal-dock{display:none}
+
+/* unlock-toast 永久隐藏（避免遮挡） */
+.unlock-toast{display:none!important}
 
 /* 信号解锁 toast */
 .unlock-toast{
-  position:fixed;top:80px;right:24px;z-index:40;
+  position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(120%);z-index:40;
   background:var(--surface);border:1px solid var(--cyan);border-radius:14px;
   padding:12px 18px;min-width:260px;
   box-shadow:var(--shadow);
   display:flex;gap:12px;align-items:flex-start;
-  opacity:0;transform:translateX(120%);pointer-events:none;
-  transition:all var(--t-med);
+  opacity:0;pointer-events:none;
+  transition:opacity var(--t-med), transform var(--t-med);
 }
-.unlock-toast.is-shown{opacity:1;transform:translateX(0);pointer-events:auto}
+.unlock-toast.is-shown{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 .unlock-toast > span{
   width:32px;height:32px;border-radius:50%;
   background:linear-gradient(135deg,var(--purple),var(--cyan));
@@ -849,17 +978,40 @@ img,svg{max-width:100%;display:block}
   margin:0 0 8px;font-size:14px;color:var(--muted);letter-spacing:.05em;
 }
 .hero-copy h1{
-  font-family:var(--font-display);
-  font-size:clamp(40px,6vw,72px);line-height:1.1;font-weight:800;
-  color:var(--ink-2);margin:0 0 16px;
+  font-family:var(--font-xingkai);
+  font-size:clamp(48px,8vw,96px);
+  line-height:1.05;font-weight:700;letter-spacing:.02em;
+  margin:0 0 18px;
+  background:linear-gradient(135deg, var(--cyan) 0%, var(--purple) 50%, var(--orange) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 4px 20px rgba(120,40,214,.35));
+  position:relative;
+}
+.hero-copy .hero-mission{
+  font-family:var(--font-xingkai);
+  font-size:clamp(22px,3.2vw,32px);
+  line-height:1.5;font-weight:600;letter-spacing:.04em;
+  color:var(--ink-2);margin:0 0 18px;font-style:normal;
+}
+.hero-copy .hero-mission span{
+  display:block;
+  background:linear-gradient(90deg, var(--cyan) 0%, var(--purple) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-weight:700;
 }
 .spark{
-  display:inline-block;margin-left:8px;color:var(--orange);
-  animation:spark 2s ease-in-out infinite;
+  display:inline-block;margin-left:12px;
+  color:var(--orange);
+  font-size:.9em;
+  filter:drop-shadow(0 0 12px var(--orange));
+  animation:spark 1.6s ease-in-out infinite;
+  vertical-align:0.1em;
 }
 @keyframes spark{
-  0%,100%{transform:rotate(0) scale(1);opacity:1}
-  50%{transform:rotate(20deg) scale(1.2);opacity:.7}
+  0%,100%{transform:rotate(-12deg) scale(1);opacity:1}
+  50%{transform:rotate(18deg) scale(1.35);opacity:.85}
 }
 
 .hero-mission{
@@ -1485,8 +1637,8 @@ img,svg{max-width:100%;display:block}
   .brand small{display:none}
   .hero{padding-top:48px}
   .internship-panels{padding:24px}
-  .mini-guide,.signal-dock{bottom:12px;left:12px;right:12px;min-width:auto;width:calc(100% - 24px)}
-  .signal-dock{left:12px}
+  .mini-guide,.signal-station{bottom:12px;left:12px;right:12px;min-width:auto;width:calc(100% - 24px)}
+  .signal-station{left:12px;right:12px;top:auto}
   .unlock-toast{top:auto;bottom:120px;right:12px;left:12px;min-width:auto}
   .quick-stats,.project-grid,.award-grid,.skill-grid,.contact-grid{grid-template-columns:1fr}
   .internship-tab{min-width:72px;padding:6px}
@@ -1566,7 +1718,8 @@ img,svg{max-width:100%;display:block}
   margin:0 0 18px;font-family:var(--font-display);
 }
 .award-modal-story{
-  font-size:14px;color:var(--muted);line-height:1.8;
+  font-family:var(--font-cn);  /* A v2 fix: 中文衬线（Noto Serif SC + Songti SC），与启动页风格统一 */
+  font-size:15px;color:var(--ink-2);line-height:1.85;
   padding:14px 16px;border-radius:12px;
   background:rgba(0,217,255,.04);
   border-left:3px solid var(--cyan);
@@ -1717,6 +1870,9 @@ img,svg{max-width:100%;display:block}
   padding:14px 12px 12px;
   background:linear-gradient(to top, rgba(15,8,32,.92) 0%, rgba(15,8,32,.7) 60%, transparent 100%);
   color:var(--ink-2);
+  font-family:var(--font-display);  /* A v2 fix: 衬线（Fraunces + Noto Serif SC），与启动页 hero-title 衬线统一 */
+  font-size:14px;font-weight:600;line-height:1.45;
+  letter-spacing:.01em;
   display:flex;flex-direction:column;gap:2px;
   z-index:2;
   transform:translateY(0);
@@ -2080,7 +2236,7 @@ body.detail-active > main > section.is-active{
   transition:opacity var(--t-slow), filter var(--t-slow);
 }
 body.detail-active .mini-guide,
-body.detail-active .signal-dock{
+body.detail-active .signal-station{
   opacity:.5;
   transition:opacity var(--t-slow);
 }

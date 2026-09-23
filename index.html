@@ -99,75 +99,48 @@
     <div class="scanline" aria-hidden="true"></div>
   </section>
 
-  <!-- ==================== 浮动导航（迷你角色） ==================== -->
-  <aside class="mini-guide" aria-label="快速导航">
-    <button class="mini-character" type="button" aria-expanded="false" aria-controls="mini-menu">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="20" fill="#7828d6"/><text x="50" y="62" font-size="48" font-family="DM Sans, sans-serif" font-weight="800" fill="#fff" text-anchor="middle">L</text></svg>
-      <i>+</i>
-    </button>
-    <nav id="mini-menu" class="mini-menu">
-      <p>你想先了解哪一面？</p>
-      <a href="#about">👋 关于我</a>
-      <a href="#internship">💼 实习轨道</a>
-      <a href="#projects">🧪 构建现场</a>
-      <a href="#awards">🏆 信号脉冲</a>
-      <a href="#gallery">📸 详情证据</a>
-      <a href="#constellation">✨ 全部成果</a>
-      <a href="#archive">🗄️ 证据档案库</a>
-      <a href="#skills">⚙️ 技能矩阵</a>
-      <a href="#contact">📡 联系</a>
-    </nav>
-  </aside>
+  <!-- ==================== 站台索引 ====================
+       合并了原先的两个浮动控件：
+         · mini-guide（左下，9 个区块链接，用 emoji 当图标）
+         · signal-station（右下，5 个信号按钮 + 指示点 + 面板）
+       两者本质是同一件事的两种视角，且 767 断点下位置完全相同
+       （都是 left:12px / right:12px / bottom:12px）会互相盖住。
 
-  <!-- ==================== 信号收集进度 ==================== -->
-  <aside class="signal-station" aria-label="LZY-0324 信号接收站">
-    <!-- 折叠态指示点（5 信号进度，初始全部暗态，由滚动解锁） -->
-    <div class="handle-dots" aria-hidden="true">
-      <i></i><i></i><i></i><i></i><i></i>
-    </div>
-    <!-- 极简半圆按钮（折叠态） -->
-    <button class="station-handle" type="button" aria-label="展开信号接收站" aria-expanded="false" aria-controls="stationPanel">
-      <span class="handle-icon" aria-hidden="true">✦</span>
-    </button>
-
-    <!-- 紧凑面板（展开态） -->
-    <div class="station-panel" id="stationPanel" role="dialog" aria-label="5 路信号切换">
-      <div class="panel-head">
-        <span class="panel-title">信号接收站</span>
-        <button class="panel-close" type="button" aria-label="收起">✕</button>
+       现在是单一控件：
+         · 收起态 = 圆钮，显示当前区块编号，外圈是整页滚动进度环
+         · 展开态 = 9 项纵向索引（编号 + 名称），当前项高亮、到过的项点亮
+         · 切换反馈内化在控件自身（原 .unlock-toast 跨屏弹窗已废弃）
+       图标一律用编号制式，不用 emoji（与展陈层 .mu-no 的编号语言一致）。 -->
+  <aside class="station-index" aria-label="站台索引">
+    <div class="si-panel" id="stationPanel" role="dialog" aria-label="区块索引">
+      <div class="si-head">
+        <span class="si-title">站台索引</span>
+        <button class="si-close" type="button" aria-label="收起索引">✕</button>
       </div>
-      <div class="signal-list" role="radiogroup" aria-label="5 路信号">
-        <button class="signal-btn" type="button" role="radio" aria-checked="false"
-                data-signal-node="origin"  data-target="#about"
-                data-title="起点 · 关于我">
-          <span class="sig-no">01</span><span class="sig-label">起点</span><i class="sig-dot"></i>
-        </button>
-        <button class="signal-btn" type="button" role="radio" aria-checked="false"
-                data-signal-node="builder" data-target="#internship"
-                data-title="创造 · 实习轨道">
-          <span class="sig-no">02</span><span class="sig-label">创造</span><i class="sig-dot"></i>
-        </button>
-        <button class="signal-btn" type="button" role="radio" aria-checked="false"
-                data-signal-node="leader"  data-target="#awards"
-                data-title="担当 · 荣誉奖项">
-          <span class="sig-no">03</span><span class="sig-label">担当</span><i class="sig-dot"></i>
-        </button>
-        <button class="signal-btn" type="button" role="radio" aria-checked="false"
-                data-signal-node="maker"   data-target="#projects"
-                data-title="创客 · 构建现场">
-          <span class="sig-no">04</span><span class="sig-label">创客</span><i class="sig-dot"></i>
-        </button>
-        <button class="signal-btn" type="button" role="radio" aria-checked="false"
-                data-signal-node="future"  data-target="#contact"
-                data-title="未来 · 联系坐标">
-          <span class="sig-no">05</span><span class="sig-label">未来</span><i class="sig-dot"></i>
-        </button>
-      </div>
-      <a href="#contact" class="panel-link">联系 ↘</a>
+      <nav class="si-list" aria-label="页面区块">
+        <a class="si-item" href="#about"><span class="si-no">01</span><span class="si-name">关于</span></a>
+        <a class="si-item" href="#internship"><span class="si-no">02</span><span class="si-name">实习</span></a>
+        <a class="si-item" href="#projects"><span class="si-no">03</span><span class="si-name">项目</span></a>
+        <a class="si-item" href="#awards"><span class="si-no">04</span><span class="si-name">荣誉</span></a>
+        <a class="si-item" href="#gallery"><span class="si-no">05</span><span class="si-name">照片</span></a>
+        <a class="si-item" href="#constellation"><span class="si-no">06</span><span class="si-name">导览</span></a>
+        <a class="si-item" href="#archive"><span class="si-no">07</span><span class="si-name">档案</span></a>
+        <a class="si-item" href="#skills"><span class="si-no">08</span><span class="si-name">技能</span></a>
+        <a class="si-item" href="#contact"><span class="si-no">09</span><span class="si-name">联系</span></a>
+      </nav>
     </div>
-  </aside>
 
-  <!-- unlock-toast 已移除（避免遮挡） -->
+    <button class="si-handle" type="button" aria-expanded="false" aria-controls="stationPanel" aria-label="展开站台索引">
+      <svg class="si-ring" viewBox="0 0 36 36" aria-hidden="true">
+        <circle class="si-ring-track" cx="18" cy="18" r="16" pathLength="100"></circle>
+        <circle class="si-ring-fill"  cx="18" cy="18" r="16" pathLength="100"></circle>
+      </svg>
+      <span class="si-now" aria-hidden="true">01</span>
+    </button>
+
+    <!-- 切换播报（全项目零 aria-live，此处补齐；视觉隐藏，只给读屏） -->
+    <p class="si-live sr-only" aria-live="polite"></p>
+  </aside>
 
   <!-- ==================== 页面柔光 ==================== -->
   <div class="page-glow glow-one"></div>

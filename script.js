@@ -4,7 +4,8 @@
    - canvas 粒子背景
    - 滚动揭示
    - 实习 Tab 切换
-   - 信号收集 / 主题切换 / 移动端菜单 / 滚动监听
+   - 站台索引（合并原 mini-guide + signal-station）
+   - 主题切换 / 移动端菜单 / 滚动监听
    ======================================================================== */
 (function(){
   'use strict';
@@ -170,7 +171,7 @@
   /* ---------- 启动页 ---------- */
   const introGate = $('.intro-gate');
   const header = $('.site-header');
-  const miniGuide = $('.mini-guide');
+  const stationIndex = $('.station-index');
 
   /* 启动页展示期间锁住主站滚动。
      .intro-gate 是 position:fixed —— 它盖在页面上，但**不阻止底层滚动**。
@@ -208,7 +209,7 @@
       document.body.classList.remove('is-intro');
       window.scrollTo({top:0,behavior:'instant'});
       header?.classList.add('is-visible');
-      miniGuide?.classList.add('is-visible');
+      stationIndex?.classList.add('is-visible');
       // 只让首屏（#about）的 reveal 元素立即可见（启动页 → 主站的衔接）
       // 其他区块（internship/projects/...）保留 IntersectionObserver 滚动揭示
       $$('#about .reveal').forEach(el=>el.classList.add('is-visible'));
@@ -351,10 +352,8 @@
       // 进度条
       const pct = ((idx)/Math.max(1,tabs.length-1))*100;
       if(progress) progress.style.width = pct+'%';
-
-      // 触发对应 signal
-      const sig = tabs[idx].dataset.signal;
-      if(sig) unlockSignal(sig);
+      // 原先这里会 unlockSignal(tabs[idx].dataset.signal) ——
+      // 5 信号体系已废弃（并入 .station-index），故删除该调用。
     }
 
     tabs.forEach((tab,i)=>{
@@ -371,38 +370,13 @@
     });
   }
 
-  /* ---------- 信号收集 ---------- */
-  const litSignals = new Set();
-  function unlockSignal(name){
-    if(!name||litSignals.has(name)) return;
-    litSignals.add(name);
-    // 点亮展开态按钮（青色边框 + 背景）
-    const node = $(`.signal-btn[data-signal-node="${name}"]`);
-    if(node) node.classList.add('is-lit');
-    // 点亮折叠态指示点（origin/builder/leader/maker/future → 0-4 索引）
-    const SIG_INDEX = {origin:0, builder:1, leader:2, maker:3, future:4};
-    const idx = SIG_INDEX[name];
-    if(typeof idx === 'number'){
-      const dot = $$('.handle-dots i')[idx];
-      if(dot) dot.classList.add('is-lit');
-    }
-  }
-
-  function initSignalAutoUnlock(){
-    // 滚动到含 data-signal 的元素时自动解锁
-    const targets = $$('[data-signal]');
-    if(!targets.length||!('IntersectionObserver' in window)) return;
-    const obs = new IntersectionObserver((entries)=>{
-      entries.forEach(en=>{
-        if(en.isIntersecting){
-          const sig = en.target.dataset.signal;
-          if(sig) unlockSignal(sig);
-          obs.unobserve(en.target);
-        }
-      });
-    },{threshold:.3});
-    targets.forEach(t=>obs.observe(t));
-  }
+  /* ---------- 信号收集 → 已并入 .station-index ----------
+     原先的 5 信号体系（origin/builder/leader/maker/future + 5 指示点 +
+     unlockSignal + initSignalAutoUnlock + .unlock-toast 弹窗）是旧版站点
+     叙事的产物：页面只有 5 个区块，且靠滚动逐个"解锁"。
+     现在页面是 9 个区块，那套 5 对 9 的映射既不完整也无依据
+     （同样是"挑一部分高亮"），故整体废弃 —— 进度改由站台索引自身承载
+     （当前项高亮 + 到过的项点亮 + 圆钮滚动进度环）。 */
 
   /* ---------- Quick Stats 数字滚动 ---------- */
   function initCountUp(){
@@ -449,28 +423,8 @@
   }
 
   /* ---------- 迷你导航 ---------- */
-  function initMiniGuide(){
-    const btn = $('.mini-character');
-    const menu = $('#mini-menu');
-    if(!btn||!menu) return;
-    btn.addEventListener('click',(e)=>{
-      e.stopPropagation();
-      const open = menu.classList.toggle('is-open');
-      btn.setAttribute('aria-expanded',open?'true':'false');
-    });
-    document.addEventListener('click',(e)=>{
-      if(!menu.contains(e.target)&&!btn.contains(e.target)){
-        menu.classList.remove('is-open');
-        btn.setAttribute('aria-expanded','false');
-      }
-    });
-    menu.querySelectorAll('a').forEach(a=>{
-      a.addEventListener('click',()=>{
-        menu.classList.remove('is-open');
-        btn.setAttribute('aria-expanded','false');
-      });
-    });
-  }
+  /* initMiniGuide 已删除 —— 左下角快速导航整体并入 .station-index
+     （展开/收起、点外部关闭、点项关闭的逻辑都在 initStationIndex 里）。 */
 
   /* ---------- 移动端菜单 ---------- */
   function initMobileMenu(){
@@ -874,114 +828,112 @@
     });
   }
 
-  /* ---------- signal-station 折叠/展开 + 5 节点真实联动 ---------- */
-  function initSignalDockClick(){
-    const station = $('.signal-station');
-    const handle  = $('.station-handle');
-    const closeBtn = $('.panel-close');
-    if(!station || !handle) return;
+  /* ---------- 站台索引：展开/收起 + 当前区块跟踪 + 切换反馈 ----------
+     合并了原 mini-guide（左下 9 链接）与 signal-station（右下 5 信号按钮）——
+     两者是同一件事的两种视角，且 767 断点下位置完全相同（都拿到
+     left:12px / right:12px / bottom:12px）会互相盖住。
 
-    // 折叠/展开切换
-    function openStation(){
-      station.classList.add('is-open');
-      handle.setAttribute('aria-expanded','true');
-    }
-    function closeStation(){
-      station.classList.remove('is-open');
-      handle.setAttribute('aria-expanded','false');
-    }
-    function toggleStation(){
-      station.classList.contains('is-open') ? closeStation() : openStation();
-    }
+     设计要点：
+       · 收起态圆钮显示「当前区块编号」，外圈是整页滚动进度环
+       · 展开态 9 项纵向索引，当前项高亮、到过的项点亮（is-visited）
+       · 切换反馈内化在控件自身（is-confirm 脉冲），不再有跨屏弹窗
+       · 播报走 aria-live（本项目原先零 aria-live） */
+  function initStationIndex(){
+    const root = $('.station-index');
+    if(!root) return;
+    const handle   = $('.si-handle', root);
+    const panel    = $('.si-panel', root);
+    const closeBtn = $('.si-close', root);
+    const live     = $('.si-live', root);
+    const nowEl    = $('.si-now', root);
+    const ring     = $('.si-ring-fill', root);
+    const items    = $$('.si-item', root);
+    if(!handle || !panel || !items.length) return;
 
-    // handle 点击（移动端） / hover（桌面端自动展开）
+    const SECS = items.map(a => (a.getAttribute('href') || '').slice(1));
+    const visited = new Set();
+    let current = -1, closeTimer = 0;
+
+    const open  = () => { clearTimeout(closeTimer); root.classList.add('is-open');
+                          handle.setAttribute('aria-expanded','true'); };
+    const close = () => { root.classList.remove('is-open');
+                          handle.setAttribute('aria-expanded','false'); };
+
     handle.addEventListener('click', e => {
       e.stopPropagation();
-      toggleStation();
+      root.classList.contains('is-open') ? close() : open();
     });
-    // 桌面 hover 自动展开
-    handle.addEventListener('mouseenter', () => openStation());
-    station.addEventListener('mouseleave', () => {
-      // 仅当用户没有手动锁定为开（用 setTimeout 给用户时间移到 panel 上）
-      setTimeout(() => {
-        if(!station.matches(':hover')) closeStation();
-      }, 200);
-    });
-    // close 按钮
-    closeBtn?.addEventListener('click', e => {
-      e.stopPropagation();
-      closeStation();
-    });
-    // 兼容旧类名（如果 HTML 用了 .panel-close 或 .station-close）
-    $$('.panel-close').forEach(btn => {
-      btn.addEventListener('click', e => { e.stopPropagation(); closeStation(); });
-    });
-    // 点外部关闭
-    document.addEventListener('click', e => {
-      if(!station.contains(e.target) && station.classList.contains('is-open')){
-        closeStation();
+    closeBtn?.addEventListener('click', close);
+    // 桌面 hover 自动展开；移开后延时收起，给鼠标移到面板上的时间
+    handle.addEventListener('mouseenter', open);
+    root.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+    root.addEventListener('mouseleave', () => { closeTimer = setTimeout(close, 220); });
+    document.addEventListener('click', e => { if(!root.contains(e.target)) close(); });
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') close(); });
+
+    function setCurrent(i, announce){
+      if(i === current) return;
+      const prev = current;
+      current = i;
+      visited.add(i);
+      items.forEach((a, k) => {
+        a.classList.toggle('is-current', k === i);
+        a.classList.toggle('is-visited', visited.has(k));
+        if(k === i) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current');
+      });
+      const noEl = items[i].querySelector('.si-no');
+      if(nowEl && noEl) nowEl.textContent = noEl.textContent;
+      if(announce && prev !== -1 && live){
+        const nameEl = items[i].querySelector('.si-name');
+        live.textContent = `已切换至 ${noEl ? noEl.textContent : ''} ${nameEl ? nameEl.textContent : ''}`;
       }
-    });
-    // ESC 关闭
-    document.addEventListener('keydown', e => {
-      if(e.key === 'Escape' && station.classList.contains('is-open')) closeStation();
-    });
-
-    // TARGETS + NAMES（简化：每个信号 → 对应 section 的唯一 ID）
-    const TARGETS = {
-      origin:  '#about',           // 起点：关于我
-      builder: '#internship',      // 创造：实习轨道
-      leader:  '#awards',          // 担当：荣誉奖项
-      maker:   '#projects',        // 创客：构建现场
-      future:  '#contact'          // 未来：联系坐标
-    };
-    const NAMES = {
-      origin:  '起点 · 第一段实习',
-      builder: '创造 · 把想法做出来',
-      leader:  '担当 · 国家级立项负责人',
-      maker:   '创客 · Arduino + 3D 打印',
-      future:  '未来 · 持续建造'
-    };
-
-    // 5 按钮绑定
-    $$('.signal-btn[data-signal-node]').forEach(node => {
-      const sig = node.dataset.signalNode;
-      node.addEventListener('click', e => {
-        e.stopPropagation();
-        focusSignal(sig, node);
-      });
-      node.addEventListener('keydown', e => {
-        if(e.key === 'Enter' || e.key === ' '){
-          e.preventDefault();
-          focusSignal(sig, node);
-        }
-      });
-    });
-
-    function focusSignal(sig, sourceNode){
-      const target = $(TARGETS[sig]);
-      if(!target){
-        console.warn(`信号 ${sig} 暂未配置目标`);
-        return;
-      }
-      // 解锁信号（被动：is-lit 应用到 .signal-btn + .handle-dots 对应位）
-      unlockSignal(sig);
-      // 单选切换：清除其他 is-active，再 toggle 当前
-      $$('.signal-btn.is-active').forEach(b => {
-        if(b !== sourceNode) b.classList.remove('is-active');
-      });
-      sourceNode.classList.toggle('is-active');
-      // 源节点脉冲
-      sourceNode.classList.add('is-pulse');
-      setTimeout(() => sourceNode.classList.remove('is-pulse'), 1400);
-      // 平滑滚动到目标
-      const headerH = $('.site-header')?.offsetHeight || 80;
-      const y = target.getBoundingClientRect().top + window.scrollY - headerH - 16;
-      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
-      // 目标高亮脉冲
-      target.classList.add('is-pulse-target');
-      setTimeout(() => target.classList.remove('is-pulse-target'), 1600);
     }
+
+    // 当前区块 = 顶边已越过「顶栏 + 余量」的最后一个区块。
+    // 贴底时强制认定最后一个，否则最后一屏永远高亮不到。
+    function syncCurrent(){
+      const y = window.scrollY + (($('.site-header')?.offsetHeight || 80) + 24);
+      let idx = 0;
+      SECS.forEach((id, i) => {
+        const sec = document.getElementById(id);
+        if(sec && sec.offsetTop <= y) idx = i;
+      });
+      if(window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) idx = SECS.length - 1;
+      setCurrent(idx, false);
+    }
+    function syncRing(){
+      const max = document.body.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      if(ring) ring.style.strokeDashoffset = String(100 - p * 100);
+    }
+
+    let ticking = false;
+    function onScroll(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { syncCurrent(); syncRing(); ticking = false; });
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll, { passive:true });
+
+    // 点击索引项：走原生锚点（顶栏偏移由 scroll-margin-top 处理），
+    // 控件自身给一次确认脉冲 + 目标区块脉冲 + 读屏播报
+    items.forEach((a, i) => {
+      a.addEventListener('click', () => {
+        setCurrent(i, true);
+        root.classList.add('is-confirm');
+        setTimeout(() => root.classList.remove('is-confirm'), 460);
+        const target = document.getElementById(SECS[i]);
+        if(target){
+          target.classList.add('is-pulse-target');
+          setTimeout(() => target.classList.remove('is-pulse-target'), 1600);
+        }
+        close();
+      });
+    });
+
+    syncCurrent();
+    syncRing();
   }
 
   /* ---------- 同类联动：hover 一张 → 同类高亮、异类降透明度 ---------- */
@@ -1248,16 +1200,8 @@
   }
 
   /* ---------- 键盘快捷键 ---------- */
-  function initKeys(){
-    document.addEventListener('keydown',(e)=>{
-      // ESC 关闭 mini-menu
-      if(e.key==='Escape'){
-        const menu = $('#mini-menu');
-        menu?.classList.remove('is-open');
-        $('.mini-character')?.setAttribute('aria-expanded','false');
-      }
-    });
-  }
+  /* initKeys 已删除 —— 它唯一的工作是给 mini-menu 处理 ESC，
+     该逻辑已并入 initStationIndex（ESC 关闭站台索引）。 */
 
   /* ---------- 数量注入：消除正文里的硬编码数字 ----------
      原先文案写死「12 MEMORY FRAMES」「所有 33 张图」，但 ARCHIVE_GROUPS 实际
@@ -1276,10 +1220,8 @@
     initCanvas();
     initReveal();
     initInternshipTabs();
-    initSignalAutoUnlock();
     initCountUp();
     initTheme();
-    initMiniGuide();
     initMobileMenu();
     initScrollSpy();
     initAwards();
@@ -1290,10 +1232,9 @@
     initProjectMedia();
     initInternshipMedia();
     initLightbox();
-    initSignalDockClick();
+    initStationIndex();     // 合并原 initMiniGuide + initSignalDockClick + initKeys
     initCategoryLink();
     initNodeCanvas();
-    initKeys();
     // 关键：JS 注入的 .reveal 需补 observe（晚于滚动 reveal 初始化）
     observeReveals();
   });

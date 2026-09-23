@@ -1051,6 +1051,15 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
 }
 .internship-panel{display:none;grid-template-columns:1.5fr 1fr;gap:36px;align-items:start;animation:fadeIn .4s ease}
 .internship-panel.active{display:grid}
+/* 补回 @keyframes fadeIn。
+   它原先定义在 mini-guide 那一块里，站台索引合并时被整块删除，
+   但 .internship-panel 仍在引用 —— 表现为切换实习 Tab 时面板瞬间出现
+   而非淡入，**且控制台不报错**（与之前修的 pulse 空转、技能条空转同类：
+   声明了但接线断了）。 */
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(-8px)}
+  to{opacity:1;transform:translateY(0)}
+}
 
 .internship-index{
   font-family:var(--font-mono);font-size:11px;letter-spacing:.25em;
@@ -1176,29 +1185,54 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
 }
 .skill-card:hover{border-color:var(--cyan);transform:translateY(-4px)}
 .skill-card header{
-  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  display:flex;align-items:center;gap:var(--s-3);margin-bottom:var(--s-5);
 }
-.skill-icon{font-size:26px}
+/* 编号制式取代原 emoji 图标（🐍📊🤖🔌🌐🛠️）—— frontend-pro 明令禁止
+   emoji 当 UI 图标；且编号与展陈层 .mu-no / 站台索引 .si-no 同一套语言。 */
+.skill-no{
+  flex-shrink:0;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;
+  color:var(--cyan);
+  padding:2px 6px;border:1px solid var(--line);border-radius:var(--s-1);
+}
 .skill-card h3{
   font-family:var(--font-display);
   font-size:var(--fs-h5);font-weight:700;color:var(--ink-2);margin:0;
 }
 .skill-bars{display:flex;flex-direction:column;gap:12px}
-.skill-row{display:flex;align-items:center;gap:12px}
-.skill-row span{
-  flex-shrink:0;width:120px;
+.skill-row{display:flex;align-items:center;gap:var(--s-3)}
+.skill-row > span{
+  flex-shrink:0;width:104px;
   font-size:13px;color:var(--ink);font-weight:500;
 }
-.skill-row i{
+.skill-row > i{
   flex:1;height:6px;border-radius:3px;
-  background:var(--surface-2);
   position:relative;overflow:hidden;
+  background:var(--surface-2);
+  /* 刻度：极淡的竖向分隔（25/50/75%），填色区会盖住刻度，
+     只有未填充段露出来 —— 正好读作一把尺子 */
+  background-image:repeating-linear-gradient(90deg,
+    transparent 0 calc(25% - 1px),
+    color-mix(in srgb,var(--line) 120%,transparent) calc(25% - 1px) 25%);
 }
-.skill-row i::after{
-  content:"";position:absolute;left:0;top:0;height:100%;
-  width:var(--w);border-radius:3px;
+/* 技能条填充。**触发端此前是断的** —— 原写法 width:var(--w) 配
+   transition，但 --w 是 HTML 内联固定值、JS 从不变它，也没有任何触发，
+   所以过渡永不触发、技能条从来没动过（与 @keyframes pulse 空转同类）。
+   现在把两端接上：初值 0 → .reveal.is-visible 时到 --w。
+   触发钩子用现成的 .reveal（#skills 的卡片本来就带），无需新增 JS。 */
+.skill-row > i::after{
+  content:'';position:absolute;left:0;top:0;height:100%;
+  width:0;border-radius:3px;
   background:linear-gradient(90deg,var(--purple),var(--cyan));
-  transition:width 1.2s cubic-bezier(.4,0,.2,1);
+  transition:width .9s cubic-bezier(.22,.61,.36,1);
+  transition-delay:calc(var(--i,0) * 110ms);      /* 卡内 3 根错峰 */
+}
+.reveal.is-visible .skill-row > i::after{width:var(--w)}
+/* 百分比数字（JS count-up；no-JS 下 HTML 里已是终值） */
+.skill-pct{
+  flex-shrink:0;width:2.6em;text-align:right;
+  font-family:var(--font-mono);font-size:12px;font-weight:700;
+  color:var(--cyan);font-variant-numeric:tabular-nums;
 }
 
 /* ============================================================
@@ -1211,17 +1245,52 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
 /* head 现在占满 shell（1180px），不约束会让 4 张联系卡虚胖 */
 .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:900px}
 .contact-card{
+  position:relative;
   display:flex;flex-direction:column;align-items:flex-start;
-  padding:22px;border-radius:16px;
+  padding:var(--s-5);border-radius:var(--s-4);
   background:var(--surface);border:1px solid var(--line);
   text-decoration:none;color:var(--ink);
-  transition:all var(--t-fast);
+  transition:transform var(--t-fast),border-color var(--t-fast),box-shadow var(--t-fast);
 }
 .contact-card:hover{
   transform:translateY(-6px);border-color:var(--cyan);
   box-shadow:0 16px 36px rgba(0,217,255,.2);
 }
-.contact-icon{font-size:32px;margin-bottom:10px}
+/* hover 时向外发射一道光。用手法同 .is-pulse-target 的 box-shadow 扩散
+   （alpha 在颜色里，不动 opacity 属性），一次性、不循环。 */
+.contact-card::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  pointer-events:none;
+  box-shadow:0 0 0 0 rgba(0,217,255,0);
+}
+.contact-card:hover::after{animation:edEmitOnce .9s ease-out}
+@keyframes edEmitOnce{
+  0%{box-shadow:0 0 0 0 rgba(0,217,255,.5)}
+  100%{box-shadow:0 0 0 16px rgba(0,217,255,0)}
+}
+/* 图标：SVG 24×24，继承主题色（emoji 做不到这点） */
+.contact-icon{
+  display:block;width:30px;height:30px;
+  margin-bottom:var(--s-4);color:var(--cyan);
+  transition:color var(--t-fast);
+}
+.contact-icon svg{display:block;width:100%;height:100%}
+.contact-card:hover .contact-icon{color:var(--cyan-2)}
+
+/* 信号发射点：收尾页的主题记号，持续向外发一圈光。
+   3.4s 一轮（慢），box-shadow 扩散 + 颜色 alpha 衰减 ——
+   不碰 opacity 属性，遵守项目禁令 1「绝不引入 opacity 闪烁」。 */
+.ed-emit{
+  display:inline-block;width:9px;height:9px;border-radius:50%;
+  margin-top:var(--s-5);
+  background:var(--cyan);
+  animation:edEmit 3.4s ease-in-out infinite;
+}
+@keyframes edEmit{
+  0%  {box-shadow:0 0 0 0 rgba(0,217,255,.55), 0 0 10px rgba(0,217,255,.5)}
+  70% {box-shadow:0 0 0 22px rgba(0,217,255,0), 0 0 10px rgba(0,217,255,.5)}
+  100%{box-shadow:0 0 0 22px rgba(0,217,255,0), 0 0 10px rgba(0,217,255,.5)}
+}
 .contact-card small{
   font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;
   color:var(--cyan);font-weight:600;margin-bottom:4px;
@@ -2472,4 +2541,9 @@ body.category-linking .sky-star:not(.is-related){
   .ed-section .project-card,
   .ed-section .award-card,
   .ed-section .skill-card{transition:none}
+  /* 本轮新增的动画一并收口 */
+  .skill-row > i::after{transition:none;width:var(--w)}  /* 直接给终值，不留空条 */
+  .contact-card::after,
+  .ed-emit{animation:none}
+  .sky-star > i{animation:none}
 }

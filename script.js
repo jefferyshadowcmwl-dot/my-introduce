@@ -375,7 +375,12 @@
 
   /* ---------- Quick Stats 数字滚动 ---------- */
   function initCountUp(){
-    const stats = $$('.about-stats strong[data-count]');
+    /* 选择器从 `.about-stats strong[data-count]` 放宽为 `[data-count]` ——
+       data-count 只有两处消费者：#about 数据带的 4 个 KPI、
+       #skills 的 18 个技能百分比（.skill-pct）。
+       两者的结构契约一致（元素内含纯数字；KPI 额外含 <small> 尾标，
+       由下面的 querySelector('small') 保住）。 */
+    const stats = $$('[data-count]');
     if(!stats.length) return;
     const obs = new IntersectionObserver((entries)=>{
       entries.forEach(en=>{

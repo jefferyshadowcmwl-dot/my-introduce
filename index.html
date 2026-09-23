@@ -18,6 +18,14 @@
   <div class="cosmic-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <canvas id="cosmos-canvas" aria-hidden="true"></canvas>
 
+  <!-- 背景音乐。
+       进入主站（点启动页之后）才开始播 —— 那是一次用户手势，之后的 play()
+       不会被浏览器自动播放策略拦截。音量控件在右下角的站台索引面板里。
+       loop：单曲循环；preload="auto"：启动页那 1 秒多的过渡期间正好缓冲。
+       源文件是 53MB 的无损 FLAC，已转码为 128kbps MP3（4.3MB，压到 8%），
+       无损源文件在 .gitignore 里（不上仓库）。 -->
+  <audio id="bgm" src="assets/bgm.mp3" loop preload="auto" aria-hidden="true"></audio>
+
   <!-- ==================== 启动页 ==================== -->
   <section class="intro-gate" aria-labelledby="intro-title">
     <canvas id="cosmos-canvas" aria-hidden="true"></canvas>
@@ -128,6 +136,17 @@
         <a class="si-item" href="#skills"><span class="si-no">08</span><span class="si-name">技能</span></a>
         <a class="si-item" href="#contact"><span class="si-no">09</span><span class="si-name">联系</span></a>
       </nav>
+
+      <!-- 背景音乐音量。放在站台索引里而不是另起一个悬浮控件 ——
+           项目禁令 3「不新增 fixed 装饰层」。 -->
+      <div class="si-volume">
+        <button class="si-mute" type="button" aria-pressed="false" aria-label="静音 / 取消静音">
+          <svg class="ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+          <svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="m16 9.5 5 5"/><path d="m21 9.5-5 5"/></svg>
+        </button>
+        <input class="si-range" type="range" min="0" max="100" step="1" value="35" aria-label="背景音乐音量">
+        <span class="si-vol-pct" aria-hidden="true">35</span>
+      </div>
     </div>
 
     <button class="si-handle" type="button" aria-expanded="false" aria-controls="stationPanel" aria-label="展开站台索引">

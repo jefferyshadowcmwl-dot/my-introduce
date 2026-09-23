@@ -25,3 +25,7 @@ dist/
 
 # 本地临时验证脚本（Chrome CDP 截图）
 .shot.mjs
+
+# 无损音频源文件（53MB，已转码为 assets/bgm.mp3 供线上使用）
+*.flac
+*.wav

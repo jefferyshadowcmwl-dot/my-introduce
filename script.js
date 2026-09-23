@@ -205,6 +205,9 @@
       window.scrollTo({top:0,behavior:'instant'});
       header?.classList.add('is-visible');
       stationIndex?.classList.add('is-visible');
+      /* 背景音乐起播。此刻用户刚点过启动页（或跳过），属于用户手势之后的
+         播放，不会被自动播放策略拦。被拦下也静默降级，不打断主线。 */
+      $('#bgm')?.play().catch(() => {});
       // 只让首屏（#about）的 reveal 元素立即可见（启动页 → 主站的衔接）
       // 其他区块（internship/projects/...）保留 IntersectionObserver 滚动揭示
       $$('#about .reveal').forEach(el=>el.classList.add('is-visible'));
@@ -935,21 +938,31 @@
     const SECS = items.map(a => (a.getAttribute('href') || '').slice(1));
     const visited = new Set();
     let current = -1, closeTimer = 0;
+    /* hover 预览 + 点击钉住。
+       原先只有 hover 自动开 + click 纯 toggle，两者会打架：鼠标移到 handle 上
+       面板自己开了，用户再点一下（自然动作）就被 toggle 关掉 ——
+       表现为"点不开"，而且音量控件就在面板里，直接影响可用性。
+       现在 click 是"钉住"语义：未钉住时点一下钉住（鼠标移开也不收），
+       已钉住再点才收；从未点过则保持 hover 预览、移开自动收。 */
+    let pinned = false;
 
     const open  = () => { clearTimeout(closeTimer); root.classList.add('is-open');
                           handle.setAttribute('aria-expanded','true'); };
-    const close = () => { root.classList.remove('is-open');
+    const close = () => { pinned = false; root.classList.remove('is-open');
                           handle.setAttribute('aria-expanded','false'); };
 
     handle.addEventListener('click', e => {
       e.stopPropagation();
-      root.classList.contains('is-open') ? close() : open();
+      if(pinned){ close(); } else { pinned = true; open(); }
     });
     closeBtn?.addEventListener('click', close);
-    // 桌面 hover 自动展开；移开后延时收起，给鼠标移到面板上的时间
-    handle.addEventListener('mouseenter', open);
+    // 桌面 hover 预览；移开后延时收起，给鼠标移到面板上的时间
+    handle.addEventListener('mouseenter', () => { if(!pinned) open(); });
     root.addEventListener('mouseenter', () => clearTimeout(closeTimer));
-    root.addEventListener('mouseleave', () => { closeTimer = setTimeout(close, 220); });
+    root.addEventListener('mouseleave', () => {
+      if(pinned) return;                       // 已钉住 → 移开也不收
+      closeTimer = setTimeout(close, 220);
+    });
     document.addEventListener('click', e => { if(!root.contains(e.target)) close(); });
     document.addEventListener('keydown', e => { if(e.key === 'Escape') close(); });
 
@@ -1146,6 +1159,47 @@
     set('[data-count-archive]', ARCHIVE_GROUPS.reduce((a, g) => a + g.imgIds.length, 0));
   }
 
+  /* ---------- 背景音乐 ----------
+     起播时机在 leaveIntro（点启动页进入主站）—— 那是一次用户手势，
+     之后的 play() 不会被浏览器自动播放策略拦下。
+     音量控件在站台索引面板里（项目禁令 3：不新增 fixed 装饰层），
+     音量与静音状态持久化到 localStorage，与 initTheme 同一套做法。 */
+  const BGM_KEY = 'lzy-bgm-vol';
+  let bgmLastVol = 0.35;
+  function initBgm(){
+    const audio = $('#bgm');
+    if(!audio) return;
+    const muteBtn = $('.si-mute');
+    const range   = $('.si-range');
+    const pctEl   = $('.si-vol-pct');
+
+    let vol;
+    try{ vol = parseFloat(localStorage.getItem(BGM_KEY)); }catch(e){}
+    if(!(vol >= 0 && vol <= 1)) vol = 0.35;      // 首次访问 / 存储损坏都回落到默认
+    if(vol > 0) bgmLastVol = vol;
+
+    function apply(save){
+      audio.volume = vol;
+      audio.muted  = vol === 0;                  // volume=0 在部分浏览器不静音，显式 muted
+      const p = String(Math.round(vol * 100));
+      if(range)   range.value = p;
+      if(pctEl)   pctEl.textContent = p;
+      if(muteBtn) muteBtn.setAttribute('aria-pressed', vol === 0 ? 'true' : 'false');
+      if(save){ try{ localStorage.setItem(BGM_KEY, String(vol)); }catch(e){} }
+    }
+    apply(false);
+
+    range?.addEventListener('input', () => {
+      vol = Math.min(1, Math.max(0, parseFloat(range.value) / 100));
+      if(vol > 0) bgmLastVol = vol;
+      apply(true);
+    });
+    muteBtn?.addEventListener('click', () => {
+      vol = vol > 0 ? 0 : (bgmLastVol || 0.35);  // 记住静音前的音量，取消静音时还原
+      apply(true);
+    });
+  }
+
   /* ---------- 启动 ---------- */
   onReady(()=>{
     initCounters();
@@ -1165,6 +1219,7 @@
     initInternshipMedia();
     initLightbox();
     initStationIndex();     // 合并原 initMiniGuide + initSignalDockClick + initKeys
+    initBgm();              // 背景音乐音量（起播在 leaveIntro）
     initCategoryLink();
     // 关键：JS 注入的 .reveal 需补 observe（晚于滚动 reveal 初始化）
     observeReveals();

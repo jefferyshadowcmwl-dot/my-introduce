@@ -759,6 +759,52 @@ body.is-intro{overflow:hidden}
 .si-item.is-current::before{height:16px}
 .si-item.is-current .si-no{color:var(--cyan)}
 
+/* 背景音乐音量 —— 放在索引下方，沿用同一套 mono 小字语言 */
+.si-volume{
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:var(--s-3);
+  padding:var(--s-3) var(--s-4) var(--s-4);
+  border-top:1px solid var(--line);
+}
+.si-mute{
+  width:26px;height:26px;
+  display:grid;place-items:center;
+  background:transparent;border:0;border-radius:var(--s-1);
+  color:var(--muted);cursor:pointer;
+  transition:color var(--t-fast),background var(--t-fast);
+}
+.si-mute:hover{color:var(--cyan);background:rgba(0,217,255,.08)}
+.si-mute:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.si-mute svg{width:17px;height:17px}
+/* 两个图标按 aria-pressed 切换：有声 / 已静音 */
+.si-mute .ico-off{display:none}
+.si-mute[aria-pressed="true"] .ico-on{display:none}
+.si-mute[aria-pressed="true"] .ico-off{display:block}
+.si-mute[aria-pressed="true"]{color:var(--orange-2)}
+/* 覆盖浏览器默认滑块外观（暗色主题下默认样式几乎看不见） */
+.si-range{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:3px;border-radius:2px;
+  background:var(--line);cursor:pointer;
+}
+.si-range::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 6px color-mix(in srgb,var(--cyan) 60%,transparent);
+  cursor:pointer;
+}
+.si-range::-moz-range-thumb{
+  width:12px;height:12px;border:0;border-radius:50%;
+  background:var(--cyan);cursor:pointer;
+}
+.si-range:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.si-vol-pct{
+  min-width:2.2em;text-align:right;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;
+  color:var(--muted);font-variant-numeric:tabular-nums;
+}
+
 /* 收起态圆钮：编号 + 整页滚动进度环 */
 .si-handle{
   position:relative;width:52px;height:52px;border-radius:50%;

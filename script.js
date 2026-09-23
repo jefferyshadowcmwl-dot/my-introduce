@@ -24,9 +24,18 @@
 
   function leaveIntro(){
     if(!introGate) return;
+    // 方案 A v2：5 阶段仪式感过渡（与 styles.css .is-leaving/.is-bursting/.is-streaming/.is-arrive/.is-opacity-out 配合）
+    //   0   question 吸进中心 + sticker shine + deco fade
+    // 180   8 道脉冲光线放射 + photo emit + halo scan
+    // 400   信号字符流扫过 + 顶部扫描线扫一次
+    // 600   body.is-arrive → header/dock/guide/hero-stagger 入场
+    // 900   introGate 整体渐隐
+    // 1100  introGate 完全隐藏 + 兼容旧 is-visible class
     introGate.classList.add('is-leaving');
-    $('.intro-photo-sticker')?.classList.add('is-leaving');
-    $('.character-halo')?.classList.add('is-leaving');
+    setTimeout(()=> introGate.classList.add('is-bursting'), 180);
+    setTimeout(()=> introGate.classList.add('is-streaming'), 400);
+    setTimeout(()=> document.body.classList.add('is-arrive'), 600);
+    setTimeout(()=> introGate.classList.add('is-opacity-out'), 900);
     setTimeout(()=>{
       introGate.style.display='none';
       header?.classList.add('is-visible');
@@ -35,7 +44,7 @@
       // 只让 hero 区块的 reveal 元素立即可见（启动页 → 主站的衔接）
       // 其他区块（about/internship/...）保留 IntersectionObserver 滚动揭示
       $$('.hero .reveal').forEach(el=>el.classList.add('is-visible'));
-    },850);
+    },1100);
   }
   $('.character-button')?.addEventListener('click',leaveIntro);
   $('.intro-skip')?.addEventListener('click',leaveIntro);

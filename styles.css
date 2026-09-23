@@ -23,12 +23,7 @@
   --orange-2:#ffb627;
   --green:#25e8a5;
 
-  /* 区块容器语义 class（无专属样式，由父级+子级规则控制）*/
-.about,.projects,.skills,.contact{display:block}
-.internship-media{display:flex;flex-direction:column}
-.award-evidence{cursor:pointer}
-
-/* 字体三档 + 衬线标题 + 行楷 + 霓虹 */
+  /* 字体三档 + 衬线标题 + 行楷 + 霓虹 */
   --font-display:'Fraunces','Noto Serif SC','Songti SC','STSong',Georgia,serif;
   --font-sans:'ZCOOL XiaoWei','DM Sans','Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
   --font-mono:'JetBrains Mono','Fira Code','Courier New',monospace;
@@ -51,6 +46,13 @@
   --t-med:.4s cubic-bezier(.4,0,.2,1);
   --t-slow:.8s cubic-bezier(.4,0,.2,1);
 }
+
+/* 区块容器语义 class（无专属样式，由父级+子级规则控制）
+   注：这 3 条历史上被误写在 :root 声明块内部，靠 CSS Nesting 才生效，
+   实际特异性被抬到 (0,2,0)。此处提到顶层，恢复 (0,1,0)。*/
+.about,.projects,.skills,.contact{display:block}
+.internship-media{display:flex;flex-direction:column}
+.award-evidence{cursor:pointer}
 
 /* 亮色主题（默认暗色，可切换） */
 [data-theme="light"]{
@@ -1271,7 +1273,15 @@ img,svg{max-width:100%;display:block}
   font-weight:700;
 }
 
-.about-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:start;margin-bottom:36px}
+.about-grid{
+  display:grid;
+  grid-template-columns:minmax(240px,.82fr) 1.42fr;
+  grid-template-areas:"case title" "case copy";
+  gap:32px 48px;align-items:start;margin-bottom:36px;
+}
+.mu-vitrine{grid-area:case}
+.about-title{grid-area:title}
+.about-copy{grid-area:copy}
 .about-title h2{
   font-family:var(--font-display);
   font-size:clamp(28px,4vw,44px);line-height:1.2;font-weight:800;
@@ -2411,4 +2421,132 @@ body.category-linking .award-star{
   }
   .node-canvas-wrap canvas{height:140px}
   .award-star{width:48px;height:48px}
+}
+
+/* ============================================================================
+   ✨ HALL LAYER —— 博物馆展陈层（H0-H9）
+   ----------------------------------------------------------------------------
+   目的：把 #about / #gallery / #constellation / #archive 四区块改造为
+        「暗色展厅」语境（展柜 · 展签 · 顶灯 · 编号制式）。
+   纪律（违反会导致特异性/顺序陷阱，见项目 CLAUDE.md）：
+     · 新层一律单类 (0,1,0)，状态最多两段（.a.is-x）
+     · 禁止 #id 前缀选择器 —— section 级样式由 .mu-hall 承载
+     · 不新增 !important
+     · keyframes 统一 mu 前缀，与旧动画名零交叉
+   ============================================================================ */
+
+/* ---- H0 展厅令牌 --------------------------------------------------------- */
+:root{
+  --hall-bg:#0d0716;                      /* 展厅墙面底 */
+  --hall-bg-2:#140b20;                    /* 展柜内衬 */
+  --hall-mat:#231436;                     /* 画框卡纸 / 缩略图底 */
+  --hall-plate:rgba(10,6,18,.72);         /* 展签底（浅色模式翻转） */
+  --hall-cone:rgba(255,246,255,.20);      /* 顶灯光锥（浅色模式翻转） */
+  --hall-brass:color-mix(in srgb,var(--orange-2) 55%,var(--purple-3));  /* 铜边 */
+}
+
+/* ---- H7 浅色模式：展厅保持暗厅，只翻转展签与光锥 -------------------------
+   必须紧跟 H0 —— 与 :root 同特异性 (0,1,0)，靠源码顺序取胜 */
+[data-theme="light"]{
+  --hall-plate:rgba(255,255,255,.86);
+  --hall-cone:rgba(120,40,214,.10);
+}
+
+/* ---- H1 公共展陈元素 ----------------------------------------------------- */
+.mu-hall{
+  position:relative;
+  background:
+    radial-gradient(ellipse 120% 68% at 50% 0%,
+      color-mix(in srgb,var(--purple) 9%,transparent),transparent 62%),
+    var(--hall-bg);
+}
+/* 地脚线 */
+.mu-hall::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--line) 20%,var(--line) 80%,transparent);
+}
+/* 编号制式：全站展品编号统一形态 */
+.mu-no{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cyan);
+}
+
+/* ---- H2 #about · 序厅玻璃展柜 -------------------------------------------- */
+.mu-vitrine{position:relative}
+
+.vitrine-glass{
+  position:relative;padding:var(--s-4);
+  border-radius:var(--s-2);
+  background:linear-gradient(180deg,var(--hall-bg-2),var(--hall-bg));
+  /* 铜框 = 既有「光晕描边三明治」配方改造：底色隔离 + 铜边 + 外圈淡铜 + 大范围投影 */
+  box-shadow:
+    0 0 0 1px var(--hall-brass),
+    0 0 0 9px var(--hall-bg),
+    0 0 0 10px color-mix(in srgb,var(--hall-brass) 40%,transparent),
+    0 30px 60px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(16px);
+  transition:opacity var(--t-slow),transform var(--t-slow);
+}
+.reveal.is-visible .vitrine-glass{opacity:1;transform:none}
+
+/* 顶灯光锥 */
+.vitrine-glass::before{
+  content:'';position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(120% 70% at 50% -16%,var(--hall-cone) 0%,
+    color-mix(in srgb,var(--hall-cone) 30%,transparent) 38%,transparent 64%);
+}
+/* 玻璃斜向反光 */
+.vitrine-glass::after{
+  content:'';position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(112deg,rgba(255,255,255,.10) 0%,transparent 24%,
+    transparent 76%,rgba(255,255,255,.04) 100%);
+}
+
+/* 展品肖像：开帘揭示放在图片本身，避免 clip-path 裁掉铜框阴影 */
+.vitrine-portrait{
+  display:block;position:relative;z-index:1;
+  border-radius:var(--s-1);overflow:hidden;background:var(--hall-mat);
+  clip-path:inset(0 50% 0 50%);
+  transition:clip-path 1s cubic-bezier(.4,0,.2,1) .12s;
+}
+.reveal.is-visible .vitrine-portrait{clip-path:inset(0 0 0 0)}
+.vitrine-portrait img{
+  display:block;width:100%;aspect-ratio:4/5;
+  object-fit:cover;object-position:center 12%;
+  filter:saturate(.94) contrast(1.04);
+}
+
+.vitrine-spec{
+  position:relative;z-index:1;display:grid;gap:var(--s-2);
+  margin:var(--s-4) 0 0;padding:0;
+}
+.vitrine-spec > div{
+  display:grid;grid-template-columns:46px 1fr;gap:var(--s-3);align-items:baseline;
+  padding-top:var(--s-2);border-top:1px solid var(--line);
+}
+.vitrine-spec > div:first-child{border-top:0;padding-top:0}
+.vitrine-spec dt{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);
+}
+.vitrine-spec dd{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink)}
+
+.vitrine-plate{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);
+  margin-top:var(--s-4);padding:var(--s-3) var(--s-4);
+  background:var(--hall-plate);border:1px solid var(--line);
+  border-left:2px solid var(--hall-brass);
+  border-radius:0 var(--s-2) var(--s-2) 0;
+  opacity:0;transform:translateY(8px);
+  transition:opacity var(--t-slow) .25s,transform var(--t-slow) .25s;
+}
+.reveal.is-visible .vitrine-plate{opacity:1;transform:none}
+.vitrine-plate em{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;
+  font-style:normal;color:var(--muted);
+}
+
+/* ---- H8 #about 响应式 ---------------------------------------------------- */
+@media (max-width:991px){
+  .about-grid{grid-template-columns:1fr;grid-template-areas:"case" "title" "copy"}
 }

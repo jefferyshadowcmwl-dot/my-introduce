@@ -56,7 +56,7 @@ intro-gate (固定全屏，点击 character-button 触发 leaveIntro 跳转)
 ├── #projects (7 项目卡片 grid)
 ├── #awards (9 荣誉卡片，6 张带 award-evidence modal)
 ├── #gallery (全册 33 张挂画墙)
-├── #constellation (5 站点导览图)
+├── #constellation (星座图：33 张履历 = 6 个星座)
 ├── #archive (4 抽屉库房目录)
 ├── #skills (6 技能卡 + skill-bars)
 ├── #contact (4 联系卡片)
@@ -150,11 +150,16 @@ intro-gate (固定全屏，点击 character-button 触发 leaveIntro 跳转)
 
 **改 HTML 时的硬约束**：
 - `main > section[id]` 必须是直接子元素（`styles.css` 有 `main > section` 组合子，scrollspy 靠 offsetTop）
-- `.photo-wall` / `.archive-grid` / `.constellation-stage` 是 JS 注入容器，**类名不能改**
-- `.constellation-stage` 一容器担三职：SVG 父级 + append `.award-star` + prepend `.constellation-bg-canvas`
-- `button` 内只允许 phrasing content —— `.photo-card` / `.archive-item` / `.award-star` 内部不能用 `<div>`
+- `.photo-wall` / `.archive-grid` / `.sky` 是 JS 注入容器，**类名不能改**
+- `button` 内只允许 phrasing content —— `.photo-card` / `.archive-item` / `.sky-star` 内部不能用 `<div>`
 - 新注入的 `.reveal` 必须调 `observeReveals()`，否则永远停在 `opacity:0`
-- SVG `viewBox` 与节点坐标系必须同为 `0 0 100 100`，否则站点与折线错位
+- SVG `viewBox` 与节点坐标系必须同为 `0 0 100 100`，否则坐标与折线错位
+- **清场要限定作用域**：`closeLightbox` / `initAwards` 曾用
+  `$$('.is-active')` 做全站清场，它假设 `is-active` 只有 section 在用；
+  而 `.sky-star` 的选中态也是 `is-active` → 开一次灯箱星点选中就被抹掉。
+  现已限定为 `$$('main > section.is-active')`。**别再用泛化选择器做局部清场。**
+- **分类相关的手工枚举数组会漂移**：`CONSTELLATION_NODES` 曾是手工 5 项，
+  漏掉最大的 competition（13 张）。分类派生一律走 `IMG_CATALOG` 的 `category`。
 
 **`IMG_CATALOG.aspect` 必须用真实像素核对**：原人工标注有 11 处标反。
 新增图片时用 JPEG SOF 标记读宽高（EXIF Orientation 全为 1，SOF 即渲染尺寸），不要手填。

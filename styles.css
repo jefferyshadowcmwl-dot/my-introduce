@@ -2638,3 +2638,30 @@ body.category-linking .award-star:not(.is-related){
 @media (max-width:991px){
   .about-grid{grid-template-columns:1fr;grid-template-areas:"case" "title" "copy"}
 }
+
+/* ---- H9 降低动效：把 HALL LAYER 新增的过渡一并收口 ----------------------
+   全站既有的 reduced-motion 块只覆盖了 .reveal，展陈层新增的这些过渡
+   不在其内 —— 用户开启「减少动态效果」后，展柜开帘、展签上浮仍会播放。 */
+@media (prefers-reduced-motion:reduce){
+  .vitrine-glass,
+  .vitrine-plate{
+    opacity:1;transform:none;transition:none;
+  }
+  /* 需要带上 .is-visible 才能压过 .reveal.is-visible .vitrine-portrait (0,2,0) */
+  .vitrine-portrait,
+  .reveal.is-visible .vitrine-portrait{
+    clip-path:none;transition:none;
+  }
+  .star-detail,
+  .star-open,
+  .photo-frame,
+  .photo-frame::before,
+  .photo-plate strong,
+  .archive-item,
+  .archive-group,
+  .mu-vitrine,
+  .award-star{
+    transition:none;
+  }
+  .photo-card.reveal{transition-delay:0s}
+}

@@ -22,7 +22,7 @@
      ======================================================================== */
   const IMG_CATALOG = [
     /* ---- 比赛获奖 (13) ---- */
-    { id:'comp_2023_15city',    file:'202315届上海市大学生计算机能力大赛.jpg',                       caption:'第 15 届上海市大学生计算机能力大赛',               category:'competition', year:'2023', tier:'city',     size:349521, aspect:'landscape' },
+    { id:'comp_2023_15city',    file:'202315届上海市大学生计算机能力大赛.jpg',                       caption:'第 15 届上海市大学生计算机能力大赛',               category:'competition', year:'2023', tier:'city',     size:349521, aspect:'portrait' },
     { id:'comp_2023_16nat',     file:'202316届中国计算机能力大赛.jpg',                                 caption:'第 16 届中国计算机能力大赛',                       category:'competition', year:'2023', tier:'national', size:285667, aspect:'landscape' },
     { id:'comp_2023_design2',   file:'2023年(第16届》中国大学生计算机设计大赛二等奖.jpg',            caption:'第 16 届中国大学生计算机设计大赛 · 二等奖',       category:'competition', year:'2023', tier:'national', size:245229, aspect:'landscape' },
     { id:'comp_2023_apply3',    file:'2023年(第十五届)上海市大学生计算机应用能力大赛3等奖.jpg',       caption:'第 15 届上海市大学生计算机应用能力大赛 · 三等奖', category:'competition', year:'2023', tier:'city',     size:354238, aspect:'landscape' },
@@ -37,34 +37,34 @@
     { id:'comp_2026_school_te', file:'2026上海杉达学院校赛特等奖.jpg',                                 caption:'2026 上海杉达学院校赛 · 特等奖',                 category:'competition', year:'2026', tier:'school',   size:230132, aspect:'landscape' },
 
     /* ---- 校园活动 (7) ---- */
-    { id:'campus_top10',         file:'校园十大杰出人物.jpg',                                          caption:'校园十大杰出人物',                                 category:'campus',      year:'2024', tier:'school',   size: 98976, aspect:'portrait'  },
-    { id:'campus_chairman',      file:'程序设计设社长.jpg',                                            caption:'程序设计社社长 · 社团建设',                       category:'campus',      year:'2024', tier:'school',   size:438052, aspect:'portrait'  },
+    { id:'campus_top10',         file:'校园十大杰出人物.jpg',                                          caption:'校园十大杰出人物',                                 category:'campus',      year:'2024', tier:'school',   size: 98976, aspect:'landscape'  },
+    { id:'campus_chairman',      file:'程序设计设社长.jpg',                                            caption:'程序设计社社长 · 社团建设',                       category:'campus',      year:'2024', tier:'school',   size:438052, aspect:'landscape'  },
     { id:'campus_paddle_1',      file:'百度paddlepaddle领航团团长.jpg',                                caption:'百度 PaddlePaddle 领航团 · 团长 1',               category:'campus',      year:'2024', tier:'school',   size:166648, aspect:'landscape' },
     { id:'campus_paddle_2',      file:'百度paddlepaddle领航团团长2.jpg',                               caption:'百度 PaddlePaddle 领航团 · 团长 2',               category:'campus',      year:'2024', tier:'school',   size:175784, aspect:'landscape' },
     { id:'campus_paddle_1024',   file:'1024百度paddlepaddle领航团程序员节.jpg',                        caption:'1024 百度 PaddlePaddle 领航团 · 程序员节',       category:'campus',      year:'2024', tier:'school',   size:145249, aspect:'landscape' },
-    { id:'campus_biye_2025',     file:'2025上海杉达学院本科毕业生.jpg',                                caption:'2025 上海杉达学院 · 本科毕业',                    category:'campus',      year:'2025', tier:'school',   size:272647, aspect:'portrait'  },
+    { id:'campus_biye_2025',     file:'2025上海杉达学院本科毕业生.jpg',                                caption:'2025 上海杉达学院 · 本科毕业',                    category:'campus',      year:'2025', tier:'school',   size:272647, aspect:'landscape'  },
     { id:'campus_yanjiusheng_2026',file:'26届上海杉达学院研究生.jpg',                                  caption:'第 26 届上海杉达学院研究生 · 录取',               category:'campus',      year:'2026', tier:'school',   size:342839, aspect:'landscape' },
 
     /* ---- 实践活动 (4) ---- */
     { id:'practice_efg_base',    file:'2024研究生EFG夏令营孵化基地.jpg',                                caption:'2024 研究生 EFG 夏令营 · 孵化基地',               category:'practice',    year:'2024', tier:'province', size:222426, aspect:'landscape' },
     { id:'practice_efg_group',   file:'2024研究生EFG夏令营孵化基地第七小组.jpg',                       caption:'2024 研究生 EFG 夏令营 · 第七小组',               category:'practice',    year:'2024', tier:'province', size:264460, aspect:'landscape' },
     { id:'practice_luntan',      file:'上海民办高校科技论坛.jpg',                                      caption:'上海民办高校科技论坛',                             category:'practice',    year:'2024', tier:'city',     size:214271, aspect:'landscape' },
-    { id:'practice_zhiteng',     file:'上海致远鲸腾信息有限公式.jpg',                                  caption:'上海致远鲸腾信息有限公司 · 实习',                 category:'practice',    year:'2023', tier:'city',     size: 62467, aspect:'landscape' },
+    { id:'practice_zhiteng',     file:'上海致远鲸腾信息有限公式.jpg',                                  caption:'上海致远鲸腾信息有限公司 · 实习',                 category:'practice',    year:'2023', tier:'city',     size: 62467, aspect:'portrait' },
 
     /* ---- 创领创业 (4) ---- */
-    { id:'startup_huangpu',      file:'创业黄浦一路繁花黄浦区创业三等级奖.jpg',                        caption:'创业黄浦 · 一路繁花黄浦区创业 · 三等奖',         category:'startup',     year:'2024', tier:'city',     size:342924, aspect:'landscape' },
-    { id:'startup_pudong_1',     file:'创领浦东创新大赛暨第六届上海浦东新区选拔赛青年新势力赛道一等奖奖.jpg',   caption:'创领浦东 · 青年新势力赛道 · 一等奖',         category:'startup',     year:'2024', tier:'city',     size:321768, aspect:'landscape' },
+    { id:'startup_huangpu',      file:'创业黄浦一路繁花黄浦区创业三等级奖.jpg',                        caption:'创业黄浦 · 一路繁花黄浦区创业 · 三等奖',         category:'startup',     year:'2024', tier:'city',     size:342924, aspect:'portrait' },
+    { id:'startup_pudong_1',     file:'创领浦东创新大赛暨第六届上海浦东新区选拔赛青年新势力赛道一等奖奖.jpg',   caption:'创领浦东 · 青年新势力赛道 · 一等奖',         category:'startup',     year:'2024', tier:'city',     size:321768, aspect:'portrait' },
     { id:'startup_pudong_2',     file:'创领浦东创新大赛暨第六届上海浦东新区选拔赛青年新势力赛道一等奖奖与奖杯.jpg', caption:'创领浦东 · 一等奖与奖杯',                category:'startup',     year:'2024', tier:'city',     size:239525, aspect:'landscape' },
-    { id:'startup_tongji',       file:'同济大学全国大学生创业计划一等奖.jpg',                          caption:'同济大学全国大学生创业计划 · 一等奖',             category:'startup',     year:'2024', tier:'national', size:200429, aspect:'landscape' },
+    { id:'startup_tongji',       file:'同济大学全国大学生创业计划一等奖.jpg',                          caption:'同济大学全国大学生创业计划 · 一等奖',             category:'startup',     year:'2024', tier:'national', size:200429, aspect:'portrait' },
 
     /* ---- 项目开发 (4) ---- */
-    { id:'project_zhilian_1',    file:'智联工翼开发过程1.jpg',                                          caption:'智联工翼 · 开发过程 1',                           category:'project',     year:'2024', tier:'private',  size:305191, aspect:'landscape' },
-    { id:'project_zhilian_2',    file:'智联工翼开发过程2.jpg',                                          caption:'智联工翼 · 开发过程 2',                           category:'project',     year:'2024', tier:'private',  size:421034, aspect:'landscape' },
+    { id:'project_zhilian_1',    file:'智联工翼开发过程1.jpg',                                          caption:'智联工翼 · 开发过程 1',                           category:'project',     year:'2024', tier:'private',  size:305191, aspect:'portrait' },
+    { id:'project_zhilian_2',    file:'智联工翼开发过程2.jpg',                                          caption:'智联工翼 · 开发过程 2',                           category:'project',     year:'2024', tier:'private',  size:421034, aspect:'portrait' },
     { id:'project_zhilian_3',    file:'智联工翼开发过程3.jpg',                                          caption:'智联工翼 · 开发过程 3',                           category:'project',     year:'2024', tier:'private',  size:168078, aspect:'landscape' },
     { id:'project_zhilian_4',    file:'智联工翼开发过程4.jpg',                                          caption:'智联工翼 · 开发过程 4',                           category:'project',     year:'2024', tier:'private',  size:175388, aspect:'landscape' },
 
     /* ---- 知识产权 (1) ---- */
-    { id:'ip_ruanzhuquan',       file:'软件著作权.jpg',                                                  caption:'基于 OpenCV + Django 的上位机软件 · 软著',        category:'ip',          year:'2024', tier:'national', size:304300, aspect:'landscape' }
+    { id:'ip_ruanzhuquan',       file:'软件著作权.jpg',                                                  caption:'基于 OpenCV + Django 的上位机软件 · 软著',        category:'ip',          year:'2024', tier:'national', size:304300, aspect:'portrait' }
   ];
   const IMG_BY_ID = Object.fromEntries(IMG_CATALOG.map(x=>[x.id,x]));
 
@@ -73,8 +73,6 @@
   const findImg        = id => IMG_BY_ID[id] || null;
   const categoryLabel  = c => ({ competition:'创新创业', campus:'校园荣誉', project:'项目实践',
                                  practice:'实践探索', startup:'创领创业', ip:'知识产权' })[c] || c;
-  const categoryShort  = c => ({ competition:'创业', campus:'校园', project:'项目',
-                                 practice:'实践', startup:'创领', ip:'知产' })[c] || c;
   const tierLabel      = t => ({ school:'校级', city:'市级', province:'省级',
                                  national:'国家级', intl:'国际级', private:'项目' })[t] || t;
 

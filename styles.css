@@ -1077,16 +1077,21 @@ body.is-intro{overflow:hidden}
    但也不能低于 72px —— 否则 sticky header 一滚就贴上区块眉标。 */
 .about{padding-top:clamp(72px,7vw,110px)}
 
-/* 展柜在文字上方（单列）。
-   展柜独立成行后若不限宽，肖像按 4/5 会撑到 1475px 高 —— 故给 max-width。 */
+/* 展柜在左，标题 + CTA + 导语 + 正文整体在右栏。
+   展柜列用 minmax 限宽 —— 肖像按 4/5 比例，列宽不设上限会撑到 1475px 高。 */
 .about-grid{
   display:grid;
-  grid-template-columns:1fr;
-  grid-template-areas:"case" "copy";
-  gap:var(--s-10);align-items:start;margin-bottom:36px;
+  grid-template-columns:minmax(260px,400px) minmax(0,1fr);
+  gap:var(--s-8) var(--s-12);
+  align-items:start;margin-bottom:36px;
 }
-.mu-vitrine{grid-area:case;max-width:420px}
-.about-copy{grid-area:copy}
+/* 右栏内的区块头走单列堆叠：右栏是窄栏，.section-head 默认的 1.2fr 1fr
+   两列会把 h1 挤到频繁换行。 */
+.about-main .section-head{
+  grid-template-columns:1fr;gap:var(--s-4);margin-bottom:var(--s-8);
+}
+/* .about-copy 现在位于 .about-main 内，不再是 .about-grid 的直接子项，
+   故不再需要 grid-area 定位。 */
 .about-copy p{margin:0 0 14px;color:var(--muted);font-size:var(--fs-body)}
 
 /* 首屏 CTA（原 hero-actions 迁入）。

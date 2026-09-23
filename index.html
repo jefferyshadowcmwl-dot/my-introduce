@@ -200,21 +200,6 @@
     <!-- ========== About（首屏）========== -->
     <section id="about" class="about section-pad mu-hall" data-signal="origin">
       <div class="shell">
-        <!-- 首屏（原 hero 已删，此处承担落地页职能）：
-             标题提为 h1，hero 的两个 CTA 迁入 head。
-             sr-only 姓名：视觉上不显示，供读屏与搜索引擎读到 h1 里的「刘致远」。 -->
-        <div class="section-head reveal">
-          <div class="section-head-main">
-            <div class="section-kicker"><span>01</span> ABOUT ME</div>
-            <h1><span class="sr-only">刘致远 · </span>一个工程师视角，<br />许多种<span>动手方式。</span></h1>
-            <div class="doodle">观察 · 提问 · 落地 ↗</div>
-            <div class="about-actions">
-              <a class="primary-button" href="#internship">接收第一束信号 <span>↘</span></a>
-              <a class="under-link" href="#contact">直接联系我 →</a>
-            </div>
-          </div>
-          <p class="section-head-note section-head-note-lead">我关注的不是"技术多炫"，而是"它能不能解决一个真实问题，并被做出来"。</p>
-        </div>
         <div class="about-grid">
           <!-- 展柜整柜即按钮：点击进 lightbox 看肖像原图。
                内部一律 phrasing content（button 内不允许 dl/div），
@@ -237,9 +222,28 @@
               <em>LZY ENGINEER STATION · 0324</em>
             </span>
           </button>
-          <div class="about-copy reveal" data-delay="1">
-            <p>计算机科学与技术专业本科，从 MySQL 数据分析、Python 自动化脚本起步，逐步拓展到 Arduino 嵌入式、YOLO 视觉、3D 建模、SEO/GEO 营销——既写代码也接项目，既做工程也做落地。</p>
-            <p>作为 PaddlePaddle 团长与程序设计社社长，我愿意把学到的整理出来、分享出去；作为双创项目第一负责人，我完成了从市级立项到国家级立项的跃迁。</p>
+
+          <!-- 右栏：标题 + doodle + CTA + 导语 + 正文，整体贴在展柜右侧。
+               首屏职能（原 hero 已删）；h1 内的 sr-only 姓名供读屏/搜索引擎。
+               .about-main 内的 .section-head 走单列堆叠 —— 右栏是窄栏，
+               .section-head 默认的 1.2fr 1fr 两列会把 h1 挤到换行。 -->
+          <div class="about-main">
+            <div class="section-head reveal">
+              <div class="section-head-main">
+                <div class="section-kicker"><span>01</span> ABOUT ME</div>
+                <h1><span class="sr-only">刘致远 · </span>一个工程师视角，<br />许多种<span>动手方式。</span></h1>
+                <div class="doodle">观察 · 提问 · 落地 ↗</div>
+                <div class="about-actions">
+                  <a class="primary-button" href="#internship">接收第一束信号 <span>↘</span></a>
+                  <a class="under-link" href="#contact">直接联系我 →</a>
+                </div>
+              </div>
+              <p class="section-head-note section-head-note-lead">我关注的不是"技术多炫"，而是"它能不能解决一个真实问题，并被做出来"。</p>
+            </div>
+            <div class="about-copy reveal" data-delay="1">
+              <p>计算机科学与技术专业本科，从 MySQL 数据分析、Python 自动化脚本起步，逐步拓展到 Arduino 嵌入式、YOLO 视觉、3D 建模、SEO/GEO 营销——既写代码也接项目，既做工程也做落地。</p>
+              <p>作为 PaddlePaddle 团长与程序设计社社长，我愿意把学到的整理出来、分享出去；作为双创项目第一负责人，我完成了从市级立项到国家级立项的跃迁。</p>
+            </div>
           </div>
         </div>
 

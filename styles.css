@@ -1214,17 +1214,7 @@ img,svg{max-width:100%;display:block}
 /* ============================================================
    项目（projects）
    ============================================================ */
-.project-head{margin-bottom:48px}
-.project-head h2{
-  font-family:var(--font-display);
-  font-size:clamp(28px,4vw,44px);font-weight:800;color:var(--ink-2);
-  margin:14px 0 0;line-height:1.2;
-}
-.project-head h2 span{
-  background:linear-gradient(120deg,var(--cyan),var(--purple-3));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.project-head > p{color:var(--muted);max-width:600px}
+/* .project-head 已并入 .section-head（Phase 3 统一标题），规则随之删除 */
 
 .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 .project-card{
@@ -1327,19 +1317,14 @@ img,svg{max-width:100%;display:block}
 /* ============================================================
    联系
    ============================================================ */
-.contact-wrap{text-align:center;max-width:900px;margin:0 auto}
-.contact-wrap h2{
-  font-family:var(--font-display);
-  font-size:var(--fs-h1);font-weight:800;color:var(--ink-2);
-  margin:16px 0 18px;line-height:1.2;
-}
-.contact-wrap h2 span{
-  background:linear-gradient(120deg,var(--cyan),var(--orange));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.contact-lead{font-size:18px;color:var(--muted);margin:0 0 36px}
+/* 收尾页：堆叠 + h1 级标题。
+   .contact-wrap 已并入 .section-head（原为全站唯一保留"居中 + max-width"
+   的特例 —— 靠特例维持的统一不算统一）。 */
+.section-head.ed-closing{grid-template-columns:1fr;gap:var(--s-4);margin-bottom:var(--s-12)}
+.section-head.ed-closing h2{font-size:var(--fs-h1)}
 
-.contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+/* head 现在占满 shell（1180px），不约束会让 4 张联系卡虚胖 */
+.contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:900px}
 .contact-card{
   display:flex;flex-direction:column;align-items:flex-start;
   padding:22px;border-radius:16px;

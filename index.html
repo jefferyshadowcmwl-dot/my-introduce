@@ -410,10 +410,15 @@
     <!-- ========== 项目经历 ========== -->
     <section id="projects" class="projects section-pad" data-signal="maker">
       <div class="shell">
-        <div class="project-head reveal">
-          <div class="section-kicker"><span>03</span> BUILD SITE</div>
-          <p>不是互不相关的项目，而是同一个问题在不同阶段不断生长的轨迹。</p>
-          <h2>构建现场，<br />从<span>一个想法</span>到<span>可交付的产物。</span></h2>
+        <!-- 原 .project-head 的子元素顺序与全站相反（kicker→p→h2），
+             原因是它没有 grid、顺序即视觉顺序。套进 .section-head 的
+             1.2fr 1fr 两列后 DOM 顺序就是列序，必须把 h2 提到 p 之前。 -->
+        <div class="section-head reveal">
+          <div class="section-head-main">
+            <div class="section-kicker"><span>03</span> BUILD SITE</div>
+            <h2>构建现场，<br />从<span>一个想法</span>到<span>可交付的产物。</span></h2>
+          </div>
+          <p class="section-head-note">不是互不相关的项目，而是同一个问题在不同阶段不断生长的轨迹。</p>
         </div>
 
         <div class="project-grid">
@@ -720,37 +725,42 @@
     <!-- ========== 联系 ========== -->
     <section id="contact" class="contact section-pad" data-signal="future">
       <div class="shell">
-        <div class="contact-wrap reveal">
-          <div class="section-kicker"><span>09</span> CONTACT</div>
-          <h2>下一段信号，<br />从这里<span>开始。</span></h2>
-          <p class="contact-lead">无论是实习机会、项目合作、还是技术交流——都欢迎来一束信号。</p>
-
-          <div class="contact-grid">
-            <a class="contact-card" href="mailto:3107190237@qq.com">
-              <div class="contact-icon">✉️</div>
-              <small>EMAIL</small>
-              <strong>3107190237@qq.com</strong>
-              <i>发送邮件 ↗</i>
-            </a>
-            <a class="contact-card" href="tel:15026727430">
-              <div class="contact-icon">📞</div>
-              <small>PHONE</small>
-              <strong>15026727430</strong>
-              <i>拨打电话 ↗</i>
-            </a>
-            <a class="contact-card" href="https://github.com/jefferyshadowcmwl-dot" target="_blank" rel="noopener">
-              <div class="contact-icon">🐙</div>
-              <small>GITHUB</small>
-              <strong>jefferyshadowcmwl-dot</strong>
-              <i>访问主页 ↗</i>
-            </a>
-            <a class="contact-card" href="https://gitee.com/liu-zhiyuan123456cmwl" target="_blank" rel="noopener">
-              <div class="contact-icon">🌿</div>
-              <small>GITEE</small>
-              <strong>liu-zhiyuan123456cmwl</strong>
-              <i>访问主页 ↗</i>
-            </a>
+        <!-- 原 .contact-wrap 是唯一保留"居中 + max-width"的特例。
+             靠一个特例维持的"统一"不算统一，且编辑杂志语言的收尾页
+             本就是左对齐不对称跨页 —— 故一并归入 .section-head。 -->
+        <div class="section-head ed-closing reveal">
+          <div class="section-head-main">
+            <div class="section-kicker"><span>09</span> CONTACT</div>
+            <h2>下一段信号，<br />从这里<span>开始。</span></h2>
           </div>
+          <p class="section-head-note">无论是实习机会、项目合作、还是技术交流——都欢迎来一束信号。</p>
+        </div>
+
+        <div class="contact-grid">
+          <a class="contact-card" href="mailto:3107190237@qq.com">
+            <div class="contact-icon">✉️</div>
+            <small>EMAIL</small>
+            <strong>3107190237@qq.com</strong>
+            <i>发送邮件 ↗</i>
+          </a>
+          <a class="contact-card" href="tel:15026727430">
+            <div class="contact-icon">📞</div>
+            <small>PHONE</small>
+            <strong>15026727430</strong>
+            <i>拨打电话 ↗</i>
+          </a>
+          <a class="contact-card" href="https://github.com/jefferyshadowcmwl-dot" target="_blank" rel="noopener">
+            <div class="contact-icon">🐙</div>
+            <small>GITHUB</small>
+            <strong>jefferyshadowcmwl-dot</strong>
+            <i>访问主页 ↗</i>
+          </a>
+          <a class="contact-card" href="https://gitee.com/liu-zhiyuan123456cmwl" target="_blank" rel="noopener">
+            <div class="contact-icon">🌿</div>
+            <small>GITEE</small>
+            <strong>liu-zhiyuan123456cmwl</strong>
+            <i>访问主页 ↗</i>
+          </a>
         </div>
       </div>
     </section>

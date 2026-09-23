@@ -1116,7 +1116,8 @@ img,svg{max-width:100%;display:block}
 /* ============================================================
    实习轨道（internship）
    ============================================================ */
-.internship{background:var(--bg-2)}
+/* .internship 的背景已由 EDITORIAL LAYER 的 E4 接管（出展厅的斜坡），
+   不再在此声明 —— 否则是同一条属性的两处真相源。 */
 
 .internship-route{
   position:relative;display:flex;justify-content:space-between;
@@ -2505,6 +2506,8 @@ body.category-linking .award-star:not(.is-related){
 
 /* ---- E0 令牌 ------------------------------------------------------------- */
 :root{
+  --ed-seam:var(--hall-bg);              /* 与展陈层缝合的起点色。用别名而不直引
+                                            --hall-bg，避免编辑层耦合展陈层的令牌来源 */
   --ed-pad-top:clamp(96px,10vw,150px);   /* 上重下轻 = 不对称留白，破掉 110/110 的死对称 */
   --ed-pad-bottom:clamp(80px,8vw,120px);
   --ed-gap:clamp(40px,5vw,72px);         /* 章节头 → 内容 */
@@ -2585,6 +2588,30 @@ body.category-linking .award-star:not(.is-related){
 .ed-section .skill-card:hover{
   transform:translateY(-2px);box-shadow:none;border-color:var(--orange-2);
 }
+
+/* ---- E4 背景节奏 --------------------------------------------------------- */
+/* 规则是「出展厅用坡，进展厅用切」：
+   #about(展厅) → #internship 是"从展厅走出来进入正文"，需要坡；
+   #awards → #gallery 保持硬切 —— .mu-hall 顶部有光锥，"硬切 + 光锥"
+   正是"走进展厅"的语法。两个方向的差异是有意的，不是遗漏。
+   三档色标（0 / 96px / 260px）：单段线性渐变在暗紫→中紫之间会出现
+   可见的 banding，加一个中间色标消掉。 */
+.ed-section.internship{
+  background:linear-gradient(180deg,
+    var(--ed-seam) 0%,
+    color-mix(in srgb,var(--ed-seam) 52%,var(--bg-2)) 96px,
+    var(--bg-2) 260px,
+    var(--bg-2) 100%);
+}
+.ed-section.skills{
+  background:linear-gradient(180deg,
+    var(--ed-seam) 0%,
+    color-mix(in srgb,var(--ed-seam) 52%,var(--bg)) 96px,
+    var(--bg) 260px,
+    var(--bg) 100%);
+}
+/* #skills 与 #contact 此前是连续两个同一底色、无分界，此处把收尾页压深一档 */
+.ed-section.contact{background:var(--bg-2)}
 
 /* ---- E9 降低动效 --------------------------------------------------------- */
 @media (prefers-reduced-motion:reduce){

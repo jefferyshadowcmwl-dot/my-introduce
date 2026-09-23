@@ -123,6 +123,34 @@ intro-gate (固定全屏，点击 character-button 触发 leaveIntro 跳转)
 - **6 类飘浮装饰**：intro-deco（符号）+ formula（数学公式），全部在屏幕边缘（left/right 2-5%），z-index 1，不挡 character-button 周围
 - **标题字**：Fraunces（英文）+ Noto Serif SC（中文），行楷场景用 ZCOOL XiaoWei
 
+## 博物馆展陈层（HALL LAYER）约定
+
+`#about` / `#gallery` / `#constellation` / `#archive` 四区块走「暗色展厅」语境，
+样式集中在 `styles.css` 末尾的 HALL LAYER 段（H0 令牌 → H9 reduced-motion）。
+
+**新增样式必须遵守**：
+- **令牌**：`--hall-bg / -bg-2 / -mat / -plate / -cone / -brass`、`--ar-landscape(1.45)` / `--ar-portrait(.70)`、`--scrim`
+- **类名**：新类一律 `mu-` 前缀（`.mu-hall` `.mu-no` `.mu-vitrine` `.mu-frame-no` `.mu-map-legend`）
+- **禁止 `#id` 前缀选择器** —— section 级样式由 `.mu-hall` 类承载
+- **不新增 `!important`**（现有 10 处均为启动页历史遗留）
+- **keyframes** 用 `mu` 前缀，与旧动画名零交叉
+- **`.mu-hall` 是主题无关的暗色孤岛**：浅色模式下它复位 `--line/--ink/--muted/--cyan` 等令牌
+
+**改 HTML 时的硬约束**：
+- `main > section[id]` 必须是直接子元素（`styles.css` 有 `main > section` 组合子，scrollspy 靠 offsetTop）
+- `.photo-wall` / `.archive-grid` / `.constellation-stage` 是 JS 注入容器，**类名不能改**
+- `.constellation-stage` 一容器担三职：SVG 父级 + append `.award-star` + prepend `.constellation-bg-canvas`
+- `button` 内只允许 phrasing content —— `.photo-card` / `.archive-item` / `.award-star` 内部不能用 `<div>`
+- 新注入的 `.reveal` 必须调 `observeReveals()`，否则永远停在 `opacity:0`
+- SVG `viewBox` 与节点坐标系必须同为 `0 0 100 100`，否则站点与折线错位
+
+**`IMG_CATALOG.aspect` 必须用真实像素核对**：原人工标注有 11 处标反。
+新增图片时用 JPEG SOF 标记读宽高（EXIF Orientation 全为 1，SOF 即渲染尺寸），不要手填。
+
+**验证方式**：本机 Playwright 浏览器未安装且下载会卡住。
+用系统 Chrome + CDP（脚本见 `%TEMP%\shots\verify.mjs`）：契约状态 smoke test、
+站点-折线对齐、reduced-motion、4 视口横向溢出。提交前应跑到全绿。
+
 ## 本地 memory
 
 `~/.claude/projects/E--github--/memory/github-resume-project.md` — 项目状态 + 下次开发提示词（自动加载，无需手动粘贴）。

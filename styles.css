@@ -968,16 +968,23 @@ img,svg{max-width:100%;display:block}
 .identity-card{grid-column:2;position:relative}
 .first-signal{grid-column:1/3;margin-top:24px}
 
+/* Hero 信号徽标 —— 走紫色，刻意区别于青色区块眉标。
+   它和 .section-kicker（01 ABOUT ME / 02 INTERNSHIP ORBIT…）都是「青色 mono
+   小字号大字距 + 左侧方块」形态，读起来像同一个组件：一个说 SIGNAL LZY-0324
+   · ONLINE，一个说 01 ABOUT ME，容易误以为 hero 也是一段带编号的区块。
+   两者都保留（SIGNAL 是全站信号台的身份底噪，不该删），改用色相区分：
+   区块编号眉标守青色（.section-kicker 不动），hero 徽标转紫色。 */
 .hero-copy .status{
   display:inline-flex;align-items:center;gap:8px;
   font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;
-  color:var(--cyan);padding:6px 12px;border-radius:20px;
-  background:rgba(0,217,255,.08);border:1px solid rgba(0,217,255,.3);
+  color:var(--purple-3);padding:6px 12px;border-radius:20px;
+  background:color-mix(in srgb,var(--purple-3) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--purple-3) 34%,transparent);
   margin-bottom:16px;
 }
 .hero-copy .status span{
-  width:6px;height:6px;border-radius:50%;background:var(--cyan);
-  box-shadow:0 0 8px var(--cyan);animation:pulse 1.5s infinite;
+  width:6px;height:6px;border-radius:50%;background:var(--purple-3);
+  box-shadow:0 0 8px var(--purple-3);animation:pulse 1.5s infinite;
 }
 
 .hero-copy .hello{
@@ -1862,19 +1869,13 @@ img,svg{max-width:100%;display:block}
 }
 .gallery-meta b{color:var(--orange-2);font-weight:700;}
 
-/* 展厅挂画墙：12 栏 + 中心挂高线
-   align-items:center 是设计核心 —— 美术馆挂画惯例是所有画心对齐同一条中心线，
-   而非顶端对齐。这一条把「网页卡片墙」变成「挂画墙」。 */
-.photo-wall{
-  display:grid;
-  grid-template-columns:repeat(12,1fr);
-  column-gap:var(--s-3);
-  row-gap:var(--s-16);
-  grid-auto-rows:minmax(420px,auto);
-  align-items:center;
-  grid-auto-flow:dense;
-  margin-top:8px;
-}
+/* 展厅挂画墙 —— 分组容器。
+   旧实现是单一 12 栏 grid + align-items:center + dense：12 张精选横竖混排，
+   画心对齐同一条中心线确实像挂画墙，但「奖状挨着经历、竖版卡在两张横版之间」
+   导致垂直基线参差（同一行里卡片 top 差 140px+）。现在拆成
+   奖状 / 经历 两段 × 横版 / 竖版 两排，同排内所有画框 aspect-ratio 完全一致
+   → 行内自动等高、行与行齐平。「统一」由同排同幅面保证，不再靠错落制造层次。 */
+.photo-wall{display:block;margin-top:8px}
 .photo-card{
   position:relative;
   display:flex;flex-direction:column;gap:var(--s-3);
@@ -1892,11 +1893,44 @@ img,svg{max-width:100%;display:block}
   width:5px;height:5px;border-radius:50%;transform:translateX(-50%);
   background:var(--purple-3);opacity:.45;
 }
-/* 横竖统一 span 4：12 项 × 4 列 = 48，正好 4 整行，不留空缺列。
-   视觉层次由高度差（ar 1.45 vs .70）+ align-items:center 承载，而非宽度差 ——
-   宽度混排会让总列数除不尽 12，每行尾部裂出空洞。 */
-.photo-card.is-landscape{grid-column:span 4;--ar:var(--ar-landscape)}
-.photo-card.is-portrait {grid-column:span 4;--ar:var(--ar-portrait)}
+/* 幅面只声明画心比例。列宽交给 .mu-wall-row 的 auto-fill 轨道 ——
+   横/竖已经分排，卡片不再需要靠 grid-column 跨列来区分尺度。 */
+.photo-card.is-landscape{--ar:var(--ar-landscape)}
+.photo-card.is-portrait {--ar:var(--ar-portrait)}
+
+/* ---- 挂画墙分组：奖状/经历 × 横版/竖版 ---- */
+.mu-wall-group{margin-top:var(--s-20)}
+.mu-wall-group:first-child{margin-top:0}
+.mu-wall-head{
+  display:flex;align-items:baseline;gap:var(--s-3);
+  padding-bottom:var(--s-3);margin-bottom:var(--s-8);
+  border-bottom:1px solid var(--line);
+}
+.mu-wall-head h3{
+  font-family:var(--font-display);
+  font-size:clamp(18px,2.4vw,26px);font-weight:700;
+  color:var(--ink-2);margin:0;
+}
+.mu-wall-head b{
+  margin-left:auto;font-family:var(--font-mono);
+  font-size:11px;font-weight:400;letter-spacing:.16em;color:var(--muted);
+}
+.mu-wall-sub + .mu-wall-sub{margin-top:var(--s-10)}
+.mu-wall-sub-label{
+  display:block;
+  /* 必须 > 27px：.photo-card::after 的吊钩点定位在 top:-27px，
+     它相对首排画框顶边向上探出。下边距只有 16px 时钩点会钻进这一行的行框里
+     （实测标签行框 6917–6935、钩点 6924–6929，4/4 相交），在「横版 · 6 件」
+     右侧浮出一个小点。--s-8 = 32px 留足 5px 余量。 */
+  margin-bottom:var(--s-8);
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);
+}
+/* 同一排内轨道等宽 + 卡片同幅面 → 行内等高、行与行对齐（align-items:start
+   让画框顶边而非画心对齐；挂线由 .photo-card::before 从顶边向上引出）。 */
+.mu-wall-row{display:grid;align-items:start;gap:var(--s-10) var(--s-6)}
+.mu-wall-row[data-orient="landscape"]{grid-template-columns:repeat(auto-fill,minmax(264px,1fr))}
+.mu-wall-row[data-orient="portrait"] {grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
 /* 入场 stagger 延迟归 CSS，reduced-motion 才能整体关掉 */
 .photo-card.reveal{transition-delay:calc(var(--i,0) * 60ms)}
 
@@ -1951,6 +1985,10 @@ img,svg{max-width:100%;display:block}
 .photo-plate strong{
   font-family:var(--font-display);
   font-size:14px;font-weight:600;line-height:1.45;color:var(--ink-2);
+  /* 预留两行：标题 1 行与 2 行的展签等高 —— 否则同一排里画框虽然齐平，
+     每行总高仍随标题行数浮动，行与行之间的挂距就不严格一致。
+     2.9em = 2 × line-height(1.45)，不做 line-clamp，长标题照常换行不截断。 */
+  min-height:2.9em;
   transition:color var(--t-fast);
 }
 .photo-plate small{
@@ -2025,23 +2063,40 @@ img,svg{max-width:100%;display:block}
   transform:rotate(90deg);
 }
 
-/* ---- 移动端响应式 ---- */
+/* ---- 移动端响应式：只收轨道最小宽，横/竖分排结构不变 ----
+   下限取值按各档容器实宽反推，保证「列数随视口收窄单调递减」。
+   先前竖版用 152/132 会让 992→991 出现 4→5 列、576→575 出现 2→3 列
+   —— 缩窗口时卡片密度反而跳密一档。竖版下限抬到 180/184 后，
+   容量序列（横 4/3/3/3/3/2 · 竖 5/4/3/3/2/2）全程单调。
+   注：768→767 还有一处跳变来自既有 :root --shell-w 在 ≤767 反向变宽，
+   非本层引入，未在此处改动。 */
 @media (max-width:991px){
-  .photo-wall{grid-template-columns:repeat(6,1fr);grid-auto-rows:minmax(320px,auto);row-gap:var(--s-12)}
-  .photo-card.is-landscape{grid-column:span 3}
-  .photo-card.is-portrait {grid-column:span 2}
+  .mu-wall-row{gap:var(--s-10) var(--s-5)}
+  .mu-wall-row[data-orient="landscape"]{grid-template-columns:repeat(auto-fill,minmax(224px,1fr))}
+  .mu-wall-row[data-orient="portrait"] {grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
 }
 @media (max-width:767px){
-  .photo-wall{grid-template-columns:repeat(2,1fr);grid-auto-rows:auto;row-gap:var(--s-10)}
-  .photo-card.is-landscape,
-  .photo-card.is-portrait{grid-column:span 1}
+  .mu-wall-group{margin-top:var(--s-16)}
+  .mu-wall-head{margin-bottom:var(--s-6)}
+  .mu-wall-row{gap:var(--s-8) var(--s-4)}
+  .mu-wall-row[data-orient="landscape"]{grid-template-columns:repeat(auto-fill,minmax(184px,1fr))}
+  .mu-wall-row[data-orient="portrait"] {grid-template-columns:repeat(auto-fill,minmax(184px,1fr))}
   .lightbox-content img{max-height:70vh;}
   .lightbox-close{top:14px;right:14px;}
 }
 @media (max-width:575px){
   .gallery-meta{font-size:10px;gap:10px;}
-  .photo-wall{column-gap:var(--s-2);row-gap:var(--s-8)}
-  .photo-plate strong{font-size:13px}
+  .mu-wall-row{gap:var(--s-8) var(--s-3)}
+  /* 写死 2 列，不用 auto-fill。375px 时容器实宽 343px（= 2×165.5 + 12），
+     而 576px 时容器 544px 也只容得下 2 列 —— 用 auto-fill 且下限 ≤165
+     的话 575px 会挤到 3 列，与 576px 的 2 列撞出跳变；
+     下限 >177 又会让 375px 掉回单列（19 张横版 = 19 行）。
+     两档都锁 2 列，既单调又与旧实现的 repeat(2,1fr) 密度一致。 */
+  .mu-wall-row[data-orient="landscape"],
+  .mu-wall-row[data-orient="portrait"]{grid-template-columns:repeat(2,1fr)}
+  /* 窄屏卡片压到 138–165px，长标题会折到 3 行，两行预留兜不住 ——
+     320px 实测出现行内两种卡高。提成 3 行（4.35em = 3 × 1.45）。 */
+  .photo-plate strong{font-size:13px;min-height:4.35em}
 }
 
 /* ============================================================
@@ -2559,10 +2614,23 @@ body.category-linking .award-star:not(.is-related){
   text-transform:uppercase;color:var(--cyan);
 }
 
-/* ---- H2 #about · 序厅玻璃展柜 -------------------------------------------- */
-.mu-vitrine{position:relative}
+/* ---- H2 #about · 序厅玻璃展柜 --------------------------------------------
+   整柜是 <button>：点击 → lightbox 看肖像原图。
+   此前它是无交互的 div 且未设 user-select —— 光标落上去能划选规格文字，
+   看着像「可以输入」。这里补 button 复位 + user-select:none。 */
+.mu-vitrine{
+  position:relative;display:block;width:100%;
+  padding:0;border:0;background:none;text-align:left;
+  cursor:pointer;user-select:none;-webkit-user-select:none;
+}
+.mu-vitrine:focus-visible{
+  outline:2px solid var(--purple-3);outline-offset:12px;
+  border-radius:var(--s-2);
+}
+.mu-vitrine:hover .vitrine-plate{border-left-color:var(--cyan)}
 
 .vitrine-glass{
+  display:block;                       /* 由 div 降级为 span，需显式块级 */
   position:relative;padding:var(--s-4);
   border-radius:var(--s-2);
   background:linear-gradient(180deg,var(--hall-bg-2),var(--hall-bg));
@@ -2608,16 +2676,18 @@ body.category-linking .award-star:not(.is-related){
   position:relative;z-index:1;display:grid;gap:var(--s-2);
   margin:var(--s-4) 0 0;padding:0;
 }
-.vitrine-spec > div{
+/* 规格表行 —— 原为 dl>div + dt/dd（语义正确但 dl 不是 phrasing content，
+   塞不进 button）。降级为 span 三件套，样式逐条对位搬过来。 */
+.vitrine-spec > .mu-spec-row{
   display:grid;grid-template-columns:46px 1fr;gap:var(--s-3);align-items:baseline;
   padding-top:var(--s-2);border-top:1px solid var(--line);
 }
-.vitrine-spec > div:first-child{border-top:0;padding-top:0}
-.vitrine-spec dt{
+.vitrine-spec > .mu-spec-row:first-child{border-top:0;padding-top:0}
+.mu-spec-key{
   font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--muted);
 }
-.vitrine-spec dd{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink)}
+.mu-spec-val{font-size:12.5px;line-height:1.5;color:var(--ink)}
 
 .vitrine-plate{
   display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);

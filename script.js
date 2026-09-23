@@ -22,51 +22,58 @@
      ======================================================================== */
   const IMG_CATALOG = [
     /* ---- 比赛获奖 (13) ---- */
-    { id:'comp_2023_15city',    file:'202315届上海市大学生计算机能力大赛.jpg',                       caption:'第 15 届上海市大学生计算机能力大赛',               category:'competition', year:'2023', tier:'city',     size:349521, aspect:'portrait' },
-    { id:'comp_2023_16nat',     file:'202316届中国计算机能力大赛.jpg',                                 caption:'第 16 届中国计算机能力大赛',                       category:'competition', year:'2023', tier:'national', size:285667, aspect:'landscape' },
-    { id:'comp_2023_design2',   file:'2023年(第16届》中国大学生计算机设计大赛二等奖.jpg',            caption:'第 16 届中国大学生计算机设计大赛 · 二等奖',       category:'competition', year:'2023', tier:'national', size:245229, aspect:'landscape' },
-    { id:'comp_2023_apply3',    file:'2023年(第十五届)上海市大学生计算机应用能力大赛3等奖.jpg',       caption:'第 15 届上海市大学生计算机应用能力大赛 · 三等奖', category:'competition', year:'2023', tier:'city',     size:354238, aspect:'landscape' },
-    { id:'comp_2024_17nat_1',   file:'202417届全国计算机能留大赛1.jpg',                                caption:'第 17 届全国计算机能力大赛 · 现场 1',             category:'competition', year:'2024', tier:'national', size:398753, aspect:'landscape' },
-    { id:'comp_2024_17nat_2',   file:'202417届全国计算机能留大赛2.jpg',                                caption:'第 17 届全国计算机能力大赛 · 现场 2',             category:'competition', year:'2024', tier:'national', size:487355, aspect:'landscape' },
-    { id:'comp_2024_school_gold',file:'2024上海杉达学院校赛金奖.jpg',                                  caption:'2024 上海杉达学院校赛 · 金奖',                   category:'competition', year:'2024', tier:'school',   size:137821, aspect:'landscape' },
-    { id:'comp_2024_intl_yin',  file:'2024中国国际创新创业大赛上海市银奖.jpg',                        caption:'中国国际创新创业大赛上海市 · 银奖',             category:'competition', year:'2024', tier:'city',     size:126382, aspect:'landscape' },
-    { id:'comp_2024_intl_nat',  file:'2024中国国际大学生创新创业大赛.jpg',                             caption:'中国国际大学生创新创业大赛',                     category:'competition', year:'2024', tier:'national', size:200748, aspect:'landscape' },
-    { id:'comp_2024_apply3',    file:'2024年(第十六届)上海市大学生计算机应用能力大赛3等奖.jpg',       caption:'第 16 届上海市大学生计算机应用能力大赛 · 三等奖', category:'competition', year:'2024', tier:'city',     size:421742, aspect:'landscape' },
-    { id:'comp_2025_school_gold',file:'2025上海杉达学院校赛金奖.jpg',                                  caption:'2025 上海杉达学院校赛 · 金奖',                   category:'competition', year:'2025', tier:'school',   size:148040, aspect:'landscape' },
-    { id:'comp_2025_intl_tong', file:'2025中国国际创新创业大赛上海市铜奖.jpg',                         caption:'中国国际创新创业大赛上海市 · 铜奖',             category:'competition', year:'2025', tier:'city',     size:397882, aspect:'landscape' },
-    { id:'comp_2026_school_te', file:'2026上海杉达学院校赛特等奖.jpg',                                 caption:'2026 上海杉达学院校赛 · 特等奖',                 category:'competition', year:'2026', tier:'school',   size:230132, aspect:'landscape' },
+    { id:'comp_2023_15city',    file:'202315届上海市大学生计算机能力大赛.jpg',                       caption:'第 15 届上海市大学生计算机能力大赛',               category:'competition', shot:'scene', year:'2023', tier:'city',     size:349521, aspect:'portrait' },
+    { id:'comp_2023_16nat',     file:'202316届中国计算机能力大赛.jpg',                                 caption:'第 16 届中国计算机能力大赛',                       category:'competition', shot:'scene', year:'2023', tier:'national', size:285667, aspect:'landscape' },
+    { id:'comp_2023_design2',   file:'2023年(第16届》中国大学生计算机设计大赛二等奖.jpg',            caption:'第 16 届中国大学生计算机设计大赛 · 二等奖',       category:'competition', shot:'cert', year:'2023', tier:'national', size:245229, aspect:'landscape' },
+    { id:'comp_2023_apply3',    file:'2023年(第十五届)上海市大学生计算机应用能力大赛3等奖.jpg',       caption:'第 15 届上海市大学生计算机应用能力大赛 · 三等奖', category:'competition', shot:'cert', year:'2023', tier:'city',     size:354238, aspect:'landscape' },
+    { id:'comp_2024_17nat_1',   file:'202417届全国计算机能留大赛1.jpg',                                caption:'第 17 届全国计算机能力大赛 · 现场 1',             category:'competition', shot:'scene', year:'2024', tier:'national', size:398753, aspect:'landscape' },
+    { id:'comp_2024_17nat_2',   file:'202417届全国计算机能留大赛2.jpg',                                caption:'第 17 届全国计算机能力大赛 · 现场 2',             category:'competition', shot:'scene', year:'2024', tier:'national', size:487355, aspect:'landscape' },
+    { id:'comp_2024_school_gold',file:'2024上海杉达学院校赛金奖.jpg',                                  caption:'2024 上海杉达学院校赛 · 金奖',                   category:'competition', shot:'scene', year:'2024', tier:'school',   size:137821, aspect:'landscape' },
+    { id:'comp_2024_intl_yin',  file:'2024中国国际创新创业大赛上海市银奖.jpg',                        caption:'中国国际创新创业大赛上海市 · 银奖',             category:'competition', shot:'cert', year:'2024', tier:'city',     size:126382, aspect:'landscape' },
+    { id:'comp_2024_intl_nat',  file:'2024中国国际大学生创新创业大赛.jpg',                             caption:'中国国际大学生创新创业大赛',                     category:'competition', shot:'scene', year:'2024', tier:'national', size:200748, aspect:'landscape' },
+    { id:'comp_2024_apply3',    file:'2024年(第十六届)上海市大学生计算机应用能力大赛3等奖.jpg',       caption:'第 16 届上海市大学生计算机应用能力大赛 · 三等奖', category:'competition', shot:'cert', year:'2024', tier:'city',     size:421742, aspect:'landscape' },
+    { id:'comp_2025_school_gold',file:'2025上海杉达学院校赛金奖.jpg',                                  caption:'2025 上海杉达学院校赛 · 金奖',                   category:'competition', shot:'scene', year:'2025', tier:'school',   size:148040, aspect:'landscape' },
+    { id:'comp_2025_intl_tong', file:'2025中国国际创新创业大赛上海市铜奖.jpg',                         caption:'中国国际创新创业大赛上海市 · 铜奖',             category:'competition', shot:'cert', year:'2025', tier:'city',     size:397882, aspect:'landscape' },
+    { id:'comp_2026_school_te', file:'2026上海杉达学院校赛特等奖.jpg',                                 caption:'2026 上海杉达学院校赛 · 特等奖',                 category:'competition', shot:'scene', year:'2026', tier:'school',   size:230132, aspect:'landscape' },
 
     /* ---- 校园活动 (7) ---- */
-    { id:'campus_top10',         file:'校园十大杰出人物.jpg',                                          caption:'校园十大杰出人物',                                 category:'campus',      year:'2024', tier:'school',   size: 98976, aspect:'landscape'  },
-    { id:'campus_chairman',      file:'程序设计设社长.jpg',                                            caption:'程序设计社社长 · 社团建设',                       category:'campus',      year:'2024', tier:'school',   size:438052, aspect:'landscape'  },
-    { id:'campus_paddle_1',      file:'百度paddlepaddle领航团团长.jpg',                                caption:'百度 PaddlePaddle 领航团 · 团长 1',               category:'campus',      year:'2024', tier:'school',   size:166648, aspect:'landscape' },
-    { id:'campus_paddle_2',      file:'百度paddlepaddle领航团团长2.jpg',                               caption:'百度 PaddlePaddle 领航团 · 团长 2',               category:'campus',      year:'2024', tier:'school',   size:175784, aspect:'landscape' },
-    { id:'campus_paddle_1024',   file:'1024百度paddlepaddle领航团程序员节.jpg',                        caption:'1024 百度 PaddlePaddle 领航团 · 程序员节',       category:'campus',      year:'2024', tier:'school',   size:145249, aspect:'landscape' },
-    { id:'campus_biye_2025',     file:'2025上海杉达学院本科毕业生.jpg',                                caption:'2025 上海杉达学院 · 本科毕业',                    category:'campus',      year:'2025', tier:'school',   size:272647, aspect:'landscape'  },
-    { id:'campus_yanjiusheng_2026',file:'26届上海杉达学院研究生.jpg',                                  caption:'第 26 届上海杉达学院研究生 · 录取',               category:'campus',      year:'2026', tier:'school',   size:342839, aspect:'landscape' },
+    { id:'campus_top10',         file:'校园十大杰出人物.jpg',                                          caption:'校园十大杰出人物',                                 category:'campus',      shot:'scene', year:'2024', tier:'school',   size: 98976, aspect:'landscape'  },
+    { id:'campus_chairman',      file:'程序设计设社长.jpg',                                            caption:'程序设计社社长 · 社团建设',                       category:'campus',      shot:'scene', year:'2024', tier:'school',   size:438052, aspect:'landscape'  },
+    { id:'campus_paddle_1',      file:'百度paddlepaddle领航团团长.jpg',                                caption:'百度 PaddlePaddle 领航团 · 团长 1',               category:'campus',      shot:'scene', year:'2024', tier:'school',   size:166648, aspect:'landscape' },
+    { id:'campus_paddle_2',      file:'百度paddlepaddle领航团团长2.jpg',                               caption:'百度 PaddlePaddle 领航团 · 团长 2',               category:'campus',      shot:'scene', year:'2024', tier:'school',   size:175784, aspect:'landscape' },
+    { id:'campus_paddle_1024',   file:'1024百度paddlepaddle领航团程序员节.jpg',                        caption:'1024 百度 PaddlePaddle 领航团 · 程序员节',       category:'campus',      shot:'scene', year:'2024', tier:'school',   size:145249, aspect:'landscape' },
+    { id:'campus_biye_2025',     file:'2025上海杉达学院本科毕业生.jpg',                                caption:'2025 上海杉达学院 · 本科毕业',                    category:'campus',      shot:'scene', year:'2025', tier:'school',   size:272647, aspect:'landscape'  },
+    { id:'campus_yanjiusheng_2026',file:'26届上海杉达学院研究生.jpg',                                  caption:'第 26 届上海杉达学院研究生 · 录取',               category:'campus',      shot:'scene', year:'2026', tier:'school',   size:342839, aspect:'landscape' },
 
     /* ---- 实践活动 (4) ---- */
-    { id:'practice_efg_base',    file:'2024研究生EFG夏令营孵化基地.jpg',                                caption:'2024 研究生 EFG 夏令营 · 孵化基地',               category:'practice',    year:'2024', tier:'province', size:222426, aspect:'landscape' },
-    { id:'practice_efg_group',   file:'2024研究生EFG夏令营孵化基地第七小组.jpg',                       caption:'2024 研究生 EFG 夏令营 · 第七小组',               category:'practice',    year:'2024', tier:'province', size:264460, aspect:'landscape' },
-    { id:'practice_luntan',      file:'上海民办高校科技论坛.jpg',                                      caption:'上海民办高校科技论坛',                             category:'practice',    year:'2024', tier:'city',     size:214271, aspect:'landscape' },
-    { id:'practice_zhiteng',     file:'上海致远鲸腾信息有限公式.jpg',                                  caption:'上海致远鲸腾信息有限公司 · 实习',                 category:'practice',    year:'2023', tier:'city',     size: 62467, aspect:'portrait' },
+    { id:'practice_efg_base',    file:'2024研究生EFG夏令营孵化基地.jpg',                                caption:'2024 研究生 EFG 夏令营 · 孵化基地',               category:'practice',    shot:'scene', year:'2024', tier:'province', size:222426, aspect:'landscape' },
+    { id:'practice_efg_group',   file:'2024研究生EFG夏令营孵化基地第七小组.jpg',                       caption:'2024 研究生 EFG 夏令营 · 第七小组',               category:'practice',    shot:'scene', year:'2024', tier:'province', size:264460, aspect:'landscape' },
+    { id:'practice_luntan',      file:'上海民办高校科技论坛.jpg',                                      caption:'上海民办高校科技论坛',                             category:'practice',    shot:'scene', year:'2024', tier:'city',     size:214271, aspect:'landscape' },
+    { id:'practice_zhiteng',     file:'上海致远鲸腾信息有限公式.jpg',                                  caption:'上海致远鲸腾信息有限公司 · 实习',                 category:'practice',    shot:'scene', year:'2023', tier:'city',     size: 62467, aspect:'portrait' },
 
     /* ---- 创领创业 (4) ---- */
-    { id:'startup_huangpu',      file:'创业黄浦一路繁花黄浦区创业三等级奖.jpg',                        caption:'创业黄浦 · 一路繁花黄浦区创业 · 三等奖',         category:'startup',     year:'2024', tier:'city',     size:342924, aspect:'portrait' },
-    { id:'startup_pudong_1',     file:'创领浦东创新大赛暨第六届上海浦东新区选拔赛青年新势力赛道一等奖奖.jpg',   caption:'创领浦东 · 青年新势力赛道 · 一等奖',         category:'startup',     year:'2024', tier:'city',     size:321768, aspect:'portrait' },
-    { id:'startup_pudong_2',     file:'创领浦东创新大赛暨第六届上海浦东新区选拔赛青年新势力赛道一等奖奖与奖杯.jpg', caption:'创领浦东 · 一等奖与奖杯',                category:'startup',     year:'2024', tier:'city',     size:239525, aspect:'landscape' },
-    { id:'startup_tongji',       file:'同济大学全国大学生创业计划一等奖.jpg',                          caption:'同济大学全国大学生创业计划 · 一等奖',             category:'startup',     year:'2024', tier:'national', size:200429, aspect:'portrait' },
+    { id:'startup_huangpu',      file:'创业黄浦一路繁花黄浦区创业三等级奖.jpg',                        caption:'创业黄浦 · 一路繁花黄浦区创业 · 三等奖',         category:'startup',     shot:'cert', year:'2024', tier:'city',     size:342924, aspect:'portrait' },
+    { id:'startup_pudong_1',     file:'创领浦东创新大赛暨第六届上海浦东新区选拔赛青年新势力赛道一等奖奖.jpg',   caption:'创领浦东 · 青年新势力赛道 · 一等奖',         category:'startup',     shot:'cert', year:'2024', tier:'city',     size:321768, aspect:'portrait' },
+    { id:'startup_pudong_2',     file:'创领浦东创新大赛暨第六届上海浦东新区选拔赛青年新势力赛道一等奖奖与奖杯.jpg', caption:'创领浦东 · 一等奖与奖杯',                category:'startup',     shot:'cert', year:'2024', tier:'city',     size:239525, aspect:'landscape' },
+    { id:'startup_tongji',       file:'同济大学全国大学生创业计划一等奖.jpg',                          caption:'同济大学全国大学生创业计划 · 一等奖',             category:'startup',     shot:'cert', year:'2024', tier:'national', size:200429, aspect:'portrait' },
 
     /* ---- 项目开发 (4) ---- */
-    { id:'project_zhilian_1',    file:'智联工翼开发过程1.jpg',                                          caption:'智联工翼 · 开发过程 1',                           category:'project',     year:'2024', tier:'private',  size:305191, aspect:'portrait' },
-    { id:'project_zhilian_2',    file:'智联工翼开发过程2.jpg',                                          caption:'智联工翼 · 开发过程 2',                           category:'project',     year:'2024', tier:'private',  size:421034, aspect:'portrait' },
-    { id:'project_zhilian_3',    file:'智联工翼开发过程3.jpg',                                          caption:'智联工翼 · 开发过程 3',                           category:'project',     year:'2024', tier:'private',  size:168078, aspect:'landscape' },
-    { id:'project_zhilian_4',    file:'智联工翼开发过程4.jpg',                                          caption:'智联工翼 · 开发过程 4',                           category:'project',     year:'2024', tier:'private',  size:175388, aspect:'landscape' },
+    { id:'project_zhilian_1',    file:'智联工翼开发过程1.jpg',                                          caption:'智联工翼 · 开发过程 1',                           category:'project',     shot:'scene', year:'2024', tier:'private',  size:305191, aspect:'portrait' },
+    { id:'project_zhilian_2',    file:'智联工翼开发过程2.jpg',                                          caption:'智联工翼 · 开发过程 2',                           category:'project',     shot:'scene', year:'2024', tier:'private',  size:421034, aspect:'portrait' },
+    { id:'project_zhilian_3',    file:'智联工翼开发过程3.jpg',                                          caption:'智联工翼 · 开发过程 3',                           category:'project',     shot:'scene', year:'2024', tier:'private',  size:168078, aspect:'landscape' },
+    { id:'project_zhilian_4',    file:'智联工翼开发过程4.jpg',                                          caption:'智联工翼 · 开发过程 4',                           category:'project',     shot:'scene', year:'2024', tier:'private',  size:175388, aspect:'landscape' },
 
     /* ---- 知识产权 (1) ---- */
-    { id:'ip_ruanzhuquan',       file:'软件著作权.jpg',                                                  caption:'基于 OpenCV + Django 的上位机软件 · 软著',        category:'ip',          year:'2024', tier:'national', size:304300, aspect:'portrait' }
+    { id:'ip_ruanzhuquan',       file:'软件著作权.jpg',                                                  caption:'基于 OpenCV + Django 的上位机软件 · 软著',        category:'ip',          shot:'cert', year:'2024', tier:'national', size:304300, aspect:'portrait' }
   ];
   const IMG_BY_ID = Object.fromEntries(IMG_CATALOG.map(x=>[x.id,x]));
+
+  /* #about 序厅展柜的肖像 —— 刻意不进 IMG_CATALOG：
+     它是 hero / 启动页 / 展柜复用的门面照，不属于「33 张履历证据」，
+     进目录会让 data-count-total / -gallery / -archive 全部虚高。
+     但要能被 openLightbox(id, caption) 查到，故单独登记进查找表。 */
+  const PORTRAIT_IMG = { id:'portrait_lzy', file:'liuzhiyuan.jpg', caption:'刘致远 · ENGINEER 0324' };
+  IMG_BY_ID[PORTRAIT_IMG.id] = PORTRAIT_IMG;
 
   /* ---- 工具函数 ---- */
   const assetUrl       = img => 'assets/' + img.file;
@@ -94,22 +101,38 @@
     { cardKey:'googleAds',     imgId:null }                    // 9 Google ADS（无图 → 降级）
   ];
 
-  /* #gallery photo-wall 12 张精选（按用户偏好"故事性强"）
-     幅面（横/竖）不在此指定 —— 由 IMG_CATALOG.aspect 驱动，避免两处真相源失同步 */
-  const GALLERY_PICKS = [
-    { imgId:'comp_2024_intl_nat' },       // 国家级双创
-    { imgId:'campus_paddle_1024' },       // PaddlePaddle 程序员节
-    { imgId:'startup_pudong_2' },         // 浦东一等奖 + 奖杯
-    { imgId:'campus_chairman' },          // 程序设计社长
-    { imgId:'practice_efg_group' },       // EFG 小组
-    { imgId:'comp_2024_17nat_1' },        // 国赛现场
-    { imgId:'startup_tongji' },           // 同济一等奖
-    { imgId:'campus_top10' },             // 校园十大
-    { imgId:'startup_huangpu' },          // 黄浦三等奖
-    { imgId:'ip_ruanzhuquan' },           // 软件著作权
-    { imgId:'campus_biye_2025' },         // 本科毕业
-    { imgId:'campus_yanjiusheng_2026' }   // 研究生录取
+  /* #gallery 挂画墙 —— 全 33 张，按「奖状 / 经历」拆两段，每段再按「横版 / 竖版」分两排。
+     分组依据（用户诉求：奖状归奖状、经历归经历；横的一排、竖的一排）：
+       奖状(cert)  = 10 张 —— 证书 / 奖状本体扫描件
+       经历(scene) = 23 张 —— 现场合影、活动、开发过程
+     两条纪律：
+       · 分组读 IMG_CATALOG.shot，不读 category。category 分不出来 ——
+         competition 里既有证书（2023年(第16届》…二等奖）也有现场合影（202316届…、
+         202417届…现场 1/2、2026 校赛特等奖台上举证）。shot 是逐张看原图判定的。
+       · 幅面读 IMG_CATALOG.aspect（已用 JPEG SOF 逐张核对真实像素，33/33 与渲染一致）。
+     清单与数量都从 IMG_CATALOG 派生，避免「数量 / 分组」两处真相源失同步。 */
+  const GALLERY_KINDS = [
+    { key:'award',  no:'A', label:'奖状 · CERTIFICATES', shot:'cert'  },
+    { key:'moment', no:'B', label:'经历 · MOMENTS',      shot:'scene' }
   ];
+  const GALLERY_ORIENTS = [
+    { key:'landscape', label:'横版' },
+    { key:'portrait',  label:'竖版' }
+  ];
+  const GALLERY_ITEMS = GALLERY_KINDS.flatMap(kind =>
+    IMG_CATALOG.filter(img => img.shot === kind.shot)
+               .map(img => ({ kind:kind.key, orient:img.aspect, img }))
+  );
+  /* 自检：shot / aspect 都是没写就静默归错档的字段（缺 shot 会被当成非本组而整个消失，
+     拼错 aspect 会掉进「竖版」排）。这里显式兜住，不让缺字段无声通过。 */
+  (function(){
+    const bad = IMG_CATALOG.filter(x => x.shot !== 'cert' && x.shot !== 'scene');
+    if(bad.length) console.error('⚠️ shot 字段非法或缺失：', bad.map(x => x.id));
+    const badAr = IMG_CATALOG.filter(x => x.aspect !== 'portrait' && x.aspect !== 'landscape');
+    if(badAr.length) console.error('⚠️ aspect 字段非法或缺失：', badAr.map(x => x.id));
+    if(GALLERY_ITEMS.length !== IMG_CATALOG.length)
+      console.error(`⚠️ 挂画墙漏图：${GALLERY_ITEMS.length} / ${IMG_CATALOG.length}`);
+  })();
 
   /* #constellation 5 大分类星点 */
   const CONSTELLATION_NODES = [
@@ -134,7 +157,7 @@
   (function(){
     const ids = new Set();
     AWARD_BINDINGS.forEach(b => b.imgId && ids.add(b.imgId));
-    GALLERY_PICKS.forEach(p => ids.add(p.imgId));
+    GALLERY_ITEMS.forEach(it => ids.add(it.img.id));
     CONSTELLATION_NODES.forEach(n => ids.add(n.imgId));
     ARCHIVE_GROUPS.forEach(g => g.imgIds.forEach(i => ids.add(i)));
     console.log(`📊 图像覆盖率：${ids.size} / ${IMG_CATALOG.length}`);
@@ -599,32 +622,60 @@
     });
   }
 
-  /* ---------- 详情证据墙：Photo Wall ---------- */
+  /* ---------- 详情证据墙：Photo Wall（奖状 / 经历 × 横版 / 竖版） ---------- */
   function initGallery(){
     const wall = $('.photo-wall');
     if(!wall) return;
-    wall.innerHTML = GALLERY_PICKS.map((pick, i) => {
-      const img = IMG_BY_ID[pick.imgId];
-      if(!img){ console.warn('Gallery 缺失图片：', pick.imgId); return ''; }
-      const no = String(i+1).padStart(2,'0');
-      const orient = img.aspect === 'portrait' ? 'is-portrait' : 'is-landscape';
-      return `<button class="photo-card ${orient} reveal" type="button"
-              data-img-id="${img.id}" data-caption="${img.caption}"
-              data-cat="${img.category}" data-no="${no}"
-              style="--i:${i}"
-              aria-label="展品 ${no} · ${img.caption}">
-              <span class="photo-frame">
-                <img src="${assetUrl(img)}" alt="${img.caption}" loading="lazy" decoding="async" />
-                <b class="mu-frame-no">${no}</b>
-              </span>
-              <span class="photo-plate">
-                <span class="mu-no">EXHIBIT ${no}</span>
-                <strong>${img.caption}</strong>
-                <small>${img.year} · ${categoryLabel(img.category)} · ${tierLabel(img.tier)}</small>
-                <em>打开故事 ↗</em>
-              </span>
-            </button>`;
+
+    /* 展品号跨组连续（01..33），与 lightbox / 展签编号一致 */
+    let seq = 0;
+
+    wall.innerHTML = GALLERY_KINDS.map(kind => {
+      const owned = GALLERY_ITEMS.filter(it => it.kind === kind.key);
+      if(!owned.length){ console.warn('Gallery 分组为空：', kind.key); return ''; }
+
+      const rows = GALLERY_ORIENTS.map(orient => {
+        const items = owned.filter(it => it.orient === orient.key);
+        if(!items.length) return '';
+        const cards = items.map((it, i) => {
+          const img = it.img;
+          seq += 1;
+          const no = String(seq).padStart(2,'0');
+          const cls = orient.key === 'portrait' ? 'is-portrait' : 'is-landscape';
+          /* --i 取模 8：每排重新起一次 stagger 波，避免 33 项累计出 2s 的尾巴 */
+          return `<button class="photo-card ${cls} reveal" type="button"
+                  data-img-id="${img.id}" data-caption="${img.caption}"
+                  data-cat="${img.category}" data-no="${no}"
+                  style="--i:${i % 8}"
+                  aria-label="展品 ${no} · ${img.caption}">
+                  <span class="photo-frame">
+                    <img src="${assetUrl(img)}" alt="${img.caption}" loading="lazy" decoding="async" />
+                    <b class="mu-frame-no">${no}</b>
+                  </span>
+                  <span class="photo-plate">
+                    <span class="mu-no">EXHIBIT ${no}</span>
+                    <strong>${img.caption}</strong>
+                    <small>${img.year} · ${categoryLabel(img.category)} · ${tierLabel(img.tier)}</small>
+                    <em>打开故事 ↗</em>
+                  </span>
+                </button>`;
+        }).join('');
+        return `<div class="mu-wall-sub">
+            <span class="mu-wall-sub-label">${orient.label} · ${items.length} 件</span>
+            <div class="mu-wall-row" data-orient="${orient.key}">${cards}</div>
+          </div>`;
+      }).join('');
+
+      return `<div class="mu-wall-group" data-kind="${kind.key}">
+          <header class="mu-wall-head">
+            <span class="mu-no">${kind.no}</span>
+            <h3>${kind.label}</h3>
+            <b>${owned.length} 件</b>
+          </header>
+          ${rows}
+        </div>`;
     }).join('');
+
     observeReveals();
     wall.addEventListener('click', e => {
       const btn = e.target.closest('.photo-card');
@@ -1161,6 +1212,17 @@
     });
   }
 
+  /* ---------- 序厅展柜：整柜即按钮，点击看肖像原图 ----------
+     展柜在 HTML 里已是 <button>，故 Enter / Space 原生可用，无需补键盘处理。
+     此前它是纯文本 div 且未设 user-select —— 点上去会划选文字、看着像能编辑。 */
+  function initVitrine(){
+    const btn = $('.mu-vitrine');
+    if(!btn) return;
+    btn.addEventListener('click', () => {
+      openLightbox(PORTRAIT_IMG.id, PORTRAIT_IMG.caption);
+    });
+  }
+
   /* ---------- 键盘快捷键 ---------- */
   function initKeys(){
     document.addEventListener('keydown',(e)=>{
@@ -1180,7 +1242,7 @@
   function initCounters(){
     const set = (sel, n) => $$(sel).forEach(el => { el.textContent = n; });
     set('[data-count-total]',   IMG_CATALOG.length);
-    set('[data-count-gallery]', GALLERY_PICKS.length);
+    set('[data-count-gallery]', IMG_CATALOG.length);
     set('[data-count-archive]', ARCHIVE_GROUPS.reduce((a, g) => a + g.imgIds.length, 0));
   }
 
@@ -1200,6 +1262,7 @@
     initGallery();
     initConstellation();
     initArchive();
+    initVitrine();
     initProjectMedia();
     initInternshipMedia();
     initLightbox();

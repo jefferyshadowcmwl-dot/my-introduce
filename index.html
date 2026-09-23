@@ -252,23 +252,27 @@
       <div class="shell">
         <div class="section-kicker reveal"><span>01</span> ABOUT ME</div>
         <div class="about-grid">
-          <div class="mu-vitrine reveal">
-            <div class="vitrine-glass">
+          <!-- 展柜整柜即按钮：点击进 lightbox 看肖像原图。
+               内部一律 phrasing content（button 内不允许 dl/div），
+               规格表由 dl/dt/dd 降级为 span，样式见 .mu-spec-*。
+               aria-label 提供简短可访问名，避免把整段规格当成按钮名朗读。 -->
+          <button class="mu-vitrine reveal" type="button" aria-label="查看刘致远肖像原图">
+            <span class="vitrine-glass">
               <span class="vitrine-portrait">
                 <img src="assets/liuzhiyuan.jpg" alt="刘致远肖像" loading="lazy" decoding="async" />
               </span>
-              <dl class="vitrine-spec">
-                <div><dt>NAME</dt><dd>刘致远 / LIU ZHIYUAN</dd></div>
-                <div><dt>BORN</dt><dd>2003.03 · 上海</dd></div>
-                <div><dt>MAJOR</dt><dd>计算机科学与技术 · 本科</dd></div>
-                <div><dt>ROLE</dt><dd>PaddlePaddle 团长 · 程序设计社社长</dd></div>
-              </dl>
-            </div>
-            <div class="vitrine-plate">
+              <span class="vitrine-spec">
+                <span class="mu-spec-row"><span class="mu-spec-key">NAME</span><span class="mu-spec-val">刘致远 / LIU ZHIYUAN</span></span>
+                <span class="mu-spec-row"><span class="mu-spec-key">BORN</span><span class="mu-spec-val">2003.03 · 上海</span></span>
+                <span class="mu-spec-row"><span class="mu-spec-key">MAJOR</span><span class="mu-spec-val">计算机科学与技术 · 本科</span></span>
+                <span class="mu-spec-row"><span class="mu-spec-key">ROLE</span><span class="mu-spec-val">PaddlePaddle 团长 · 程序设计社社长</span></span>
+              </span>
+            </span>
+            <span class="vitrine-plate">
               <span class="mu-no">展柜 01</span>
               <em>LZY ENGINEER STATION · 0324</em>
-            </div>
-          </div>
+            </span>
+          </button>
           <div class="about-title reveal" data-delay="1">
             <h2>一个工程师视角，<br />许多种<span>动手方式。</span></h2>
             <div class="doodle">观察 · 提问 · 落地 ↗</div>
@@ -615,10 +619,10 @@
             <div class="section-kicker"><span>05</span> PHOTO WALL</div>
             <h2>镜头里的<span>工程师信号</span></h2>
           </div>
-          <p><span data-count-gallery>12</span> 张精选照片 · 点击任意一张走进现场，等比例查看完整证据。</p>
+          <p>全册 <span data-count-gallery>33</span> 张一次看全 · 奖状归奖状、经历归经历，横版一排、竖版一排 · 点击任意一张走进现场。</p>
         </div>
         <div class="gallery-meta reveal">
-          <span><b data-count-gallery>12</b> MEMORY FRAMES</span>
+          <span><b data-count-gallery>33</b> MEMORY FRAMES</span>
           <i></i>
           <span>2023 — 2026</span>
           <b>点击放大查看 ↗</b>

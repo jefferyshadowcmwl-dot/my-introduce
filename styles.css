@@ -1317,11 +1317,9 @@ img,svg{max-width:100%;display:block}
 /* ============================================================
    联系
    ============================================================ */
-/* 收尾页：堆叠 + h1 级标题。
-   .contact-wrap 已并入 .section-head（原为全站唯一保留"居中 + max-width"
-   的特例 —— 靠特例维持的统一不算统一）。 */
-.section-head.ed-closing{grid-template-columns:1fr;gap:var(--s-4);margin-bottom:var(--s-12)}
-.section-head.ed-closing h2{font-size:var(--fs-h1)}
+/* .contact-wrap 已并入 .section-head —— 原为全站唯一保留"居中 + max-width"
+   的特例，靠特例维持的统一不算统一。
+   .ed-closing 的规则在 EDITORIAL LAYER 的 E2 里定义（收尾页属编辑层）。 */
 
 /* head 现在占满 shell（1180px），不约束会让 4 张联系卡虚胖 */
 .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:900px}
@@ -2486,4 +2484,111 @@ body.category-linking .award-star:not(.is-related){
     transition:none;
   }
   .photo-card.reveal{transition-delay:0s}
+}
+
+/* ============================================================================
+   ✨ EDITORIAL LAYER —— 编辑杂志层（E0–E9）
+   ----------------------------------------------------------------------------
+   目的：把 #internship / #projects / #awards / #skills / #contact 改造为
+        「编辑杂志」语境（大留白 · 衬线正文 · 不对称 · 纸面直角），
+        与 HALL LAYER 的博物馆展陈构成两种语言 —— 靠色调统一，不靠手法趋同。
+   纪律（同 HALL LAYER）：
+     · 新层一律单类 (0,1,0)，状态最多两段（.a.is-x）
+     · 禁止 #id 前缀选择器 —— section 级样式由 .ed-section 承载
+     · 不新增 !important
+     · 不新增色相，只重配权
+     · 不新增 fixed 装饰层（沿用只允许 2 个 .page-glow 的约束）
+   ⚠️ 本层必须位于 styles.css 末尾 —— .section-head.ed h2 span 与
+      .section-head h2 span 特异性平局，都是 (0,2,1)，只能靠源码顺序取胜。
+      若挪到文件中段，编辑层的记号笔底纹会被霓虹渐变覆盖回来（不报错）。
+   ============================================================================ */
+
+/* ---- E0 令牌 ------------------------------------------------------------- */
+:root{
+  --ed-pad-top:clamp(96px,10vw,150px);   /* 上重下轻 = 不对称留白，破掉 110/110 的死对称 */
+  --ed-pad-bottom:clamp(80px,8vw,120px);
+  --ed-gap:clamp(40px,5vw,72px);         /* 章节头 → 内容 */
+  --ed-measure:min(64ch,100%);           /* 正文度量：杂志的"栏宽"就是留白 */
+  --ed-radius:2px;                       /* 纸面直角，对照展陈层的铜框 */
+  --ed-indent:clamp(0px,6vw,96px);       /* 不对称缩进量 */
+  --ed-mark:color-mix(in srgb,var(--orange-2) 55%,transparent);  /* 记号笔底纹 */
+  --ed-rule:linear-gradient(90deg,transparent,var(--line) 20%,var(--line) 80%,transparent);
+  --font-editorial:'Noto Serif SC','Songti SC','STSong','Fraunces',Georgia,serif;
+}
+@media (max-width:767px){
+  :root{ --ed-pad-top:80px; --ed-pad-bottom:64px }
+}
+
+/* ---- E1 公共：大留白 + 衬线正文 + 收窄行宽 ------------------------------- */
+.ed-section{padding-top:var(--ed-pad-top);padding-bottom:var(--ed-pad-bottom)}
+/* 装置①：正文换真衬线。body 现用 --font-xingkai（ZCOOL XiaoWei），那是展示体，
+   做正文天然偏"海报"。零新增字体加载（Noto Serif SC 已在 Google Fonts 请求里）。
+   展陈层一个字不动 —— 它的正文本来就是展签密度。 */
+.ed-section p,
+.ed-section li{font-family:var(--font-editorial)}
+/* 留白的本质不是 padding，是行长。正文原跑满 1180px（约 90+ 字/行），
+   这是全站最伤杂志感的一点。 */
+.ed-section p{max-width:var(--ed-measure)}
+
+/* ---- E2 章节头：顶线 + 记号笔底纹 + 不对称变体 ---------------------------- */
+/* 装置③：与 .mu-hall::after 地脚线用逐字相同的配方 —— 全站只有一种横线，
+   博物馆的地脚线与杂志的章节线是同一根。这是最省力也最有效的统一信号。 */
+.section-head.ed{
+  position:relative;padding-top:var(--s-6);
+  grid-template-columns:minmax(0,1.45fr) minmax(0,.55fr);
+  gap:clamp(24px,5vw,80px);align-items:end;margin-bottom:var(--ed-gap);
+}
+.section-head.ed::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:1px;pointer-events:none;
+  background:var(--ed-rule);
+}
+/* 装置②：记号笔底纹代替霓虹渐变。
+   cyan→purple 渐变正是"科技落地页"的声纹 —— 不换掉，区块看多少次还是落地页。
+   色相没变（--orange-2 是展陈层 --hall-brass 的母色之一），处理方式变了。
+   ⚠️ 四条必须一起写：只改 background 而忘清 background-clip，
+      标题会变成一块实心渐变矩形盖住文字。 */
+.section-head.ed h1 span,
+.section-head.ed h2 span{
+  background:none;
+  -webkit-background-clip:border-box;background-clip:border-box;
+  color:inherit;font-weight:400;
+  box-shadow:inset 0 -.16em 0 var(--ed-mark);
+}
+/* 变体 A · 标题缩进（#projects） */
+.section-head.ed-indent .section-head-main{padding-left:var(--ed-indent)}
+/* 变体 B · 镜像（#skills）。
+   用 grid-column 显式放置而非 order —— 这些是文本节点，order 会让
+   视觉顺序与 DOM/读屏顺序不一致。 */
+.section-head.ed-flip{grid-template-columns:minmax(0,.55fr) minmax(0,1.45fr)}
+.section-head.ed-flip .section-head-main{grid-column:2;grid-row:1}
+.section-head.ed-flip .section-head-note{grid-column:1;grid-row:1}
+/* 变体 C · 收尾堆叠（#contact）：单列 + h1 级标题 */
+.section-head.ed-closing{grid-template-columns:1fr;gap:var(--s-4);margin-bottom:var(--s-12)}
+.section-head.ed-closing h2{font-size:var(--fs-h1)}
+
+/* ---- E3 卡片：去盒子 / 换直角 / 光晕换色相换挡 ---------------------------- */
+/* #projects 去盒子，只留顶线与编号 —— 留白增益最大的一刀 */
+.ed-section .project-card{
+  background:none;border:0;border-top:1px solid var(--line);border-radius:0;
+  padding:var(--s-6) 0 0;
+}
+.ed-section .project-card:hover{
+  transform:none;box-shadow:none;border-top-color:var(--orange-2);
+}
+/* #awards / #skills 保留底面 —— 它们是可点按钮，盒子是 affordance，
+   只把霓虹圆角换成纸面直角、霓虹光晕换成色相换挡 */
+.ed-section .award-card,
+.ed-section .skill-card{
+  background:var(--surface);border-color:var(--line);border-radius:var(--ed-radius);
+}
+.ed-section .award-card:hover,
+.ed-section .skill-card:hover{
+  transform:translateY(-2px);box-shadow:none;border-color:var(--orange-2);
+}
+
+/* ---- E9 降低动效 --------------------------------------------------------- */
+@media (prefers-reduced-motion:reduce){
+  .ed-section .project-card,
+  .ed-section .award-card,
+  .ed-section .skill-card{transition:none}
 }

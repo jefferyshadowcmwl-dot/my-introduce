@@ -268,14 +268,14 @@
     </section>
 
     <!-- ========== 实习经历 ========== -->
-    <section id="internship" class="internship section-pad" data-signal="builder">
+    <section id="internship" class="internship section-pad ed-section" data-signal="builder">
       <div class="shell">
-        <div class="section-head reveal">
-          <div>
+        <div class="section-head ed reveal">
+          <div class="section-head-main">
             <div class="section-kicker"><span>02</span> INTERNSHIP ORBIT</div>
             <h2>5 段实习，<br /><span>从分析到建造。</span></h2>
           </div>
-          <p>每段实习都补上一块能力：从数据查询到脚本自动化，从测试用例到嵌入式开发。</p>
+          <p class="section-head-note">每段实习都补上一块能力：从数据查询到脚本自动化，从测试用例到嵌入式开发。</p>
         </div>
 
         <div class="internship-route reveal" role="tablist" aria-label="选择实习">
@@ -408,12 +408,12 @@
     </section>
 
     <!-- ========== 项目经历 ========== -->
-    <section id="projects" class="projects section-pad" data-signal="maker">
+    <section id="projects" class="projects section-pad ed-section" data-signal="maker">
       <div class="shell">
         <!-- 原 .project-head 的子元素顺序与全站相反（kicker→p→h2），
              原因是它没有 grid、顺序即视觉顺序。套进 .section-head 的
              1.2fr 1fr 两列后 DOM 顺序就是列序，必须把 h2 提到 p 之前。 -->
-        <div class="section-head reveal">
+        <div class="section-head ed ed-indent reveal">
           <div class="section-head-main">
             <div class="section-kicker"><span>03</span> BUILD SITE</div>
             <h2>构建现场，<br />从<span>一个想法</span>到<span>可交付的产物。</span></h2>
@@ -475,14 +475,14 @@
     </section>
 
     <!-- ========== 荣誉 / 获奖 ========== -->
-    <section id="awards" class="awards section-pad" data-signal="leader">
+    <section id="awards" class="awards section-pad ed-section" data-signal="leader">
       <div class="shell">
-        <div class="section-head reveal">
-          <div>
+        <div class="section-head ed reveal">
+          <div class="section-head-main">
             <div class="section-kicker"><span>04</span> SIGNAL PULSES</div>
             <h2>每一束<span>信号脉冲</span>，<br />都是一次确认。</h2>
           </div>
-          <p>每个奖项背后，都是一次主动尝试、一次团队协作，以及把想法做成现实的坚持。</p>
+          <p class="section-head-note">每个奖项背后，都是一次主动尝试、一次团队协作，以及把想法做成现实的坚持。</p>
         </div>
 
         <div class="award-grid">
@@ -654,14 +654,17 @@
     </section>
 
     <!-- ========== 技能矩阵 ========== -->
-    <section id="skills" class="skills section-pad">
+    <section id="skills" class="skills section-pad ed-section">
       <div class="shell">
-        <div class="section-head reveal">
-          <div>
+        <!-- ed-flip：镜像布局（导语在左窄栏、标题在右宽栏）。
+             用 grid-column 显式放置而非 order —— 这些是文本节点，
+             order 会让视觉顺序与读屏顺序不一致。 -->
+        <div class="section-head ed ed-flip reveal">
+          <div class="section-head-main">
             <div class="section-kicker"><span>08</span> SKILL MATRIX</div>
             <h2>技能<span>矩阵</span></h2>
           </div>
-          <p>从编程到硬件、从数据到营销——跨域动手能力。</p>
+          <p class="section-head-note">从编程到硬件、从数据到营销——跨域动手能力。</p>
         </div>
 
         <div class="skill-grid">
@@ -723,12 +726,12 @@
     </section>
 
     <!-- ========== 联系 ========== -->
-    <section id="contact" class="contact section-pad" data-signal="future">
+    <section id="contact" class="contact section-pad ed-section" data-signal="future">
       <div class="shell">
         <!-- 原 .contact-wrap 是唯一保留"居中 + max-width"的特例。
              靠一个特例维持的"统一"不算统一，且编辑杂志语言的收尾页
              本就是左对齐不对称跨页 —— 故一并归入 .section-head。 -->
-        <div class="section-head ed-closing reveal">
+        <div class="section-head ed ed-closing reveal">
           <div class="section-head-main">
             <div class="section-kicker"><span>09</span> CONTACT</div>
             <h2>下一段信号，<br />从这里<span>开始。</span></h2>

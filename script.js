@@ -18,7 +18,7 @@
 
   /* ========================================================================
      履历图片证据集 — 详情页单一真相源
-     33 张履历图（不含 liuzhiyuan.jpg，保留在 hero / 启动页）
+     33 张履历图（不含 liuzhiyuan.jpg，保留在启动页 / #about 展柜）
      ======================================================================== */
   const IMG_CATALOG = [
     /* ---- 比赛获奖 (13) ---- */
@@ -69,7 +69,7 @@
   const IMG_BY_ID = Object.fromEntries(IMG_CATALOG.map(x=>[x.id,x]));
 
   /* #about 序厅展柜的肖像 —— 刻意不进 IMG_CATALOG：
-     它是 hero / 启动页 / 展柜复用的门面照，不属于「33 张履历证据」，
+     它是启动页 / 展柜复用的门面照，不属于「33 张履历证据」，
      进目录会让 data-count-total / -gallery / -archive 全部虚高。
      但要能被 openLightbox(id, caption) 查到，故单独登记进查找表。 */
   const PORTRAIT_IMG = { id:'portrait_lzy', file:'liuzhiyuan.jpg', caption:'刘致远 · ENGINEER 0324' };
@@ -178,7 +178,7 @@
     //   0   question 吸进中心 + sticker shine + deco fade
     // 180   8 道脉冲光线放射 + photo emit + halo scan
     // 400   信号字符流扫过 + 顶部扫描线扫一次
-    // 600   body.is-arrive → header/dock/guide/hero-stagger 入场
+    // 600   body.is-arrive → header / dock / guide 三者入场（headerIn/dockIn/guideIn）
     // 900   introGate 整体渐隐
     // 1100  introGate 完全隐藏 + 兼容旧 is-visible class
     introGate.classList.add('is-leaving');
@@ -194,9 +194,9 @@
       introGate.style.display='none';
       header?.classList.add('is-visible');
       miniGuide?.classList.add('is-visible');
-      // 只让 hero 区块的 reveal 元素立即可见（启动页 → 主站的衔接）
-      // 其他区块（about/internship/...）保留 IntersectionObserver 滚动揭示
-      $$('.hero .reveal').forEach(el=>el.classList.add('is-visible'));
+      // 只让首屏（#about）的 reveal 元素立即可见（启动页 → 主站的衔接）
+      // 其他区块（internship/projects/...）保留 IntersectionObserver 滚动揭示
+      $$('#about .reveal').forEach(el=>el.classList.add('is-visible'));
     },1100);
   }
   $('.character-button')?.addEventListener('click',leaveIntro);
@@ -382,7 +382,7 @@
 
   /* ---------- Quick Stats 数字滚动 ---------- */
   function initCountUp(){
-    const stats = $$('.quick-stats strong[data-count]');
+    const stats = $$('.about-stats strong[data-count]');
     if(!stats.length) return;
     const obs = new IntersectionObserver((entries)=>{
       entries.forEach(en=>{

@@ -600,15 +600,9 @@ img,svg{max-width:100%;display:block}
 .is-arrive .site-header{animation:headerIn .55s cubic-bezier(.4,0,.2,1) .1s both}
 .is-arrive .signal-station{animation:dockIn .55s cubic-bezier(.4,0,.2,1) .2s both}
 .is-arrive .mini-guide{animation:guideIn .55s cubic-bezier(.4,0,.2,1) .3s both}
-.is-arrive .hero-copy{animation:heroCopyIn .7s cubic-bezier(.4,0,.2,1) .4s both}
-.is-arrive .identity-card{animation:identityCardIn .7s cubic-bezier(.4,0,.2,1) .55s both}
-.is-arrive .first-signal{animation:firstSignalIn .7s cubic-bezier(.4,0,.2,1) .7s both}
 @keyframes headerIn{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes dockIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
 @keyframes guideIn{from{transform:translateY(120%);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes heroCopyIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
-@keyframes identityCardIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes firstSignalIn{from{opacity:0;transform:translateX(-30px) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
 
 /* 启动页降级 — 关闭所有过渡动画（用户偏好） */
 @media (prefers-reduced-motion:reduce){
@@ -616,8 +610,7 @@ img,svg{max-width:100%;display:block}
   .is-leaving .question,.is-leaving .sticker-label,
   .is-bursting .intro-photo-sticker,.is-bursting .character-halo,
   .is-leaving .intro-deco,.is-leaving .formula{animation:none!important}
-  .is-arrive .site-header,.is-arrive .signal-station,.is-arrive .mini-guide,
-  .is-arrive .hero-copy,.is-arrive .identity-card,.is-arrive .first-signal{
+  .is-arrive .site-header,.is-arrive .signal-station,.is-arrive .mini-guide{
     animation:none!important;opacity:1!important;transform:none!important
   }
   .intro-gate.is-leaving{transition:none;opacity:0}
@@ -955,91 +948,6 @@ img,svg{max-width:100%;display:block}
 .menu-button[aria-expanded="true"] i:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
 .menu-button[aria-expanded="true"] i:nth-child(2){transform:rotate(-45deg) translate(5px,-5px)}
 
-/* ============================================================
-   Hero
-   ============================================================ */
-.hero{
-  position:relative;
-  display:grid;grid-template-columns:1.2fr .8fr;gap:48px;
-  padding-top:80px;padding-bottom:60px;
-  align-items:start;
-}
-.hero-copy{grid-column:1}
-.identity-card{grid-column:2;position:relative}
-.first-signal{grid-column:1/3;margin-top:24px}
-
-/* Hero 信号徽标 —— 走紫色，刻意区别于青色区块眉标。
-   它和 .section-kicker（01 ABOUT ME / 02 INTERNSHIP ORBIT…）都是「青色 mono
-   小字号大字距 + 左侧方块」形态，读起来像同一个组件：一个说 SIGNAL LZY-0324
-   · ONLINE，一个说 01 ABOUT ME，容易误以为 hero 也是一段带编号的区块。
-   两者都保留（SIGNAL 是全站信号台的身份底噪，不该删），改用色相区分：
-   区块编号眉标守青色（.section-kicker 不动），hero 徽标转紫色。 */
-.hero-copy .status{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;
-  color:var(--purple-3);padding:6px 12px;border-radius:20px;
-  background:color-mix(in srgb,var(--purple-3) 12%,transparent);
-  border:1px solid color-mix(in srgb,var(--purple-3) 34%,transparent);
-  margin-bottom:16px;
-}
-.hero-copy .status span{
-  width:6px;height:6px;border-radius:50%;background:var(--purple-3);
-  box-shadow:0 0 8px var(--purple-3);animation:pulse 1.5s infinite;
-}
-
-.hero-copy .hello{
-  margin:0 0 8px;font-size:14px;color:var(--muted);letter-spacing:.05em;
-}
-.hero-copy h1{
-  font-family:var(--font-xingkai);
-  font-size:clamp(48px,8vw,96px);
-  line-height:1.05;font-weight:700;letter-spacing:.02em;
-  margin:0 0 18px;
-  background:linear-gradient(135deg, var(--cyan) 0%, var(--purple) 50%, var(--orange) 100%);
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 4px 20px rgba(120,40,214,.35));
-  position:relative;
-}
-.hero-copy .hero-mission{
-  font-family:var(--font-xingkai);
-  font-size:clamp(22px,3.2vw,32px);
-  line-height:1.5;font-weight:600;letter-spacing:.04em;
-  color:var(--ink-2);margin:0 0 18px;font-style:normal;
-}
-.hero-copy .hero-mission span{
-  display:block;
-  background:linear-gradient(90deg, var(--cyan) 0%, var(--purple) 100%);
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;
-  font-weight:700;
-}
-.spark{
-  display:inline-block;margin-left:12px;
-  color:var(--orange);
-  font-size:.9em;
-  filter:drop-shadow(0 0 12px var(--orange));
-  animation:spark 1.6s ease-in-out infinite;
-  vertical-align:0.1em;
-}
-@keyframes spark{
-  0%,100%{transform:rotate(-12deg) scale(1);opacity:1}
-  50%{transform:rotate(18deg) scale(1.35);opacity:.85}
-}
-
-.hero-mission{
-  font-family:var(--font-display);font-size:clamp(22px,3vw,30px);
-  font-weight:700;color:var(--ink);margin:0 0 18px;line-height:1.4;
-  font-style:italic;
-}
-.hero-mission span{
-  background:linear-gradient(120deg,var(--cyan),var(--purple-3));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-
-.hero-intro{font-size:16px;color:var(--muted);max-width:640px;margin:0 0 28px}
-
-.hero-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .primary-button{
   display:inline-flex;align-items:center;gap:10px;
   padding:14px 28px;border-radius:30px;
@@ -1054,220 +962,41 @@ img,svg{max-width:100%;display:block}
 .under-link{font-size:14px;color:var(--cyan);border-bottom:1px dashed var(--cyan);padding-bottom:2px}
 .under-link:hover{color:var(--purple-3);border-color:var(--purple-3)}
 
-/* Hero 身份卡 */
-.identity-card{
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:24px;padding:24px;position:relative;
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-.id-top{
-  display:flex;justify-content:space-between;
-  font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;
-  color:var(--muted);margin-bottom:16px;
-}
-.id-top span:last-child{color:var(--green);font-weight:700}
-
-/* Hero 头像 — arch 拱形（顶半圆 + 底矩形）+ 光环 + 扫描线 */
-.avatar-wrap{
-  position:relative;
-  width:100%;
-  aspect-ratio:3/4;
-  margin-bottom:18px;
-  display:flex;align-items:center;justify-content:center;
-  overflow:visible;
-}
-.avatar-wrap .avatar,.arch-photo{
-  position:relative;
-  width:86%;
-  aspect-ratio:3/4;
-  border-radius:50% 50% 16px 16px / 30% 30% 16px 16px;
-  overflow:hidden;
-  background:var(--surface-2);
-  z-index:2;
-  margin:0;
-  box-shadow:
-    0 0 0 3px var(--bg),
-    0 0 0 5px var(--purple-3),
-    0 30px 60px rgba(120,40,214,.45);
-  /* 渲染动画初始：模糊 + 缩放 + 中央裂开 */
-  opacity:0;
-  transform:scale(.92);
-  filter:blur(14px);
-  clip-path:inset(0 50% 0 50%);
-  transition:
-    opacity 1.1s cubic-bezier(.4,0,.2,1),
-    transform 1.1s cubic-bezier(.4,0,.2,1),
-    filter 1.1s cubic-bezier(.4,0,.2,1),
-    clip-path 1.1s cubic-bezier(.4,0,.2,1);
-}
-.arch-photo img{
-  width:100%;height:100%;
-  object-fit:cover;object-position:center 20%;
-  display:block;
-}
-.reveal.is-visible .avatar-wrap .avatar,
-.reveal.is-visible .arch-photo{
-  opacity:1;transform:scale(1);filter:blur(0);
-  clip-path:inset(0 0 0 0);
-}
-
-/* 旋转彩色光环 */
-.avatar-halo{
-  position:absolute;inset:4%;
-  border-radius:50% 50% 16px 16px / 30% 30% 16px 16px;
-  background:conic-gradient(from 0deg,
-    var(--purple) 0%,
-    var(--cyan) 25%,
-    var(--orange) 50%,
-    var(--purple) 75%,
-    var(--purple) 100%);
-  filter:blur(22px);
-  opacity:0;
-  z-index:0;
-  animation:haloSpin 12s linear infinite;
-  transition:opacity 1.2s ease;
-  pointer-events:none;
-}
-.reveal.is-visible .avatar-halo{opacity:.6}
-@keyframes haloSpin{to{transform:rotate(360deg)}}
-
-/* 外圈脉冲光环 */
-.avatar-ring{
-  position:absolute;inset:-3%;
-  border-radius:50% 50% 16px 16px / 30% 30% 16px 16px;
-  background:
-    linear-gradient(var(--bg),var(--bg)) padding-box,
-    linear-gradient(135deg,var(--cyan),var(--orange),var(--purple-3)) border-box;
-  border:2px solid transparent;
-  z-index:1;opacity:0;
-  animation:ringPulse 2.5s ease-in-out infinite;
-  transition:opacity 1.2s ease .2s;
-  pointer-events:none;
-}
-.reveal.is-visible .avatar-ring{opacity:1}
-@keyframes ringPulse{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.025)}
-}
-
-/* 扫描线（从顶到底循环扫过） */
-.avatar-scan{
-  position:absolute;inset:4%;
-  border-radius:50% 50% 16px 16px / 30% 30% 16px 16px;
-  overflow:hidden;z-index:3;pointer-events:none;
-  opacity:0;
-  transition:opacity 1.4s ease .5s;
-}
-.reveal.is-visible .avatar-scan{opacity:1}
-.avatar-scan::after{
-  content:'';
-  position:absolute;left:0;right:0;
-  top:-40%;height:30%;
-  background:linear-gradient(180deg,
-    transparent,
-    rgba(0,217,255,.5) 50%,
-    transparent);
-  animation:scanMove 4s ease-in-out infinite;
-}
-@keyframes scanMove{
-  0%{top:-40%}
-  100%{top:110%}
-}
-
-@media (prefers-reduced-motion:reduce){
-  .avatar-halo,.avatar-ring,.avatar-scan::after{animation:none}
-}
-
-.id-name{margin-bottom:12px}
-.id-name strong{
-  display:block;font-family:var(--font-display);font-size:20px;
-  font-weight:700;font-style:italic;letter-spacing:.02em;color:var(--ink-2);
-}
-.id-name span{font-size:24px;font-weight:700;font-family:var(--font-display);color:var(--ink)}
-
-.id-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.id-meta span{
-  font-family:var(--font-mono);font-size:11px;
-  padding:4px 10px;border-radius:12px;
-  background:rgba(120,40,214,.12);color:var(--purple-3);
-  border:1px solid var(--line);
-}
-
-.tape{
-  position:absolute;width:90px;height:18px;
-  background:linear-gradient(135deg,rgba(0,217,255,.5),rgba(0,217,255,.2));
-  border:1px solid rgba(0,217,255,.4);
-}
-.tape-one{top:18px;right:-20px;transform:rotate(15deg)}
-.tape-two{bottom:18px;left:-20px;transform:rotate(-15deg);background:linear-gradient(135deg,rgba(255,107,53,.5),rgba(255,107,53,.2));border-color:rgba(255,107,53,.4)}
-
-/* First Signal 卡片 */
-.first-signal{
-  display:flex;align-items:center;gap:18px;
-  background:var(--surface);border:1px solid var(--cyan);border-radius:16px;
-  padding:18px 24px;position:relative;overflow:hidden;
-  text-decoration:none;color:var(--ink);
-  transition:all var(--t-fast);
-}
-.first-signal:hover{transform:translateX(4px);border-color:var(--purple-3)}
-.signal-pulse{
-  position:absolute;left:14px;top:50%;transform:translateY(-50%);
-  width:12px;height:12px;border-radius:50%;background:var(--cyan);
-  box-shadow:0 0 16px var(--cyan);animation:pulse 2s infinite;
-}
-.first-signal > div{padding-left:24px;flex:1}
-.first-signal small{
-  font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;
-  color:var(--cyan);font-weight:500;
-}
-.first-signal strong{display:block;font-size:18px;color:var(--ink-2);font-weight:700;margin:4px 0;font-family:var(--font-cn)}
-.first-signal p{margin:0;font-size:13px;color:var(--muted)}
-.first-signal i{font-style:normal;color:var(--cyan);font-weight:600;font-family:var(--font-mono)}
-
-/* Hero Orbit */
-.hero-orbit{
-  position:absolute;left:0;right:0;bottom:-60px;
-  height:60px;pointer-events:none;overflow:hidden;
-  opacity:.4;
-}
-.hero-orbit span{
-  position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,var(--purple-3),transparent);
-  height:1px;top:50%;
-}
-.hero-orbit i{
-  position:absolute;left:0;top:50%;transform:translateY(-50%);
-  font-family:var(--font-mono);font-size:11px;color:var(--purple-3);white-space:nowrap;
-  animation:orbitScroll 30s linear infinite;
-}
-@keyframes orbitScroll{
-  from{transform:translate(100%,-50%)}
-  to{transform:translate(-100%,-50%)}
-}
-
 /* ============================================================
    Quick Stats
    ============================================================ */
-.quick-stats{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
-  margin-top:60px;margin-bottom:40px;
+/* 数据带（原 .quick-stats 独立区块并入 #about）。
+   视觉从「4 张浮卡」改为「上下夹线 + 内部竖分隔的连续带」——
+   这是展柜底座铭牌的语言，与 HALL LAYER 的线语言一致；
+   text-align 由居中改左对齐，同理。 */
+.about-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  margin:var(--s-10) 0 var(--s-8);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
 }
-.quick-stats article{
-  text-align:center;padding:24px 16px;
-  background:var(--surface);border:1px solid var(--line);border-radius:16px;
-  transition:all var(--t-fast);
+.about-stats article{
+  padding:var(--s-6) var(--s-4);
+  text-align:left;
+  border-left:1px solid var(--line);
 }
-.quick-stats article:hover{border-color:var(--purple-3);transform:translateY(-4px)}
-.quick-stats strong{
+.about-stats article:first-child{border-left:0}
+.about-stats strong{
   display:block;font-family:var(--font-mono);
-  font-size:42px;font-weight:800;
+  font-size:42px;font-weight:800;line-height:1;
   background:linear-gradient(120deg,var(--cyan),var(--purple-3));
   -webkit-background-clip:text;background-clip:text;color:transparent;
-  margin-bottom:8px;
+  margin-bottom:var(--s-2);
 }
-.quick-stats strong small{font-size:24px;opacity:.7}
-.quick-stats span{font-size:13px;color:var(--muted);font-family:var(--font-cn)}
+/* small 用相对定尺，跟随数字字号自动降级（原先写死 24px，窄栏里会挤） */
+.about-stats strong small{font-size:.5em;opacity:.7}
+.about-stats span{font-size:13px;color:var(--muted);font-family:var(--font-cn)}
+
+@media (max-width:991px){
+  .about-stats{grid-template-columns:repeat(2,1fr)}
+  .about-stats article:nth-child(odd){border-left:0}
+  .about-stats article:nth-child(n+3){border-top:1px solid var(--line)}
+}
 
 /* ============================================================
    About
@@ -1284,34 +1013,23 @@ img,svg{max-width:100%;display:block}
   font-weight:700;
 }
 
+/* #about 现在承担首屏：不需要 .section-pad 的 110px 顶距，
+   但也不能低于 72px —— 否则 sticky header 一滚就贴上区块眉标。 */
+.about{padding-top:clamp(72px,7vw,110px)}
+
 .about-grid{
   display:grid;
   grid-template-columns:minmax(240px,.82fr) 1.42fr;
-  grid-template-areas:"case title" "case copy";
-  /* 行高必须显式声明：展柜跨两行且高于右栏内容，若两行都是 auto 会把
-     多余高度平分，导致标题与正文之间裂开一大段空隙。auto + 1fr 让
-     余量全部落到第二行底部。 */
-  grid-template-rows:auto 1fr;
+  grid-template-areas:"case copy";
   gap:32px 48px;align-items:start;margin-bottom:36px;
 }
 .mu-vitrine{grid-area:case}
-.about-title{grid-area:title}
 .about-copy{grid-area:copy}
-.about-title h2{
-  font-family:var(--font-display);
-  font-size:clamp(28px,4vw,44px);line-height:1.2;font-weight:800;
-  color:var(--ink-2);margin:0 0 14px;
-}
-.about-title h2 span{
-  background:linear-gradient(120deg,var(--cyan),var(--purple-3));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.about-title .doodle{
-  font-family:var(--font-mono);font-size:12px;color:var(--orange-2);
-  letter-spacing:.15em;
-}
-.about-copy .lead{font-size:20px;font-weight:600;color:var(--ink-2);margin:0 0 16px;line-height:1.5}
 .about-copy p{margin:0 0 14px;color:var(--muted);font-size:15px}
+
+/* 首屏 CTA（原 hero-actions 迁入）。
+   .primary-button / .under-link 本身零改动，只换容器与上边距。 */
+.about-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:24px}
 
 .role-cloud{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .role-cloud span{
@@ -1330,16 +1048,30 @@ img,svg{max-width:100%;display:block}
    Section Head（通用）
    ============================================================ */
 .section-head{display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:end;margin-bottom:48px}
+/* #about 用 h1（首屏），其余 8 个区块用 h2 —— 同一组件，不同语义档。
+   原 .about-title h2 与 .section-head h2 是逐字重复的两条规则，已合并至此。 */
+.section-head h1,
 .section-head h2{
   font-family:var(--font-display);
   font-size:clamp(28px,4vw,44px);line-height:1.2;font-weight:800;
   color:var(--ink-2);margin:0;
 }
+.section-head h1 span,
 .section-head h2 span{
   background:linear-gradient(120deg,var(--cyan),var(--purple-3));
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
+.section-head .doodle{
+  font-family:var(--font-mono);font-size:12px;color:var(--orange-2);
+  letter-spacing:.15em;margin-top:14px;
+}
 .section-head p{font-size:15px;color:var(--muted);margin:0}
+/* 首屏导语（原 .about-copy .lead 提升为 head note）。
+   必须写双类 —— .section-head p 的特异性是 (0,1,1)，单类 (0,1,0) 压不过它，
+   会静默退化成 15px 灰字，而且"看起来不算坏"所以极易漏检。 */
+.section-head .section-head-note-lead{
+  font-size:20px;font-weight:600;color:var(--ink-2);line-height:1.5;
+}
 
 /* ============================================================
    实习轨道（internship）
@@ -1610,11 +1342,10 @@ img,svg{max-width:100%;display:block}
 .footer-signal span{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
 
 /* 状态点呼吸。
-   这条 @keyframes 此前缺失 —— .hero-copy .status span / .signal-pulse /
-   .footer-signal span 三处都声明了 animation:pulse 却无定义，动画一直空转。
-   用 brightness 而非 transform:scale：.signal-pulse 带 translateY(-50%) 定位，
-   scale 会覆盖它导致垂直居中失效；也不用 opacity，避免与项目「反对闪烁」的
-   既有偏好冲突。brightness 对三个不同色（青/青/绿）都成立。 */
+   这条 @keyframes 此前缺失 —— `.footer-signal span`（以及已删除的 hero 状态点）
+   声明了 animation:pulse 却无定义，动画一直空转。
+   用 brightness 而非 transform:scale：带 translateY(-50%) 定位的元素上 scale
+   会覆盖它导致垂直居中失效；也不用 opacity，避免与项目「反对闪烁」的既有偏好冲突。 */
 @keyframes pulse{
   0%,100%{filter:brightness(1)}
   50%{filter:brightness(1.7)}
@@ -1640,7 +1371,7 @@ img,svg{max-width:100%;display:block}
 
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .cosmic-field i,.intro-deco,.signal-pulse,.spark,.character-halo,.hero-orbit i{animation:none}
+  .cosmic-field i,.intro-deco,.character-halo{animation:none}
   .question{animation:none}
 }
 
@@ -1648,10 +1379,7 @@ img,svg{max-width:100%;display:block}
    响应式
    ============================================================ */
 @media (max-width:991px){
-  .hero{grid-template-columns:1fr;gap:32px}
-  .identity-card{grid-column:1}
   .about-grid,.section-head{grid-template-columns:1fr;gap:24px}
-  .quick-stats{grid-template-columns:repeat(2,1fr)}
   .project-grid,.award-grid,.skill-grid{grid-template-columns:repeat(2,1fr)}
   .contact-grid{grid-template-columns:repeat(2,1fr)}
   .internship-panel.active{grid-template-columns:1fr;gap:24px}
@@ -1671,19 +1399,18 @@ img,svg{max-width:100%;display:block}
   .menu-button{display:flex}
   .site-header{padding:12px 16px}
   .brand small{display:none}
-  .hero{padding-top:48px}
   .internship-panels{padding:24px}
   .mini-guide,.signal-station{bottom:12px;left:12px;right:12px;min-width:auto;width:calc(100% - 24px)}
   .signal-station{left:12px;right:12px;top:auto}
   .unlock-toast{top:auto;bottom:120px;right:12px;left:12px;min-width:auto}
-  .quick-stats,.project-grid,.award-grid,.skill-grid,.contact-grid{grid-template-columns:1fr}
+  /* .about-stats 刻意不在这个单列列表里 —— 4 个短 KPI 用 2×2 比 1×4 省纵向空间，
+     它由自己的 991 断点接管（见下方 .about-stats 规则） */
+  .project-grid,.award-grid,.skill-grid,.contact-grid{grid-template-columns:1fr}
   .internship-tab{min-width:72px;padding:6px}
   .internship-tab span{font-size:12px}
 }
 
 @media (max-width:575px){
-  .hero-copy h1{font-size:36px}
-  .hero-mission{font-size:18px}
   .intro-photo-sticker{width:160px;height:160px}
   .character-button{width:200px;height:200px}
   .skill-row span{width:100px;font-size:12px}
@@ -2706,7 +2433,7 @@ body.category-linking .award-star:not(.is-related){
 
 /* ---- H8 #about 响应式 ---------------------------------------------------- */
 @media (max-width:991px){
-  .about-grid{grid-template-columns:1fr;grid-template-areas:"case" "title" "copy"}
+  .about-grid{grid-template-columns:1fr;grid-template-areas:"case" "copy"}
 }
 
 /* ---- H9 降低动效：把 HALL LAYER 新增的过渡一并收口 ----------------------

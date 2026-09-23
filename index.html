@@ -197,60 +197,24 @@
   <!-- ==================== 主内容 ==================== -->
   <main id="top">
 
-    <!-- ========== Hero ========== -->
-    <section class="hero shell">
-      <div class="hero-copy reveal">
-        <div class="status"><span></span> SIGNAL LZY-0324 · ONLINE</div>
-        <p class="hello">欢迎来到 LZY 工程师信号台</p>
-        <h1>刘致远<span class="spark">⚡</span></h1>
-        <p class="hero-mission">用代码<br /><span>连接数据、硬件与商业。</span></p>
-        <p class="hero-intro">计算机科学与技术本科，从 MySQL 数据分析到 Arduino 嵌入式开发，从 SEO 营销到国家级双创立项——5 段实习、4 项省级以上奖项、1 项实用新型专利，持续把想法做出来。</p>
-        <div class="hero-actions">
-          <a class="primary-button" href="#internship">接收第一束信号 <span>↘</span></a>
-          <a class="under-link" href="#contact">直接联系我 →</a>
-        </div>
-      </div>
-      <div class="identity-card reveal" data-delay="1">
-        <div class="id-top"><span>ENGINEER ID · LZY-0324</span><span>ACTIVE</span></div>
-        <div class="avatar-wrap">
-          <span class="avatar-halo" aria-hidden="true"></span>
-          <span class="avatar-ring" aria-hidden="true"></span>
-          <div class="avatar arch-photo">
-            <img src="assets/liuzhiyuan.jpg" alt="刘致远肖像" loading="lazy" decoding="async" />
-          </div>
-          <span class="avatar-scan" aria-hidden="true"></span>
-        </div>
-        <div class="id-name"><strong>LIUZHIYUAN</strong><span>刘致远</span></div>
-        <div class="id-meta"><span>2003.03</span><span>群众</span><span>SHANGHAI</span></div>
-        <div class="tape tape-one"></div>
-        <div class="tape tape-two"></div>
-      </div>
-      <a class="first-signal reveal" href="#internship" data-signal="origin">
-        <span class="signal-pulse"></span>
-        <div>
-          <small>FIRST SIGNAL / ORIGIN</small>
-          <strong>第一段实习，从 MySQL 数据库的增删改查开始。</strong>
-          <p>5 段实习持续积累，把"会做"变成"做成"。</p>
-        </div>
-        <i>接收 ↘</i>
-      </a>
-      <div class="hero-orbit" aria-hidden="true">
-        <span></span><i>CODE · DATA · HARDWARE · SEO · STARTUP ·</i>
-      </div>
-    </section>
-
-    <!-- ========== Quick Stats ========== -->
-    <section class="quick-stats shell reveal" aria-label="个人数据">
-      <article><strong data-count="5" data-suffix="+">0<small>+</small></strong><span>技术实习段数</span></article>
-      <article><strong data-count="4" data-suffix="+">0<small>+</small></strong><span>省级以上奖项</span></article>
-      <article><strong data-count="1">0</strong><span>国家级双创项目立项</span></article>
-      <article><strong data-count="2" data-suffix="+">0<small>+</small></strong><span>专利 / 软件著作权</span></article>
-    </section>
-
-    <!-- ========== About ========== -->
+    <!-- ========== About（首屏）========== -->
     <section id="about" class="about section-pad mu-hall" data-signal="origin">
       <div class="shell">
-        <div class="section-kicker reveal"><span>01</span> ABOUT ME</div>
+        <!-- 首屏（原 hero 已删，此处承担落地页职能）：
+             标题提为 h1，hero 的两个 CTA 迁入 head。
+             sr-only 姓名：视觉上不显示，供读屏与搜索引擎读到 h1 里的「刘致远」。 -->
+        <div class="section-head reveal">
+          <div class="section-head-main">
+            <div class="section-kicker"><span>01</span> ABOUT ME</div>
+            <h1><span class="sr-only">刘致远 · </span>一个工程师视角，<br />许多种<span>动手方式。</span></h1>
+            <div class="doodle">观察 · 提问 · 落地 ↗</div>
+            <div class="about-actions">
+              <a class="primary-button" href="#internship">接收第一束信号 <span>↘</span></a>
+              <a class="under-link" href="#contact">直接联系我 →</a>
+            </div>
+          </div>
+          <p class="section-head-note section-head-note-lead">我关注的不是"技术多炫"，而是"它能不能解决一个真实问题，并被做出来"。</p>
+        </div>
         <div class="about-grid">
           <!-- 展柜整柜即按钮：点击进 lightbox 看肖像原图。
                内部一律 phrasing content（button 内不允许 dl/div），
@@ -273,16 +237,24 @@
               <em>LZY ENGINEER STATION · 0324</em>
             </span>
           </button>
-          <div class="about-title reveal" data-delay="1">
-            <h2>一个工程师视角，<br />许多种<span>动手方式。</span></h2>
-            <div class="doodle">观察 · 提问 · 落地 ↗</div>
-          </div>
-          <div class="about-copy reveal" data-delay="2">
-            <p class="lead">我关注的不是"技术多炫"，而是"它能不能解决一个真实问题，并被做出来"。</p>
+          <div class="about-copy reveal" data-delay="1">
             <p>计算机科学与技术专业本科，从 MySQL 数据分析、Python 自动化脚本起步，逐步拓展到 Arduino 嵌入式、YOLO 视觉、3D 建模、SEO/GEO 营销——既写代码也接项目，既做工程也做落地。</p>
             <p>作为 PaddlePaddle 团长与程序设计社社长，我愿意把学到的整理出来、分享出去；作为双创项目第一负责人，我完成了从市级立项到国家级立项的跃迁。</p>
           </div>
         </div>
+
+        <!-- 数据带（原 quick-stats 独立区块并入）。
+             契约：strong[data-count] 内含 0 与 <small>+</small> 必须同时存在 ——
+             initCountUp 用 querySelector('small')?.outerHTML 保住尾标；
+             第 3 项无尾标，故不放 <small>。
+             原先的数据上还挂了 data-suffix="+"，与 <small> 重复导致渲染出 5++，已删。 -->
+        <section class="about-stats reveal" aria-label="个人数据">
+          <article><strong data-count="5">0<small>+</small></strong><span>技术实习段数</span></article>
+          <article><strong data-count="4">0<small>+</small></strong><span>省级以上奖项</span></article>
+          <article><strong data-count="1">0</strong><span>国家级双创项目立项</span></article>
+          <article><strong data-count="2">0<small>+</small></strong><span>专利 / 软件著作权</span></article>
+        </section>
+
         <div class="role-cloud reveal">
           <span class="hot">PaddlePaddle 团长</span>
           <span class="hot">程序设计社社长</span>

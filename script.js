@@ -638,32 +638,76 @@
     const stage = $('.constellation-stage');
     if(!stage) return;
     const detail = {
+      box:   $('.star-detail'),
       cat:   $('#star-category'),
       title: $('#star-title'),
-      result:$('#star-result')
+      result:$('#star-result'),
+      open:  $('.star-open')
     };
+
+    /* SVG 折线改为按 CONSTELLATION_NODES 的 x/y 动态生成。
+       原来 points 是手工对应节点百分比坐标的硬编码串，动一个节点就错位。
+       viewBox 同时从 "0 0 100 58" 修正为 "0 0 100 100" —— 原值 y 却取到 70，
+       是靠 preserveAspectRatio="none" 拉伸兜出来的假对齐；统一为 0 0 100 100 后
+       y=70 严格等于盒高 70%，与 .award-star{top:70%} 数学上重合。 */
+    const svg = stage.querySelector('svg');
+    if(svg){
+      svg.setAttribute('viewBox', '0 0 100 100');
+      const poly = svg.querySelector('polyline');
+      if(poly) poly.setAttribute('points', CONSTELLATION_NODES.map(n => `${n.x},${n.y}`).join(' '));
+    }
+
+    let current = null;
+
+    function paint(node, img){
+      if(detail.box)    detail.box.style.setProperty('--cat-color', CAT_COLORS[img.category] || '');
+      if(detail.cat)    detail.cat.textContent    = node.category + ' · ' + img.year;
+      if(detail.title)  detail.title.textContent  = img.caption;
+      if(detail.result) detail.result.textContent = tierLabel(img.tier) + ' · ' + categoryLabel(img.category);
+      current = { imgId: img.id, caption: img.caption };
+    }
+
+    function selectNode(btn, node, img){
+      stage.querySelectorAll('.award-star').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      // 换牌过渡：先压暗，140ms 后换文本再恢复 —— 像展签被重新打印
+      if(detail.box) detail.box.classList.add('is-swapping');
+      setTimeout(() => {
+        paint(node, img);
+        if(detail.box) detail.box.classList.remove('is-swapping');
+      }, 140);
+    }
+
     CONSTELLATION_NODES.forEach((node, i) => {
       const img = IMG_BY_ID[node.imgId];
       if(!img){ console.warn('Constellation 缺失图片：', node.imgId); return; }
+      const no  = String(i + 1).padStart(2, '0');
       const btn = document.createElement('button');
-      btn.className = 'award-star' + (i===0 ? ' active' : '');
+      btn.className = 'award-star' + (i === 0 ? ' active' : '');
       btn.type = 'button';
       btn.style.setProperty('--x', node.x + '%');
       btn.style.setProperty('--y', node.y + '%');
-      btn.setAttribute('aria-label', img.caption);
+      btn.setAttribute('aria-label', `站点 S-${no} · ${img.caption}`);
       btn.dataset.imgId = img.id;
       btn.dataset.cat = img.category;
-      btn.innerHTML = `<i>✦</i><span>${node.category}</span>`;
-      btn.addEventListener('click', () => {
-        stage.querySelectorAll('.award-star').forEach(s => s.classList.remove('active'));
-        btn.classList.add('active');
-        if(detail.cat)    detail.cat.textContent   = node.category + ' · ' + img.year;
-        if(detail.title)  detail.title.textContent = img.caption;
-        if(detail.result) detail.result.textContent = categoryLabel(img.category);
-        openLightbox(img.id, img.caption);
-      });
+      btn.innerHTML =
+        `<b class="star-no">S-${no}</b><i>✦</i>
+         <span class="star-name">${node.category}<small>${img.year}</small></span>`;
+      /* 行为变更：点站点只换展签，不再直接弹灯箱 —— 看展节奏是先读签再决定看不看 */
+      btn.addEventListener('click', () => selectNode(btn, node, img));
       stage.appendChild(btn);
     });
+
+    // 首屏展签先按第 1 个站点填好（原来的静态占位文案与数据无关）
+    const firstImg = IMG_BY_ID[CONSTELLATION_NODES[0].imgId];
+    if(firstImg) paint(CONSTELLATION_NODES[0], firstImg);
+
+    // 由展签上的「查看展品」进 lightbox
+    if(detail.open){
+      detail.open.addEventListener('click', () => {
+        if(current) openLightbox(current.imgId, current.caption);
+      });
+    }
   }
 
   /* ---------- Project / Internship 图片证据注入 ---------- */
@@ -879,15 +923,25 @@
         node.classList.toggle('is-related', node.dataset.cat === cat);
       });
     });
+    const clearLink = () => {
+      document.body.classList.remove('category-linking');
+      $$(targets).forEach(node => node.classList.remove('is-related'));
+    };
+
     document.body.addEventListener('mouseout', e => {
       const el = e.target.closest(targets);
       if(!el) return;
       // 检查鼠标是否真的移到了外部（不是移到子元素）
       const related = e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(targets);
       if(related) return;
-      document.body.classList.remove('category-linking');
-      $$(targets).forEach(node => node.classList.remove('is-related'));
+      clearLink();
     });
+
+    /* 兜底：mouseover / mouseout 在滚动、DOM 变化、窗口失焦等情况下未必配对
+       出现。一旦漏掉 mouseout，body 会永久带着 .category-linking，
+       整个展墙/档案库/星点图会停在 .28 的压暗态且无法自行恢复。 */
+    document.documentElement.addEventListener('mouseleave', clearLink);
+    window.addEventListener('blur', clearLink);
   }
 
   /* 6 大分类色调 —— initConstellation 的展签换色也要用，故提到 IIFE 作用域 */

@@ -38,6 +38,9 @@
   /* 阴影 */
   --shadow:0 24px 70px rgba(106,40,144,.32);
 
+  /* 毛玻璃遮罩底（导航栏等）。浅色主题下必须翻转，否则黑条压在浅色页面上 */
+  --scrim:rgba(15,8,32,.7);
+
   /* 容器 */
   --shell-w:min(1180px,calc(100% - 64px));
 
@@ -73,6 +76,7 @@
   --orange-2:#d97706;
   --green:#059669;
   --shadow:0 24px 70px rgba(106,40,144,.13);
+  --scrim:rgba(250,247,255,.92);
 }
 
 *{box-sizing:border-box}
@@ -915,7 +919,7 @@ img,svg{max-width:100%;display:block}
   position:sticky;top:0;z-index:20;
   display:flex;align-items:center;justify-content:space-between;
   padding:14px 32px;
-  background:rgba(15,8,32,.7);backdrop-filter:blur(12px);
+  background:var(--scrim);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--line);
   opacity:0;pointer-events:none;transition:opacity var(--t-med);
 }
@@ -1598,6 +1602,17 @@ img,svg{max-width:100%;display:block}
 .footer-signal{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:.15em}
 .footer-signal span{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
 
+/* 状态点呼吸。
+   这条 @keyframes 此前缺失 —— .hero-copy .status span / .signal-pulse /
+   .footer-signal span 三处都声明了 animation:pulse 却无定义，动画一直空转。
+   用 brightness 而非 transform:scale：.signal-pulse 带 translateY(-50%) 定位，
+   scale 会覆盖它导致垂直居中失效；也不用 opacity，避免与项目「反对闪烁」的
+   既有偏好冲突。brightness 对三个不同色（青/青/绿）都成立。 */
+@keyframes pulse{
+  0%,100%{filter:brightness(1)}
+  50%{filter:brightness(1.7)}
+}
+
 /* ============================================================
    滚动揭示动画（Motion-safe）
    ============================================================ */
@@ -2032,9 +2047,6 @@ img,svg{max-width:100%;display:block}
 /* ============================================================
    Constellation Lab（5 大分类星座实验室）
    ============================================================ */
-.constellation-lab{
-  background:radial-gradient(ellipse at center, rgba(120,40,214,.06) 0%, transparent 70%), var(--bg);
-}
 .constellation-grid{
   display:grid;grid-template-columns:1fr 1.3fr;
   gap:48px;align-items:center;
@@ -2048,16 +2060,22 @@ img,svg{max-width:100%;display:block}
   font-family:var(--font-display);
   font-size:24px;color:var(--ink-2);margin:0 0 18px;
 }
+
+/* 展签详情牌 —— 点站点只换牌，不开灯箱（看展节奏：先读签，再决定要不要看展品） */
 .star-detail{
-  padding:18px 20px;
-  border-radius:14px;
-  background:radial-gradient(ellipse at top left, rgba(120,40,214,.16) 0%, transparent 70%), var(--surface);
+  padding:var(--s-5);
+  border-radius:0 var(--s-2) var(--s-2) 0;
   border:1px solid var(--line);
-  display:flex;flex-direction:column;gap:6px;
+  border-left:2px solid var(--cat-color,var(--purple-3));
+  background:var(--hall-plate);
+  display:flex;flex-direction:column;gap:var(--s-1);
+  transition:border-color var(--t-med),opacity var(--t-fast);
 }
+/* 换牌时短暂压暗，像被重新打印 */
+.star-detail.is-swapping{opacity:.25}
 .star-detail span{
   font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;
-  color:var(--purple-3);
+  color:var(--cat-color,var(--purple-3));
 }
 .star-detail strong{
   font-family:var(--font-display);
@@ -2067,29 +2085,73 @@ img,svg{max-width:100%;display:block}
   font-size:13px;color:var(--orange-2);margin:0;
   font-family:var(--font-mono);letter-spacing:.1em;
 }
+.star-open{
+  margin-top:var(--s-3);align-self:flex-start;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;
+  color:var(--cyan);background:transparent;
+  border:1px solid var(--line);border-radius:var(--s-1);
+  padding:var(--s-2) var(--s-3);cursor:pointer;
+  transition:border-color var(--t-fast),background var(--t-fast);
+}
+.star-open:hover{
+  border-color:var(--cyan);
+  background:color-mix(in srgb,var(--cyan) 12%,transparent);
+}
 
+/* 导览图面板：平面图底纹 + 制版内框 + 暗角
+   注意：不要加 padding —— canvas 用 clientWidth 定位，padding 会让百分比基准错位 */
 .constellation-stage{
   position:relative;
   aspect-ratio:100/58;
-  background:radial-gradient(ellipse at center, rgba(0,217,255,.04) 0%, transparent 70%), var(--bg-2);
-  border:1px solid var(--line);border-radius:18px;
-  overflow:hidden;
+  overflow:hidden;border-radius:var(--s-3);
+  border:1px solid var(--line);
+  background:
+    repeating-linear-gradient(0deg,transparent 0 23px,
+      color-mix(in srgb,var(--line) 55%,transparent) 23px 24px),
+    repeating-linear-gradient(90deg,transparent 0 23px,
+      color-mix(in srgb,var(--line) 55%,transparent) 23px 24px),
+    radial-gradient(ellipse at 50% 45%,
+      color-mix(in srgb,var(--purple) 14%,transparent),transparent 68%),
+    var(--hall-bg);
+}
+.constellation-stage::before{
+  content:'';position:absolute;inset:var(--s-2);z-index:1;
+  border:1px solid var(--line);border-radius:var(--s-1);pointer-events:none;
+}
+.constellation-stage::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 42%,var(--hall-plate) 100%);
 }
 .constellation-stage svg{
   position:absolute;inset:0;width:100%;height:100%;
-  stroke:var(--purple-3);stroke-width:.3;fill:none;
-  stroke-dasharray:2 2;opacity:.35;
+  /* non-scaling-stroke 下 stroke-width 是 CSS px 而非用户单位 —— 原来的 .3
+     会细到看不见，1px 才是合适的发丝路线 */
+  stroke:var(--purple-3);stroke-width:1;fill:none;
+  stroke-dasharray:5 5;opacity:.45;
   animation:pathStep 30s linear infinite;
+}
+/* 导览图左上角说明 */
+.mu-map-legend{
+  position:absolute;top:var(--s-3);left:var(--s-4);z-index:3;
+  display:inline-flex;align-items:center;gap:var(--s-2);
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;
+  color:var(--muted);text-transform:uppercase;
+}
+.mu-map-legend i{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--cyan);box-shadow:0 0 8px var(--cyan);
 }
 @keyframes pathStep{
   to{stroke-dashoffset:-30}
 }
+
+/* 站点标记 */
 .award-star{
   position:absolute;
   left:var(--x);top:var(--y);
   transform:translate(-50%,-50%);
-  width:54px;height:54px;border-radius:50%;
-  background:radial-gradient(circle, rgba(120,40,214,.35), transparent 70%);
+  width:60px;height:60px;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--purple) 40%,transparent),transparent 70%);
   border:1.5px solid var(--purple-3);
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;
@@ -2099,25 +2161,33 @@ img,svg{max-width:100%;display:block}
   z-index:2;
 }
 .award-star i{
-  font-style:normal;font-size:20px;
+  font-style:normal;font-size:18px;
   filter:drop-shadow(0 0 8px var(--cyan));
 }
-.award-star span{
-  position:absolute;bottom:-24px;left:50%;
+.star-no{
+  position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;
+  color:var(--hall-bg);background:var(--cyan);
+  padding:1px 5px;border-radius:5px;
+}
+.star-name{
+  position:absolute;top:calc(100% + 6px);left:50%;
   transform:translateX(-50%);
   white-space:nowrap;
+  display:flex;flex-direction:column;gap:1px;text-align:center;
   font-family:var(--font-mono);font-size:10px;
   color:var(--muted);letter-spacing:.15em;
 }
+.star-name small{color:var(--purple-3);font-size:9px}
 .award-star:hover{
-  transform:translate(-50%,-50%) scale(1.15);
+  transform:translate(-50%,-50%) scale(1.12);
   border-color:var(--cyan);
-  background:radial-gradient(circle, rgba(0,217,255,.2), transparent 70%);
+  background:radial-gradient(circle,color-mix(in srgb,var(--cyan) 25%,transparent),transparent 70%);
 }
 .award-star.active{
   background:radial-gradient(circle, var(--purple), transparent 70%);
   border-color:var(--cyan);
-  transform:translate(-50%,-50%) scale(1.3);
+  transform:translate(-50%,-50%) scale(1.25);
   animation:none;
 }
 .award-star.active i{color:#fff}
@@ -2177,10 +2247,13 @@ img,svg{max-width:100%;display:block}
 @media (max-width:991px){
   .constellation-grid{grid-template-columns:1fr;gap:28px;}
   .constellation-stage{aspect-ratio:100/70;}
+  /* 触控目标下限 44px（WCAG 2.5.8），原为 42px */
+  .award-star{width:44px;height:44px;}
 }
 @media (max-width:575px){
-  .award-star{width:42px;height:42px;}
-  .award-star i{font-size:16px;}
+  .award-star{width:44px;height:44px;}
+  .award-star i{font-size:15px;}
+  .star-name{font-size:9px}
   .project-media{height:140px;}
   .internship-evidence img{height:120px;}
 }
@@ -2320,18 +2393,26 @@ body.detail-active .signal-station{
 .award-star{
   transition:opacity var(--t-med), filter var(--t-med), border-color var(--t-med), transform var(--t-med), box-shadow var(--t-med);
 }
-body.category-linking .photo-card,
-body.category-linking .archive-item,
-body.category-linking .award-star{
+/* 只压暗「非同类」。
+   原写法是「全部压暗 + 让 .is-related 覆盖回 opacity:1」，但
+   body.category-linking .photo-card 的特异性是 (0,2,1)，
+   而 .photo-card.is-related 只有 (0,2,0) —— 压暗恒定胜出。
+   结果「悬停同类高亮」从上线起就是坏的：整片都会变暗，同类不会亮回来。
+   用 :not(.is-related) 直接排除，不再依赖覆盖。 */
+body.category-linking .photo-card:not(.is-related),
+body.category-linking .archive-item:not(.is-related),
+body.category-linking .award-star:not(.is-related){
   opacity:.28;
   filter:saturate(.5);
 }
 .photo-card.is-related,
 .archive-item.is-related,
 .award-star.is-related{
-  opacity:1;filter:none;
-  border-color:var(--cyan);
-  box-shadow:0 0 24px rgba(0,217,255,.35), 0 0 4px rgba(0,217,255,.8);
+  /* 用分类色而非固定青色 —— 原来这里有第二份 .photo-card.is-related 声明
+     （用 --cat-color）在 400 行后覆盖本规则，使本规则的 border-color/box-shadow
+     成为死代码。已合并到这一处。 */
+  border-color:var(--cat-color,var(--cyan));
+  box-shadow:0 0 24px color-mix(in srgb,var(--cat-color,var(--cyan)) 40%,transparent);
   transform:translateY(-2px);
 }
 .photo-card.is-related img,
@@ -2385,40 +2466,7 @@ body.category-linking .award-star{
 .node-canvas-legend i.cat-startup{background:#ff4d8d}
 .node-canvas-legend i.cat-ip{background:#7ee787}
 
-/* ---- Constellation 视觉强化 ---- */
-.constellation-lab{
-  position:relative;
-}
-.constellation-lab::before{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(circle at 30% 40%, rgba(120,40,214,.12), transparent 40%),
-    radial-gradient(circle at 70% 60%, rgba(0,217,255,.08), transparent 40%);
-  pointer-events:none;
-}
-.constellation-stage{
-  position:relative;
-}
-.constellation-stage::after{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at center, transparent 40%, rgba(15,8,32,.4) 100%);
-  pointer-events:none;
-}
-.award-star{
-  position:absolute;
-  width:60px;height:60px;
-}
-.award-star::before,
-.award-star::after{
-  content:'';position:absolute;inset:-8px;border-radius:50%;
-  border:1px solid var(--cyan);opacity:0;
-}
-.award-star::before{animation:starPulse 3s ease-out infinite}
-.award-star::after{animation:starPulse 3s ease-out 1.5s infinite}
-@keyframes starPulse{
-  0%{transform:scale(.6);opacity:.8}
-  100%{transform:scale(1.6);opacity:0}
-}
+/* ---- Constellation 视觉强化：已由 HALL LAYER 的导览图样式取代 ---- */
 
 /* ============================================================
    ✨ 5 大分类色调（用于 hover 联动态的边框色）
@@ -2429,12 +2477,6 @@ body.category-linking .award-star{
 [data-cat="practice"]{--cat-color:#ffb347}
 [data-cat="startup"]{--cat-color:#ff4d8d}
 [data-cat="ip"]{--cat-color:#7ee787}
-
-.photo-card.is-related,
-.archive-item.is-related{
-  border-color:var(--cat-color, var(--cyan));
-  box-shadow:0 0 24px color-mix(in srgb, var(--cat-color, var(--cyan)) 40%, transparent);
-}
 
 /* ============================================================
    移动端：聚焦态降级（移动端没有 sibling 概念）
@@ -2479,6 +2521,23 @@ body.category-linking .award-star{
 [data-theme="light"]{
   --hall-plate:rgba(255,255,255,.86);
   --hall-cone:rgba(120,40,214,.10);
+}
+/* 展厅是「主题无关的暗色孤岛」：浅色模式下把展厅子树内的主题令牌复位为暗色取值。
+   不复位的话，展厅内部会拿到浅色的 --line / --ink / --muted，导致
+   暗底上画出浅色发丝线、深色正文看不清。特异性 (0,2,0) > (0,1,0)，稳赢。 */
+[data-theme="light"] .mu-hall{
+  --line:rgba(186,140,255,.18);
+  --ink:#f5e8ff;
+  --ink-2:#fff8ff;
+  --muted:#a895b3;
+  --surface:#1a0f2e;
+  --cyan:#00d9ff;
+  --cyan-2:#5beaff;
+  --orange:#ff6b35;
+  --orange-2:#ffb627;
+  --purple:#7828d6;
+  --purple-3:#b77aff;
+  --green:#25e8a5;
 }
 
 /* ---- H1 公共展陈元素 ----------------------------------------------------- */

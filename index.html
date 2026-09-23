@@ -248,7 +248,7 @@
     </section>
 
     <!-- ========== About ========== -->
-    <section id="about" class="about section-pad mu-hall">
+    <section id="about" class="about section-pad mu-hall" data-signal="origin">
       <div class="shell">
         <div class="section-kicker reveal"><span>01</span> ABOUT ME</div>
         <div class="about-grid">
@@ -292,7 +292,7 @@
     </section>
 
     <!-- ========== 实习经历 ========== -->
-    <section id="internship" class="internship section-pad">
+    <section id="internship" class="internship section-pad" data-signal="builder">
       <div class="shell">
         <div class="section-head reveal">
           <div>
@@ -432,7 +432,7 @@
     </section>
 
     <!-- ========== 项目经历 ========== -->
-    <section id="projects" class="projects section-pad">
+    <section id="projects" class="projects section-pad" data-signal="maker">
       <div class="shell">
         <div class="project-head reveal">
           <div class="section-kicker"><span>03</span> BUILD SITE</div>
@@ -494,7 +494,7 @@
     </section>
 
     <!-- ========== 荣誉 / 获奖 ========== -->
-    <section id="awards" class="awards section-pad">
+    <section id="awards" class="awards section-pad" data-signal="leader">
       <div class="shell">
         <div class="section-head reveal">
           <div>
@@ -608,7 +608,7 @@
     </section>
 
     <!-- ========== 详情证据：photo-wall ========== -->
-    <section id="gallery" class="gallery section-pad">
+    <section id="gallery" class="gallery section-pad mu-hall">
       <div class="shell">
         <div class="section-head reveal">
           <div>
@@ -628,14 +628,14 @@
     </section>
 
     <!-- ========== 星座实验室：5 大分类 ========== -->
-    <section id="constellation" class="constellation-lab section-pad">
+    <section id="constellation" class="constellation-lab section-pad mu-hall">
       <div class="shell">
         <div class="section-head reveal">
           <div>
             <div class="section-kicker"><span>06</span> CONSTELLATION</div>
             <h2>点击星星，<br />解锁一项<span>信号脉冲</span>。</h2>
           </div>
-          <p>5 大分类 · 任意星点 → 右侧详情 + lightbox 全屏查看。</p>
+          <p>5 个站点 · 点击站点先换右侧展签，再由展签进入 lightbox 全屏查看。</p>
         </div>
         <div class="constellation-grid">
           <div class="constellation-copy">
@@ -645,11 +645,13 @@
               <span id="star-category">创新创业 · 2024</span>
               <strong id="star-title">创领浦东 · 青年新势力</strong>
               <p id="star-result">一等奖</p>
+              <button class="star-open" type="button">查看展品 ↗</button>
             </div>
           </div>
-          <div class="constellation-stage" aria-label="5 大分类星座">
-            <svg viewBox="0 0 100 58" preserveAspectRatio="none" aria-hidden="true">
-              <polyline points="12,70 32,22 50,60 68,24 88,66" />
+          <div class="constellation-stage" aria-label="5 大分类导览图">
+            <span class="mu-map-legend"><i></i>5 个站点 · 点击查看展签</span>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <polyline points="12,70 32,22 50,60 68,24 88,66" vector-effect="non-scaling-stroke" />
             </svg>
           </div>
         </div>
@@ -657,7 +659,7 @@
     </section>
 
     <!-- ========== 证据档案库（details 折叠） ========== -->
-    <section id="archive" class="archive section-pad">
+    <section id="archive" class="archive section-pad mu-hall">
       <div class="shell">
         <div class="section-head reveal">
           <div>

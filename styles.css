@@ -1064,13 +1064,15 @@ img,svg{max-width:100%;display:block}
    但也不能低于 72px —— 否则 sticky header 一滚就贴上区块眉标。 */
 .about{padding-top:clamp(72px,7vw,110px)}
 
+/* 展柜在文字上方（单列）。
+   展柜独立成行后若不限宽，肖像按 4/5 会撑到 1475px 高 —— 故给 max-width。 */
 .about-grid{
   display:grid;
-  grid-template-columns:minmax(240px,.82fr) 1.42fr;
-  grid-template-areas:"case copy";
-  gap:32px 48px;align-items:start;margin-bottom:36px;
+  grid-template-columns:1fr;
+  grid-template-areas:"case" "copy";
+  gap:var(--s-10);align-items:start;margin-bottom:36px;
 }
-.mu-vitrine{grid-area:case}
+.mu-vitrine{grid-area:case;max-width:420px}
 .about-copy{grid-area:copy}
 .about-copy p{margin:0 0 14px;color:var(--muted);font-size:var(--fs-body)}
 
@@ -2465,9 +2467,8 @@ body.category-linking .award-star:not(.is-related){
 }
 
 /* ---- H8 #about 响应式 ---------------------------------------------------- */
-@media (max-width:991px){
-  .about-grid{grid-template-columns:1fr;grid-template-areas:"case" "copy"}
-}
+/* .about-grid 本身已是单列（展柜在文字上方），不再需要断点覆写。
+   展柜的 max-width 在窄屏下由 .mu-vitrine 自身承担。 */
 
 /* ---- H9 降低动效：把 HALL LAYER 新增的过渡一并收口 ----------------------
    全站既有的 reduced-motion 块只覆盖了 .reveal，展陈层新增的这些过渡

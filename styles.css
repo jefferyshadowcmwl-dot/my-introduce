@@ -151,7 +151,12 @@ img,svg{max-width:100%;display:block}
   padding:24px;
   transition:opacity .6s ease,visibility .6s ease;
 }
-.intro-gate.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
+/* fix A v2: .intro-gate.is-leaving 触发器不再立即隐藏启动页（fade 改由 .is-opacity-out 在 T=900ms 触发）
+   旧规则用同 specificity (0,2,0) 直接压 opacity/visibility/pointer-events，新 transition 规则虽同 specificity 但后定义，
+   只覆盖了 transition 属性，其他属性仍由旧规则覆盖。
+   结果：T=0 加 class 后启动页立即 .6s 内透明，5 阶段内部动画（8 道光线 + 字符流 + 扫描线）在透明层跑，
+   用户视觉焦点已转主站，看到的是"直接出现详情页"。
+   本注释代替原 opacity:0/visibility:hidden/pointer-events:none 规则。 */
 
 .intro-bg-grid{
   position:absolute;inset:0;pointer-events:none;z-index:0;
@@ -1457,12 +1462,15 @@ img,svg{max-width:100%;display:block}
 }
 .award-modal-card{
   position:relative;z-index:1;
-  width:min(560px,100%);
+  display:grid;grid-template-columns:1.05fr .95fr;
+  width:min(880px,100%);
+  max-height:86vh;
   background:var(--surface);border:1px solid var(--orange);
-  border-radius:20px;padding:32px;
+  border-radius:20px;
   box-shadow:0 30px 80px rgba(255,107,53,.3),var(--shadow);
   transform:translateY(20px) scale(.96);
   transition:transform var(--t-med);
+  overflow:hidden;
 }
 .award-modal.is-open .award-modal-card{transform:translateY(0) scale(1)}
 

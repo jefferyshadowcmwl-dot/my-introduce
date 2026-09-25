@@ -132,9 +132,10 @@
         <a class="si-item" href="#awards"><span class="si-no">04</span><span class="si-name">荣誉</span></a>
         <a class="si-item" href="#gallery"><span class="si-no">05</span><span class="si-name">照片</span></a>
         <a class="si-item" href="#constellation"><span class="si-no">06</span><span class="si-name">导览</span></a>
-        <a class="si-item" href="#archive"><span class="si-no">07</span><span class="si-name">档案</span></a>
-        <a class="si-item" href="#skills"><span class="si-no">08</span><span class="si-name">技能</span></a>
-        <a class="si-item" href="#contact"><span class="si-no">09</span><span class="si-name">联系</span></a>
+        <a class="si-item" href="#campus"><span class="si-no">07</span><span class="si-name">游历</span></a>
+        <a class="si-item" href="#archive"><span class="si-no">08</span><span class="si-name">档案</span></a>
+        <a class="si-item" href="#skills"><span class="si-no">09</span><span class="si-name">技能</span></a>
+        <a class="si-item" href="#contact"><span class="si-no">10</span><span class="si-name">联系</span></a>
       </nav>
 
       <!-- 背景音乐音量。放在站台索引里而不是另起一个悬浮控件 ——
@@ -235,6 +236,7 @@
             <div class="about-copy reveal" data-delay="1">
               <p>计算机科学与技术专业本科，从 MySQL 数据分析、Python 自动化脚本起步，逐步拓展到 Arduino 嵌入式、YOLO 视觉、3D 建模、SEO/GEO 营销——既写代码也接项目，既做工程也做落地。</p>
               <p>作为 PaddlePaddle 团长与程序设计社社长，我愿意把学到的整理出来、分享出去；作为双创项目第一负责人，我完成了从市级立项到国家级立项的跃迁。</p>
+              <p>2024 年创办上海致远鲸腾信息有限公司并任 CEO，同时担任音行三界技术负责人——把工程能力从课题带到了真实的产品与经营里。</p>
             </div>
           </div>
         </div>
@@ -248,7 +250,10 @@
           <article><strong data-count="5">0<small>+</small></strong><span>技术实习段数</span></article>
           <article><strong data-count="4">0<small>+</small></strong><span>省级以上奖项</span></article>
           <article><strong data-count="1">0</strong><span>国家级双创项目立项</span></article>
-          <article><strong data-count="2">0<small>+</small></strong><span>专利 / 软件著作权</span></article>
+          <!-- 这一项原写「2+ 专利 / 软件著作权」，把一份**公司持有、发明人非本人**的
+               专利算进了个人成果 —— 与荣誉区「非本人发明」的标注自相矛盾。
+               现只计本人的软件著作权。 -->
+          <article><strong data-count="1">0</strong><span>软件著作权</span></article>
         </section>
 
         <!-- 展签式三行：与展柜铭牌（.mu-spec-*）同一套排版语言 ——
@@ -260,7 +265,7 @@
         <div class="about-roles reveal">
           <div class="about-role-row">
             <span class="about-role-key">身份</span>
-            <span class="about-role-val">PaddlePaddle 团长 · 程序设计社社长 · 双创项目第一负责人</span>
+            <span class="about-role-val">上海致远鲸腾信息有限公司 CEO · 音行三界技术负责人 · PaddlePaddle 团长 · 程序设计社社长 · 双创项目第一负责人</span>
           </div>
           <div class="about-role-row">
             <span class="about-role-key">定位</span>
@@ -477,6 +482,29 @@
             <p>完成 SW / UG 建模软件学习，熟练运用 3D 建模及 3D 打印机完成生产。</p>
             <div class="project-tags"><span>SolidWorks</span><span>UG</span><span>3D 打印</span><span>2024.07-09</span></div>
           </article>
+
+          <!-- 08–10 是本轮新增。⚠️ 只能在末尾追加：
+               initProjectMedia 用 nth-child 定位配图，插在中间会让后面集体错位。 -->
+          <article class="project-card reveal" data-signal="builder">
+            <div class="project-no">08 / STUDIO</div>
+            <h3>创燃工作室 · 灯光画</h3>
+            <p>灯光画产品线：亚克力导光板配木质边框，从样品点亮测试到摊位成品展出的完整链路。</p>
+            <div class="project-tags"><span>灯光画</span><span>产品打样</span><span>摊位展售</span><span>2025</span></div>
+          </article>
+
+          <article class="project-card reveal" data-delay="1" data-signal="maker">
+            <div class="project-no">09 / COLLAB</div>
+            <h3>商汤产教合作</h3>
+            <p>与商汤科技的产教合作项目：Linux 边缘设备机箱与实验室联合调试。</p>
+            <div class="project-tags"><span>商汤</span><span>Linux</span><span>边缘设备</span></div>
+          </article>
+
+          <article class="project-card reveal" data-delay="2" data-signal="maker">
+            <div class="project-no">10 / VISION</div>
+            <h3>智能视觉调试现场</h3>
+            <p>机器视觉与机械臂取放任务的现场联调，完成识别、抓取、放置的闭环验证。</p>
+            <div class="project-tags"><span>机器视觉</span><span>机械臂</span><span>2025</span></div>
+          </article>
         </div>
       </div>
     </section>
@@ -489,108 +517,175 @@
             <div class="section-kicker"><span>04</span> SIGNAL PULSES</div>
             <h2>每一束<span>信号脉冲</span>，<br />都是一次确认。</h2>
           </div>
-          <p class="section-head-note">每个奖项背后，都是一次主动尝试、一次团队协作，以及把想法做成现实的坚持。</p>
+          <p class="section-head-note">不是奖状陈列，而是能力被反复确认的记录 —— 每一次确认之后，角色都往上走了一层。</p>
         </div>
 
-        <div class="award-grid">
-          <button class="award-card reveal award-evidence" type="button" data-signal="leader"
-            data-award-key="shuangChuang" data-project="双创 · 上海市"
-            data-title="第 19 届上海市大学生创新创业大赛" data-result="银奖 · 我敢闯，我敢拼"
-            data-year="2024" data-story="作为第一负责人带队参赛，获得上海市级银奖。">
-            <div class="award-icon">🏆</div>
-            <div class="award-meta"><span>2024</span><span>上海市</span></div>
-            <h3>上海市大学生双创大赛</h3>
-            <p>"我敢闯，我敢拼" 银奖</p>
-            <small>FIRST LEADER</small>
-          </button>
-
-          <button class="award-card reveal award-evidence" type="button" data-delay="1"
-            data-award-key="guoSaiEr" data-project="计算机设计 · 国家级"
-            data-title="第 16 届全国大学生计算机应用能力大赛" data-result="国赛二等奖"
-            data-year="2023" data-story="第一负责人参赛，获得国家级二等奖。">
-            <div class="award-icon">🥈</div>
-            <div class="award-meta"><span>2023</span><span>国家级</span></div>
-            <h3>全国计算机应用能力大赛</h3>
-            <p>国赛二等奖</p>
-            <small>FIRST LEADER</small>
-          </button>
-
-          <button class="award-card reveal award-evidence" type="button" data-delay="2"
-            data-award-key="guoJiaLiXiang" data-project="双创立项 · 国家级"
-            data-title="2024 年大学生创新创业训练计划" data-result="国家级立项"
-            data-year="2024" data-story="作为项目负责人完成双创项目国家级立项。">
-            <div class="award-icon">🚀</div>
-            <div class="award-meta"><span>2024</span><span>国家级</span></div>
-            <h3>国家级双创立项</h3>
-            <p>大创项目立项</p>
-            <small>FLAGSHIP</small>
-          </button>
-
-          <button class="award-card reveal award-evidence" type="button" data-delay="3"
-            data-award-key="puDongYi" data-project="创领浦东 · 青年新势力"
-            data-title="上海市浦东新区第二届新势力大赛" data-result="一等奖"
-            data-year="2024" data-story="浦东新区新势力大赛一等奖。">
-            <div class="award-icon">🥇</div>
-            <div class="award-meta"><span>2024</span><span>浦东新区</span></div>
-            <h3>浦东新势力大赛</h3>
-            <p>一等奖</p>
-            <small>REGIONAL</small>
-          </button>
-
-          <button class="award-card reveal award-evidence" type="button" data-delay="4"
-            data-award-key="shangHaiSan" data-project="计算机应用 · 上海市 × 2"
-            data-title="第 16 / 17 届上海市计算机应用能力大赛" data-result="市赛三等奖 × 2"
-            data-year="2023 / 2024" data-story="连续两届获得上海市赛三等奖。">
-            <div class="award-icon">💻</div>
-            <div class="award-meta"><span>2023 / 2024</span><span>上海市</span></div>
-            <h3>上海市计算机应用能力大赛</h3>
-            <p>第 16 届 · 第 17 届 市赛三等奖</p>
-            <small>CITY ×2</small>
-          </button>
-
-          <button class="award-card reveal award-evidence" type="button" data-delay="5"
-            data-award-key="shiJiang" data-project="奖学金 · 校级"
-            data-title="2021-2022 学年谢希德奖学金" data-result="三等奖"
-            data-year="2022" data-story="大一学年综合奖学金。">
-            <div class="award-icon">🎓</div>
-            <div class="award-meta"><span>2022</span><span>校级</span></div>
-            <h3>谢希德奖学金</h3>
-            <p>三等奖</p>
-            <small>SCHOLARSHIP</small>
-          </button>
-
-          <button class="award-card reveal award-evidence" type="button" data-delay="6" data-signal="builder"
-            data-award-key="shiXinZhuanLi" data-project="知识产权 · 实用新型"
-            data-title="实用新型专利" data-result="已获得"
-            data-year="2024" data-story="已获得实用新型专利授权，知识产权成果之一。">
-            <div class="award-icon">📜</div>
-            <div class="award-meta"><span>2024</span><span>知识产权</span></div>
-            <h3>实用新型专利</h3>
-            <p>已获得</p>
-            <small>PATENT</small>
-          </button>
-
-          <button class="award-card reveal award-evidence" type="button" data-delay="7" data-signal="builder"
-            data-award-key="ruanZhu" data-project="软件著作权"
-            data-title="软件著作权" data-result="基于 OpenCV + Django"
-            data-year="2024" data-story="基于 OpenCV + Django 架构的上位机软件，已获得软件著作权。">
-            <div class="award-icon">⚙️</div>
-            <div class="award-meta"><span>2024</span><span>知识产权</span></div>
-            <h3>软件著作权</h3>
-            <p>基于 OpenCV + Django 架构</p>
-            <small>SOFTWARE</small>
-          </button>
-
-          <button class="award-card reveal award-evidence" type="button" data-delay="8"
-            data-award-key="googleAds" data-project="数字营销 · Google 认证"
-            data-title="Google ADS 双认证" data-result="Display · AI-powered Shopping"
-            data-year="Google" data-story="Google Ads 官方认证：展示广告 + AI 智能购物广告。">
-            <div class="award-icon">🎯</div>
-            <div class="award-meta"><span>Google</span><span>认证</span></div>
-            <h3>Google ADS 双认证</h3>
-            <p>Display · AI-powered Shopping</p>
-            <small>CERTIFIED</small>
-          </button>
+        <!-- 三次跃迁：参赛者 → 第一负责人 → 创业者。
+             段内项号连续（01–08），段头用 CHAPTER 编号 ——
+             与全站「编号制式」同一套语言，不用 emoji 图标。 -->
+        <div class="award-chapters">
+          <div class="award-chapter reveal">
+            <header class="award-chapter-head">
+              <span class="mu-no">CHAPTER 01</span>
+              <h3>第一负责人</h3>
+              <small>FIRST LEADER</small>
+            </header>
+            <p class="award-chapter-note">四项竞赛，全部以第一负责人身份带队 —— 确认的是把想法组织成结果的能力。</p>
+            <div class="award-rows">
+              <button class="award-row award-evidence" type="button"
+                data-award-key="guoSaiEr" data-project="计算机设计 · 国家级"
+                data-title="全国计算机应用能力大赛" data-result="国赛二等奖"
+                data-year="2023" data-story="第一负责人参赛，获得国家级二等奖。">
+                <span class="award-no mu-no">01</span>
+                <span class="award-row-main">
+                  <strong class="award-row-title">全国计算机应用能力大赛</strong>
+                  <span class="award-brief"></span>
+                </span>
+                <span class="award-row-tail">
+                  <b class="award-row-result">国赛二等奖</b>
+                  <small>2023 · 国家级</small>
+                </span>
+                <span class="award-row-figs">
+                  <img class="award-fig-cert" src="" alt="" loading="lazy" decoding="async" />
+                  <img class="award-fig-alt" src="" alt="" loading="lazy" decoding="async" />
+                </span>
+              </button>
+              <button class="award-row award-evidence" type="button"
+                data-award-key="shangHaiSan" data-project="计算机应用 · 上海市 × 2"
+                data-title="上海市计算机应用能力大赛" data-result="第 16 届 · 第 17 届 市赛三等奖"
+                data-year="2023 / 2024" data-story="连续两届获得上海市赛三等奖。">
+                <span class="award-no mu-no">02</span>
+                <span class="award-row-main">
+                  <strong class="award-row-title">上海市计算机应用能力大赛</strong>
+                  <span class="award-brief"></span>
+                </span>
+                <span class="award-row-tail">
+                  <b class="award-row-result">第 16 届 · 第 17 届 市赛三等奖</b>
+                  <small>2023 / 2024 · 上海市</small>
+                </span>
+                <span class="award-row-figs">
+                  <img class="award-fig-cert" src="" alt="" loading="lazy" decoding="async" />
+                  <img class="award-fig-alt" src="" alt="" loading="lazy" decoding="async" />
+                </span>
+              </button>
+              <button class="award-row award-row--lead award-evidence" type="button"
+                data-award-key="shuangChuang" data-project="双创 · 上海市"
+                data-title="上海市大学生双创大赛" data-result="“我敢闯，我敢拼” 银奖"
+                data-year="2024" data-story="作为第一负责人带队参赛，获得上海市级银奖。">
+                <span class="award-no mu-no">03</span>
+                <span class="award-row-main">
+                  <strong class="award-row-title">上海市大学生双创大赛</strong>
+                  <b class="award-row-result">“我敢闯，我敢拼” 银奖</b>
+                  <span class="award-brief"></span>
+                  <small class="award-row-stamp">2024 · 上海市</small>
+                </span>
+                <span class="award-row-figs">
+                  <img class="award-fig-cert" src="" alt="" loading="lazy" decoding="async" />
+                  <img class="award-fig-alt" src="" alt="" loading="lazy" decoding="async" />
+                </span>
+              </button>
+              <button class="award-row award-evidence" type="button"
+                data-award-key="puDongYi" data-project="创领浦东 · 青年新势力"
+                data-title="浦东新势力大赛" data-result="一等奖"
+                data-year="2024" data-story="浦东新区新势力大赛一等奖。">
+                <span class="award-no mu-no">04</span>
+                <span class="award-row-main">
+                  <strong class="award-row-title">浦东新势力大赛</strong>
+                  <span class="award-brief"></span>
+                </span>
+                <span class="award-row-tail">
+                  <b class="award-row-result">一等奖</b>
+                  <small>2024 · 浦东新区</small>
+                </span>
+                <span class="award-row-figs">
+                  <img class="award-fig-cert" src="" alt="" loading="lazy" decoding="async" />
+                  <img class="award-fig-alt" src="" alt="" loading="lazy" decoding="async" />
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="award-chapter reveal">
+            <header class="award-chapter-head">
+              <span class="mu-no">CHAPTER 02</span>
+              <h3>立项与产出</h3>
+              <small>GRANT & PRODUCT</small>
+            </header>
+            <p class="award-chapter-note">从一次立项，到能交付的东西 —— 确认的对象不再是比赛，而是做出来的成果。</p>
+            <div class="award-rows">
+              <button class="award-row award-evidence" type="button"
+                data-award-key="guoJiaLiXiang" data-project="双创立项 · 国家级"
+                data-title="国家级双创立项" data-result="大创项目立项"
+                data-year="2024" data-story="作为项目负责人完成双创项目国家级立项。">
+                <span class="award-no mu-no">05</span>
+                <span class="award-row-main">
+                  <strong class="award-row-title">国家级双创立项</strong>
+                  <span class="award-brief"></span>
+                </span>
+                <span class="award-row-tail">
+                  <b class="award-row-result">大创项目立项</b>
+                  <small>2024 · 国家级</small>
+                </span>
+                <span class="award-row-figs">
+                  <img class="award-fig-cert" src="" alt="" loading="lazy" decoding="async" />
+                  <img class="award-fig-alt" src="" alt="" loading="lazy" decoding="async" />
+                </span>
+              </button>
+              <button class="award-row award-evidence" type="button"
+                data-award-key="ruanZhu" data-project="软件著作权"
+                data-title="软件著作权" data-result="基于 OpenCV + Django"
+                data-year="2024" data-story="基于 OpenCV + Django 架构的上位机软件，已获得软件著作权。">
+                <span class="award-no mu-no">06</span>
+                <span class="award-row-main">
+                  <strong class="award-row-title">软件著作权</strong>
+                  <span class="award-brief"></span>
+                </span>
+                <span class="award-row-tail">
+                  <b class="award-row-result">基于 OpenCV + Django</b>
+                  <small>2024 · 知识产权</small>
+                </span>
+                <span class="award-row-figs">
+                  <img class="award-fig-cert" src="" alt="" loading="lazy" decoding="async" />
+                  <img class="award-fig-alt" src="" alt="" loading="lazy" decoding="async" />
+                </span>
+              </button>
+              <button class="award-row award-evidence" type="button"
+                data-award-key="googleAds" data-project="数字营销 · Google 认证"
+                data-title="Google ADS 双认证" data-result="Display · AI-Powered Shopping"
+                data-year="2025" data-story="Google Ads 官方认证：展示广告 + AI 智能购物广告。">
+                <span class="award-no mu-no">07</span>
+                <span class="award-row-main">
+                  <strong class="award-row-title">Google ADS 双认证</strong>
+                  <span class="award-brief"></span>
+                </span>
+                <span class="award-row-tail">
+                  <b class="award-row-result">Display · AI-Powered Shopping</b>
+                  <small>2025 · 认证</small>
+                </span>
+                <span class="award-row-figs">
+                  <img class="award-fig-cert" src="" alt="" loading="lazy" decoding="async" />
+                  <img class="award-fig-alt" src="" alt="" loading="lazy" decoding="async" />
+                </span>
+              </button>
+              <button class="award-row award-evidence" type="button"
+                data-award-key="shiXinZhuanLi" data-project="知识产权 · 实用新型（公司持有）"
+                data-title="实用新型专利" data-result="实习公司持有 · 非本人发明"
+                data-year="2020" data-story="证书载明：专利权人 上海鸿惊智能科技有限公司；发明人 赖哲浩；专利申请日 2019-11-22，授权公告日 2020-08-25。此处据实陈列，非本人发明。">
+                <span class="award-no mu-no">08</span>
+                <span class="award-row-main">
+                  <strong class="award-row-title">实用新型专利</strong>
+                  <span class="award-brief"></span>
+                </span>
+                <span class="award-row-tail">
+                  <b class="award-row-result">实习公司持有 · 非本人发明</b>
+                  <small>2020 · 公司持有</small>
+                </span>
+                <span class="award-row-figs">
+                  <img class="award-fig-cert" src="" alt="" loading="lazy" decoding="async" />
+                  <img class="award-fig-alt" src="" alt="" loading="lazy" decoding="async" />
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -603,10 +698,10 @@
             <div class="section-kicker"><span>05</span> PHOTO WALL</div>
             <h2>镜头里的<span>工程师信号</span></h2>
           </div>
-          <p>全册 <span data-count-gallery>33</span> 张一次看全 · 奖状归奖状、经历归经历，横版一排、竖版一排 · 点击任意一张走进现场。</p>
+          <p>全册 <span data-count-gallery>63</span> 张一次看全 · 奖状归奖状、经历归经历，横版一排、竖版一排 · 点击任意一张走进现场。</p>
         </div>
         <div class="gallery-meta reveal">
-          <span><b data-count-gallery>33</b> MEMORY FRAMES</span>
+          <span><b data-count-gallery>63</b> MEMORY FRAMES</span>
           <i></i>
           <span>2023 — 2026</span>
           <b>点击放大查看 ↗</b>
@@ -615,27 +710,30 @@
       </div>
     </section>
 
-    <!-- ========== 星座图：33 张履历 = 6 个星座 ==========
+    <!-- ========== 星座图：N 张履历 = M 个星座（当前 63 张 = 7 个）==========
          原设计是「5 大分类导览图」+ 一层 canvas 节点图，两者画的是同一批
          分类却各画各的（canvas 的彩色点与 S-01~S-05 站点互不对应），
          读起来像散落的杂讯。现改为单一视觉语言：
-           6 个分类 = 6 个星座，33 张图 = 33 颗星，同分类内的近邻连成星座线。
-         顺带修掉一个覆盖漏洞：原 CONSTELLATION_NODES 只有 5 项，
-         漏掉了最大的一类 competition（13 张，占 39%）—— 那 13 张图
-         在本区块根本进不去。现在星点直接由 IMG_CATALOG 按 category 派生，
-         33 张一张不少。 -->
+           每个分类 = 一个星座，每张图 = 一颗星，同分类内的近邻连成星座线。
+         顺带修掉一个覆盖漏洞：原 CONSTELLATION_NODES 只手工列了 5 项，
+         漏掉了最大的一类 competition —— 那些图在本区块根本进不去。
+         现在星点直接由 IMG_CATALOG 按 category 派生，加图加分类自动生效。 -->
     <section id="constellation" class="section-pad mu-hall">
       <div class="shell">
         <div class="section-head reveal">
           <div class="section-head-main">
             <div class="section-kicker"><span>06</span> CONSTELLATION</div>
-            <h2>33 张履历，<br />连成 <span>6 个星座</span>。</h2>
+            <!-- 数字是 IMG_CATALOG.length / 分类数的手工同步值。
+                 h2 内的裸文本无法挂 data-count（span 会被标题高亮样式吃掉），
+                 加图/加分类时需与 script.js 一起改。 -->
+            <h2>63 张履历，<br />连成 <span>7 个星座</span>。</h2>
           </div>
           <p class="section-head-note">每个分类是一个星座，每颗星是一张图 · 点亮星点看展签，再由展签进入 lightbox 看原图。</p>
         </div>
 
-        <!-- 星空：JS 注入 33 颗星（button.sky-star）+ 6 条星座连线（SVG） -->
-        <div class="sky reveal" id="sky" aria-label="33 张履历的星座图">
+        <!-- 星空：JS 注入 63 颗星（button.sky-star）+ 各星座内部连线（SVG）。
+             星数与星座数随 IMG_CATALOG 变化，改数据时要同步这里的文案与 aria-label。 -->
+        <div class="sky reveal" id="sky" aria-label="63 张履历的星座图">
           <svg class="sky-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
           <div class="sky-legend" aria-hidden="true"></div>
         </div>
@@ -650,15 +748,36 @@
       </div>
     </section>
 
+    <!-- ========== 大学游历：行程线（横向时间轴） ==========
+         与星座图（竖向星点 + 连线）、荣誉区（竖向编年列表）刻意区分 ——
+         这是全站唯一的**横向**轴，组织依据是「地理移动」而非「分类 / 重要度」。
+         站点数据在 script.js 的 CAMPUS_TRAIL，由 initCampusTrail() 注入。 -->
+    <section id="campus" class="campus section-pad ed-section">
+      <div class="shell">
+        <div class="section-head ed ed-indent reveal">
+          <div class="section-head-main">
+            <div class="section-kicker"><span>07</span> CAMPUS TRAIL</div>
+            <h2>九座校园，<br /><span>三座城。</span></h2>
+          </div>
+          <p class="section-head-note">比赛把我带进过上海的七所高校，也带去过扬州与南京 —— 每一次出行，都是一次交付。<br /><span class="trail-hint">← 左右滑动查看全部 9 站 →</span></p>
+        </div>
+
+        <!-- 行程线由 initCampusTrail() 注入（数据在 CAMPUS_TRAIL） -->
+        <div class="trail reveal" aria-label="比赛出行行程线">
+          <ol class="trail-track"></ol>
+        </div>
+      </div>
+    </section>
+
     <!-- ========== 证据档案库（details 折叠） ========== -->
     <section id="archive" class="archive section-pad mu-hall">
       <div class="shell">
         <div class="section-head reveal">
           <div>
-            <div class="section-kicker"><span>07</span> EVIDENCE VAULT</div>
-            <h2>完整证据库 · <span>本册 <b data-count-archive>31</b> 项</span></h2>
+            <div class="section-kicker"><span>08</span> EVIDENCE VAULT</div>
+            <h2>完整证据库 · <span>本册 <b data-count-archive>63</b> 项</span></h2>
           </div>
-          <p>按主题折叠收纳 · 本册 <span data-count-archive>31</span> 项编目对应全站 <span data-count-total>33</span> 张履历图，点击任意一项进入 lightbox 全屏查看。</p>
+          <p>按主题折叠收纳 · 本册 <span data-count-archive>63</span> 项编目，其中 <span data-count-archive-img>61</span> 张图片凭证 + <span data-count-video>2</span> 部开发纪实影片，点击任意一项进入 lightbox 全屏查看。</p>
         </div>
         <div class="archive-grid"></div>
       </div>
@@ -672,7 +791,7 @@
              order 会让视觉顺序与读屏顺序不一致。 -->
         <div class="section-head ed ed-flip reveal">
           <div class="section-head-main">
-            <div class="section-kicker"><span>08</span> SKILL MATRIX</div>
+            <div class="section-kicker"><span>09</span> SKILL MATRIX</div>
             <h2>技能<span>矩阵</span></h2>
           </div>
           <p class="section-head-note">从编程到硬件、从数据到营销——跨域动手能力。</p>
@@ -744,7 +863,7 @@
              本就是左对齐不对称跨页 —— 故一并归入 .section-head。 -->
         <div class="section-head ed ed-closing reveal">
           <div class="section-head-main">
-            <div class="section-kicker"><span>09</span> CONTACT</div>
+            <div class="section-kicker"><span>10</span> CONTACT</div>
             <h2>下一段信号，<br />从这里<span>开始。</span></h2>
             <!-- 信号发射点：收尾页的主题记号，持续向外发一圈光。
                  用 box-shadow 的 alpha 做扩散而非动 opacity 属性 ——
@@ -789,6 +908,7 @@
 
     <footer class="site-footer">
       <div class="shell">
+        <p class="footer-id">上海致远鲸腾信息有限公司 CEO · 音行三界技术负责人</p>
         <p>© 2026 LZY Engineer Station · 0324 · 由 <a href="https://github.com/jefferyshadowcmwl-dot" target="_blank" rel="noopener">刘致远</a> 亲手点亮</p>
         <p class="footer-signal"><span></span> SIGNAL · LIVE</p>
       </div>
@@ -800,8 +920,13 @@
   <div class="lightbox" role="dialog" aria-modal="true" aria-label="照片故事" aria-hidden="true">
     <button class="lightbox-close" type="button" aria-label="关闭照片">×</button>
     <div class="lightbox-content">
+      <!-- 图片与影片并存、由 openLightbox 用 hidden 互斥。
+           两者的 CSS 都必须显式写 [hidden]{display:none} ——
+           否则 .lightbox-content img{display:block} 会盖掉 hidden 属性。 -->
       <img alt="" decoding="async" />
+      <video controls playsinline preload="metadata" hidden></video>
       <p></p>
+      <span class="lightbox-sign">上海致远鲸腾信息有限公司 CEO · 音行三界技术负责人</span>
     </div>
   </div>
 

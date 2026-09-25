@@ -1361,6 +1361,11 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
   display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
 }
 .site-footer p{margin:0;font-size:13px;color:var(--muted)}
+/* 身份行独占一行 —— .shell 是 space-between 的 flex，直接塞第三个 p
+   会被挤成三列；flex-basis:100% 强制它换行到上一排。
+   （.site-footer .footer-id 特异性 (0,2,0) 高于 .site-footer p 的 (0,1,1)，
+   不是平局，与源码顺序无关。） */
+.site-footer .footer-id{flex-basis:100%;color:var(--ink);letter-spacing:.02em}
 .site-footer a{color:var(--cyan);font-weight:600}
 .site-footer a:hover{text-decoration:underline}
 .footer-signal{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:.15em}
@@ -1792,12 +1797,37 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
   box-shadow:0 30px 80px rgba(0,0,0,.5);
   background:var(--bg-2);
 }
+/* 影片复刻 img 的约束（img 的规则不会自动继承给 video）。
+   底色改用纯黑 —— 视频两边的信箱边用 --bg-2 会显得发紫。 */
+.lightbox-content video{
+  display:block;
+  max-width:90vw;max-height:78vh;
+  width:auto;height:auto;
+  object-fit:contain;
+  border-radius:12px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  background:#000;
+}
+/* hidden 属性必须显式兜住：上面两条 display:block 的特异性 (0,1,1)
+   会盖掉 UA 样式表的 [hidden]{display:none}，图片与影片会同时显示。 */
+.lightbox-content img[hidden],
+.lightbox-content video[hidden]{display:none}
+/* lightbox 是**主题无关的暗色孤岛** —— 它的底是硬编码的 rgba(15,8,32,.94)，
+   所以文字不能用 --muted（亮色主题下它翻成 #76677e，在这块近黑底上
+   实测对比度只有 3.73:1，低于 WCAG AA 的 4.5:1）。
+   与 .mu-hall 的处理同理：深色孤岛内一律用固定浅色。 */
 .lightbox-content p{
-  color:var(--muted);
+  color:rgba(245,232,255,.80);
   font-family:var(--font-cn);
   font-size:14px;line-height:1.6;
   max-width:680px;text-align:center;
   margin:0;padding:0 12px;
+}
+.lightbox-sign{
+  font-family:var(--font-mono);
+  font-size:11px;letter-spacing:.1em;
+  color:rgba(245,232,255,.66);
+  text-align:center;padding:0 12px;
 }
 .lightbox-close{
   position:absolute;top:24px;right:32px;
@@ -1833,7 +1863,8 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
   .mu-wall-row{gap:var(--s-8) var(--s-4)}
   .mu-wall-row[data-orient="landscape"]{grid-template-columns:repeat(auto-fill,minmax(184px,1fr))}
   .mu-wall-row[data-orient="portrait"] {grid-template-columns:repeat(auto-fill,minmax(184px,1fr))}
-  .lightbox-content img{max-height:70vh;}
+  .lightbox-content img,
+  .lightbox-content video{max-height:70vh;}
   .lightbox-close{top:14px;right:14px;}
 }
 @media (max-width:575px){
@@ -1852,7 +1883,7 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
 }
 
 /* ============================================================
-   星座图（33 张履历 = 6 个星座）
+   星座图（每个分类一个星座）
    ------------------------------------------------------------
    取代原「5 大分类导览图」+ canvas 叠加层的双写结构：那两套画的是同一批
    分类却互不对应，读起来像散落的杂讯。
@@ -1970,7 +2001,7 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
   background:color-mix(in srgb,var(--cyan) 12%,transparent);
 }
 
-/* 响应式：窄屏把星空拉高 —— 33 颗星挤在扁条里会糊成一团 */
+/* 响应式：窄屏把星空拉高 —— 星点多时挤在扁条里会糊成一团 */
 @media (max-width:991px){ .sky{aspect-ratio:100/62} }
 @media (max-width:767px){ .sky{aspect-ratio:100/104} }
 @media (max-width:575px){
@@ -2039,7 +2070,7 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
 }
 
 /* ============================================================
-   Archive 折叠式证据库（33 张图全部归档）
+   Archive 折叠式证据库（履历图归档）
    ============================================================ */
 /* 库房目录：单列堆叠，读起来像登记册 */
 .archive-grid{
@@ -2060,6 +2091,10 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
 .archive-group[data-accent="city"]    {--accent:var(--cyan)}
 .archive-group[data-accent="school"]  {--accent:var(--purple-3)}
 .archive-group[data-accent="practice"]{--accent:var(--green)}
+/* talk 用 --purple-2（:root 已有、此前从未被用作分类色，不算新增色相）；
+   film 与 talk 都是新柜，取 --cyan-2 以便和 talk 的紫区分开。 */
+.archive-group[data-accent="talk"]{--accent:var(--purple-2)}
+.archive-group[data-accent="film"]{--accent:var(--cyan-2)}
 .archive-group:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
 .archive-group summary{
   padding:var(--s-4) var(--s-5);
@@ -2116,6 +2151,15 @@ main > section.is-pulse-target{animation:signalTargetPulse 1.4s ease-out;positio
   object-fit:contain;object-position:center;
   background:var(--hall-mat);border-radius:var(--s-1);
   padding:2px;
+}
+/* 影片条目没有缩略图，用同尺寸的播放标记占位 ——
+   必须与 .archive-item img 同为 64×64，否则 grid-template-columns:64px 1fr
+   那一列会被撑开、与图片条目对不齐。 */
+.archive-film-thumb{
+  display:grid;place-items:center;
+  width:64px;height:64px;
+  background:var(--hall-mat);border-radius:var(--s-1);
+  color:var(--cyan);font-size:18px;line-height:1;
 }
 .archive-item-info{display:flex;flex-direction:column;gap:2px;min-width:0}
 .archive-item-info small{
@@ -2225,28 +2269,15 @@ body.category-linking .sky-star:not(.is-related){
   color:var(--muted);text-transform:uppercase;
   margin-bottom:var(--s-3);
 }
-.node-canvas-legend{
-  display:flex;flex-wrap:wrap;justify-content:center;
-  gap:var(--s-2) var(--s-5);
-  font-family:var(--font-mono);font-size:10px;
-  color:var(--muted);letter-spacing:.1em;
-}
-.node-canvas-legend b{color:var(--cyan);font-weight:700;margin-left:3px}
-.node-canvas-legend i{
-  display:inline-block;width:8px;height:8px;border-radius:50%;
-  margin-right:4px;vertical-align:middle;
-}
-.node-canvas-legend i.cat-competition{background:#ff6b35}
-.node-canvas-legend i.cat-campus{background:#00d9ff}
-.node-canvas-legend i.cat-project{background:#7828d6}
-.node-canvas-legend i.cat-practice{background:#ffb347}
-.node-canvas-legend i.cat-startup{background:#ff4d8d}
-.node-canvas-legend i.cat-ip{background:#7ee787}
+/* 原 .node-canvas-legend（节点 canvas 图例，7 条规则 + 6 条 .cat-* 色）已随
+   节点 canvas 一起删除。它是分类色的**第三份拷贝**，且只列 6 类、没有 talk ——
+   留着是隐患（谁以它为模板就会漏色）。分类色现在只保留两处：
+   script.js 的 CAT_COLORS（注入星点与图例）与下方 [data-cat="*"]（hover 联动边框）。 */
 
 /* ---- Constellation 视觉强化：已由 HALL LAYER 的导览图样式取代 ---- */
 
 /* ============================================================
-   ✨ 5 大分类色调（用于 hover 联动态的边框色）
+   ✨ 分类色调（用于 hover 联动态的边框色）
    ============================================================ */
 [data-cat="competition"]{--cat-color:#ff6b35}
 [data-cat="campus"]{--cat-color:#00d9ff}
@@ -2254,6 +2285,7 @@ body.category-linking .sky-star:not(.is-related){
 [data-cat="practice"]{--cat-color:#ffb347}
 [data-cat="startup"]{--cat-color:#ff4d8d}
 [data-cat="ip"]{--cat-color:#7ee787}
+[data-cat="talk"]{--cat-color:#9e59ee}   /* 新增分类 · 与 script.js 的 CAT_COLORS 同步（同一颜色的第二处拷贝） */
 
 /* ============================================================
    移动端：聚焦态降级（移动端没有 sibling 概念）
@@ -2262,7 +2294,6 @@ body.category-linking .sky-star:not(.is-related){
   body.detail-active > main > section:not(.is-active){
     opacity:1;filter:none;pointer-events:auto;
   }
-  .node-canvas-legend{gap:var(--s-1) var(--s-3);font-size:9px}
 }
 
 /* ============================================================================
@@ -2312,6 +2343,7 @@ body.category-linking .sky-star:not(.is-related){
   --orange:#ff6b35;
   --orange-2:#ffb627;
   --purple:#7828d6;
+  --purple-2:#9e59ee;   /* talk 柜的 accent 用它 —— 漏复位会让 talk 在浅色主题下变色 */
   --purple-3:#b77aff;
   --green:#25e8a5;
 }
@@ -2556,6 +2588,224 @@ body.category-linking .sky-star:not(.is-related){
 .ed-section .award-card:hover,
 .ed-section .skill-card:hover{
   transform:translateY(-2px);box-shadow:none;border-color:var(--orange-2);
+}
+
+/* ---- E3b 荣誉区：三次跃迁的编年结构 -------------------------------------
+   模块要说的不是「得过什么奖」，而是「能力被反复确认的过程」——
+   所以放弃等权卡片网格（9 宫格看不出主次，也看不出递进），
+   改为编辑式编年列表：三个章节各自成段
+     CHAPTER 01 参赛者  →  CHAPTER 02 第一负责人  →  CHAPTER 03 创业者
+   段内条目以发丝线分隔、去掉盒子；旗舰项（第一负责人段首项）图文并置。
+   高级感来自克制：去盒子 / 大留白 / 强字号对比 / 只留一个强调色。
+   纪律同全层：单类、禁 #id、不加 !important、不新增色相。 */
+.award-chapters{margin-top:var(--s-12)}
+.award-chapter + .award-chapter{margin-top:var(--s-20)}
+
+.award-chapter-head{
+  display:flex;align-items:baseline;gap:var(--s-4);
+  padding-bottom:var(--s-4);
+  border-bottom:1px solid var(--ed-rule);   /* 与章节顶线、地脚线同一配方 */
+}
+.award-chapter-head h3{
+  margin:0;font-family:var(--font-display);
+  font-size:var(--fs-h3);font-weight:700;
+  color:var(--ink-2);line-height:1.2;
+}
+.award-chapter-head small{
+  margin-left:auto;
+  font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+}
+.award-chapter-note{
+  margin:var(--s-3) 0 0;max-width:var(--ed-measure);
+  font-family:var(--font-editorial);
+  font-size:var(--fs-body);line-height:1.7;color:var(--muted);
+}
+
+/* --- 条目：发丝线分隔、无盒子 --- */
+.award-rows{margin-top:var(--s-2)}
+.award-row{
+  display:grid;grid-template-columns:44px minmax(0,1fr) auto auto;
+  gap:var(--s-5);align-items:baseline;
+  width:100%;padding:var(--s-6) var(--s-3);
+  background:none;border:0;border-bottom:1px solid var(--line);
+  text-align:left;color:inherit;cursor:pointer;
+  transition:background var(--t-fast), padding-left var(--t-fast);
+}
+.award-row:hover{
+  background:color-mix(in srgb, var(--orange-2) 6%, transparent);
+  padding-left:var(--s-5);
+}
+.award-row:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.award-no{color:var(--muted)}   /* 盖掉 .mu-no 的青色 —— 列表里编号要退到背景层 */
+
+.award-row-main{display:flex;flex-direction:column;gap:6px;min-width:0}
+.award-row-title{
+  font-family:var(--font-display);font-size:var(--fs-h5);
+  font-weight:700;color:var(--ink-2);line-height:1.35;
+}
+.award-row-result{font-size:13px;font-weight:700;color:var(--orange-2)}
+.award-row-stamp{
+  font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.12em;color:var(--muted);
+}
+.award-brief{
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  font-family:var(--font-editorial);
+  font-size:13px;line-height:1.65;color:var(--muted);
+}
+.award-row-tail{
+  display:flex;flex-direction:column;gap:6px;
+  align-items:flex-end;text-align:right;white-space:nowrap;
+}
+.award-row-tail small{
+  font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.12em;color:var(--muted);
+}
+
+/* --- 图位：每一行都有（用户要求：荣誉区每项都配图强调）---
+   最多两张并排 —— 左＝证书/奖状，右＝参赛现场照（或另一张证书）。
+   定高而非 aspect-ratio：证书与合影比例不一，定高才能让整列节奏可预期。 */
+.award-row-figs{display:flex;gap:var(--s-2);align-items:flex-start}
+.award-row-figs img{
+  display:block;width:104px;height:70px;
+  object-fit:cover;border-radius:2px;
+  border:1px solid var(--line);
+  background:var(--surface);
+}
+
+/* --- 旗舰项：图文并置（第一负责人段的首项）--- */
+.award-row--lead{
+  grid-template-columns:44px minmax(0,1fr) 300px;
+  align-items:start;padding:var(--s-8) var(--s-3);
+}
+.award-row--lead .award-row-title{font-size:var(--fs-h4);line-height:1.25}
+.award-row--lead .award-row-result{font-size:var(--fs-h5)}
+.award-row--lead .award-brief{-webkit-line-clamp:3;font-size:var(--fs-body)}
+.award-row--lead .award-row-figs{gap:var(--s-3)}
+/* 4:3 横版 —— 荣誉区的证书与合影**都是横构图**，之前给 172px 高会把它们
+   裁成竖条，同一行的两张因原图比例不同（1.54 vs 1.33）看着就不齐。
+   固定 4:3 让两张在任何原图比例下都同尺寸同比例。 */
+.award-row--lead .award-row-figs img{width:144px;height:108px}
+
+/* --- 响应式 --- */
+/* 991 以下：图位从右列挪到内容下方（跨列），避免右列把标题挤到换行 */
+@media (max-width:991px){
+  .award-row{grid-template-columns:44px minmax(0,1fr) auto}
+  .award-row-figs{grid-column:2 / -1;grid-row:2;margin-top:var(--s-4)}
+  .award-row--lead{grid-template-columns:44px minmax(0,1fr)}
+  .award-row--lead .award-row-figs{grid-column:2;grid-row:auto}
+  .award-row--lead .award-row-figs img{height:190px}
+}
+@media (max-width:767px){
+  .award-row{grid-template-columns:32px minmax(0,1fr);gap:var(--s-4)}
+  .award-row-tail{
+    grid-column:2;grid-row:auto;align-items:flex-start;text-align:left;
+    flex-direction:row;gap:var(--s-3);margin-top:4px;
+  }
+  .award-row-figs{grid-column:2;grid-row:auto;margin-top:var(--s-3)}
+  .award-row-figs img{width:88px;height:60px}
+  .award-row--lead .award-row-figs img{height:150px}
+  .award-chapter-head{flex-wrap:wrap}
+  .award-chapter-head small{margin-left:0;width:100%}
+}
+
+/* ---- E3c 大学游历：行程线（全站唯一的横向轴） -----------------------------
+   组织依据是「地理移动」而非「分类 / 重要度」，所以做**横向**时间轴 ——
+   在轴向上就与星座图（竖向星点 + 连线）、荣誉区（竖向编年列表）区分开了。
+   交互：整条可横向滚动（窄屏尤其需要），站点可点开看该次出行的照片。
+   纪律同全层：单类、禁 #id、不加 !important、不新增色相。 */
+.trail{
+  margin-top:var(--s-10);
+  overflow-x:auto;overflow-y:hidden;
+  padding-bottom:var(--s-4);
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent;
+}
+.trail::-webkit-scrollbar{height:6px}
+.trail::-webkit-scrollbar-track{background:transparent}
+.trail::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+
+/* 轨道：内容决定宽度且不换行 —— 这是「横向滚动」而非「挤成一坨」的关键 */
+.trail-track{
+  display:flex;align-items:stretch;
+  margin:0;padding:0;list-style:none;
+  min-width:max-content;
+}
+.trail-item{display:flex;flex:0 0 auto}
+.trail-stop{
+  position:relative;
+  display:flex;flex-direction:column;gap:var(--s-2);
+  width:206px;padding:0 var(--s-4) var(--s-4);
+  background:none;border:0;
+  text-align:left;color:inherit;cursor:pointer;
+}
+/* 横线：每站画一段，首尾相接成一条贯穿的轴。
+   首站左半段 / 末站右半段留白，让轴有明确的起讫（不是无限延伸）。
+   ⚠️ top 必须等于「日期行高 + gap + 节点半高」，否则圆点会飘在轴外面：
+      日期 16px + gap 8px + 圆点总高 15px 的一半 7.5px ≈ 32px */
+.trail-stop::before{
+  content:'';position:absolute;
+  top:32px;left:0;right:0;height:1px;
+  background:var(--line);
+}
+.trail-item:first-child .trail-stop::before{left:var(--s-4)}
+.trail-item:last-child  .trail-stop::before{right:var(--s-4)}
+
+/* 节点圆点：坐在轴上（圆心与横线重合） */
+.trail-node{
+  position:relative;z-index:1;
+  width:11px;height:11px;border-radius:50%;
+  margin:0 0 var(--s-2) var(--s-2);
+  background:var(--bg-2);border:2px solid var(--orange-2);
+  transition:transform var(--t-fast), box-shadow var(--t-fast);
+}
+.trail-stop:hover .trail-node{
+  transform:scale(1.35);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--orange-2) 18%, transparent);
+}
+.trail-stop:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+
+/* 日期（mono，轴上方）。行高写死 16px —— 上面 ::before 的 top:32px 依赖它 */
+.trail-date{
+  height:16px;line-height:16px;
+  font-family:var(--font-mono);font-size:11px;
+  letter-spacing:.14em;color:var(--orange-2);
+}
+/* 缩略图 */
+.trail-thumb{
+  display:block;width:100%;aspect-ratio:4/3;
+  border:1px solid var(--line);border-radius:2px;
+  overflow:hidden;background:var(--surface);
+}
+.trail-thumb img{
+  display:block;width:100%;height:100%;object-fit:cover;
+  transition:transform var(--t-med);
+}
+.trail-stop:hover .trail-thumb img{transform:scale(1.04)}
+/* 校名 / 事由 / 城市 */
+.trail-uni{
+  font-family:var(--font-display);
+  font-size:var(--fs-h5);font-weight:700;
+  color:var(--ink-2);line-height:1.3;
+}
+.trail-event{
+  flex:1;                       /* 撑开，让城市名沉到站点底部对齐 */
+  font-family:var(--font-editorial);
+  font-size:12px;line-height:1.6;color:var(--muted);
+}
+.trail-city{color:var(--cyan)}
+
+/* 「可横向滑动」提示 —— 横向滚动容器在桌面上没有可见的滚动条暗示，
+   用户容易以为只有 6 站（实际 9 站）。 */
+.trail-hint{
+  display:inline-block;margin-top:var(--s-2);
+  font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.14em;color:var(--cyan);
+}
+
+@media (max-width:767px){
+  .trail-stop{width:172px;padding:0 var(--s-3) var(--s-3)}
+  .trail-uni{font-size:var(--fs-h5)}
 }
 
 /* ---- E4 背景节奏 --------------------------------------------------------- */

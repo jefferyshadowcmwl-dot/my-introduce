@@ -45,10 +45,10 @@ draw.text((104, 619), "CEO · 技术负责人", font=sans(34, True), fill=(237, 
 draw.text((78, 754), "CONTACT", font=mono(27, True), fill=(120, 207, 197))
 draw.line((78, 800, WIDTH - 78, 800), fill=(62, 92, 91), width=2)
 
-draw.text((78, 842), "MAIL", font=mono(27, True), fill=(200, 178, 133))
-draw.text((78, 889), "3107190237@qq.com", font=mono(38), fill=(237, 237, 226))
-draw.text((78, 982), "TEL", font=mono(27, True), fill=(200, 178, 133))
-draw.text((78, 1029), "15026727430", font=mono(42), fill=(237, 237, 226))
+draw.text((78, 842), "PUBLIC PROJECT", font=mono(27, True), fill=(200, 178, 133))
+draw.text((78, 889), "github.com/", font=mono(38), fill=(237, 237, 226))
+draw.text((78, 982), "GITHUB", font=mono(27, True), fill=(200, 178, 133))
+draw.text((78, 1029), "jefferyshadowcmwl-dot", font=mono(42), fill=(237, 237, 226))
 
 draw.line((78, 1172, WIDTH - 78, 1172), fill=(62, 92, 91), width=2)
 draw.text((78, 1212), "DATA · HARDWARE · BUSINESS", font=mono(29, True), fill=(120, 207, 197))

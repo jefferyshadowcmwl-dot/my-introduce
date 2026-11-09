@@ -88,7 +88,7 @@ main#top (主站)
 ├── #campus (大学游历：9 站，上海 7 / 扬州 1 / 南京 1；按 2023 / 2024 / 2025 真实年份稳定排序的横向轨道，手机端也横向浏览)
 ├── #archive (6 抽屉库房目录)
 ├── #skills (标题左对齐，中文 sans 的 6 项 OptionWheel 滚轮联动原有 18 项指标及 6 套真实实践 / 交付 / 三步路径 / 履历锚点，右侧技能卡无边框 / 透明背景)
-├── #contact (4 联系卡片 + 原库 FlyingButton WebGL2 烟雾起飞；点击显示真实邮箱并提供复制，不发送消息，支持 reduced-motion 与 WebGL 降级)
+├── #contact (2 公开链接卡片 + 原库 FlyingButton WebGL2 烟雾起飞；点击显示公开项目入口并提供复制，不发送消息，支持 reduced-motion 与 WebGL 降级)
 └── .site-footer
 ```
 > 原 `.hero` 与 `.quick-stats` 已于 2026-09-23 删除/并入 `#about`；
@@ -130,7 +130,7 @@ main#top (主站)
 
 片头媒体为 `assets/lzy-intro.mp4` + `lzy-intro-poster.jpg`，15 秒纯文字，不使用人物照片；视频原文件（包括 2024 / 2025 等年份变化及结尾年份）与音轨锁定不改。
 入口为原版 GhostFibers 光纤丝带 + 姓名，入口挂载 GhostFibers 而非 GradientASCII，无照片球；英文姓名 `LIU ZHIYUAN` 使用 TechText 科技文字，中文姓名使用 sans 无衬线字体；`.character-button` 支持点击 / Enter / Space 进入详情页。`#about` 使用 react-src 中原版 React + Three Lanyard，`finish: glossy`（非 holographic），旁有点击翻面提示，入口不再出现工牌；桥接在主站显现且工牌就绪后派发 `lzy-enter`，Lanyard 等待材质就绪与可见后执行真实物理入场，reduced-motion 下直接使用静止悬挂状态。
-`#about` 背景使用持续 drift 的 GradientASCII（尊重 reduced-motion），不再挂载 LightTunnel；`#awards` 仍使用原版 Lightfall。`#gallery` 保留 GridMotion 平面漂移照片墙，独立按钮展开的 ChromaGallery 从 `LZY_CHROMA_ITEMS` 浏览全部 63 图，使用正常文档流中的 BranchedMenu 筛选 7 类，以 6 / 5 / 4 / 2 列响应式小图提供聚光与原图 Lightbox；七星座的星点、连线与图例沿用 `CAT_COLORS` 原分类颜色，不统一改成主题青色。`#skills` 标题左对齐，使用中文 sans 的 6 项 OptionWheel 滚轮联动原有 18 项指标及 6 套真实实践、交付、三步路径和履历锚点，右侧技能卡保持无边框 / 透明背景。`#contact` 在原有联系卡片外新增原库 FlyingButton WebGL2 烟雾起飞效果，点击显示真实邮箱并提供复制，不发送消息，支持 reduced-motion 与 WebGL 不可用时降级。荣誉与校园图片保留原色、使用 `contain` 并去除闪膜，HoloCard / Halftone 不再初始化；荣誉图片以 `.award-image-open` 独立按钮打开原图并阻止冒泡，与整行详情分离。
+`#about` 背景使用持续 drift 的 GradientASCII（尊重 reduced-motion），不再挂载 LightTunnel；`#awards` 仍使用原版 Lightfall。`#gallery` 保留 GridMotion 平面漂移照片墙，独立按钮展开的 ChromaGallery 从 `LZY_CHROMA_ITEMS` 浏览全部 63 图，使用正常文档流中的 BranchedMenu 筛选 7 类，以 6 / 5 / 4 / 2 列响应式小图提供聚光与原图 Lightbox；七星座的星点、连线与图例沿用 `CAT_COLORS` 原分类颜色，不统一改成主题青色。`#skills` 标题左对齐，使用中文 sans 的 6 项 OptionWheel 滚轮联动原有 18 项指标及 6 套真实实践、交付、三步路径和履历锚点，右侧技能卡保持无边框 / 透明背景。`#contact` 在原有联系卡片外新增原库 FlyingButton WebGL2 烟雾起飞效果，点击显示公开项目入口并提供链接复制，不展示个人邮箱或电话号码，不发送消息，支持 reduced-motion 与 WebGL 不可用时降级。荣誉与校园图片保留原色、使用 `contain` 并去除闪膜，HoloCard / Halftone 不再初始化；荣誉图片以 `.award-image-open` 独立按钮打开原图并阻止冒泡，与整行详情分离。
 `react-src/` 保留原版组件源码，运行 `npm run build` 生成 `assets/lzy-react.js` 与 CSS。
 最终 `index.html` 内联全部本地 CSS/JS；`components/` 保留为模块源码，Docker 与 GitHub Pages 均无需构建。
 

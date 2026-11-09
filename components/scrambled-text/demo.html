@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScrambledText 组件 demo — 乱码文字</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="scrambled-text.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0f0820;
+      color: #f5e8ff;
+      font-family: 'Fraunces', 'Noto Serif SC', Georgia, serif;
+      padding: 40px 5vw 80px;
+    }
+    .demo-head { max-width: 1100px; margin: 0 auto 28px; }
+    .demo-head h1 { font-size: 26px; margin: 0 0 6px; font-weight: 600; }
+    .demo-head p { margin: 0; color: #a895b3; font-size: 14px; font-family: 'JetBrains Mono', monospace; }
+    .demo-card {
+      max-width: 1100px;
+      margin: 0 auto 36px;
+      border: 1px solid rgba(158, 89, 238, 0.28);
+      background: #160d20;
+      padding: 22px 26px;
+    }
+    .demo-card h2 {
+      margin: 0 0 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #5beaff;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.14em;
+    }
+    .demo-hint { color: #a895b3; font-size: 12px; margin-top: 14px; font-family: 'JetBrains Mono', monospace; }
+    #sc-title {
+      font-family: 'Noto Serif SC', 'Songti SC', Georgia, serif;
+      font-size: clamp(28px, 4.6vw, 46px);
+      font-weight: 600;
+      color: #f5e8ff;
+      cursor: default;
+    }
+    #sc-en {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(14px, 2vw, 20px);
+      line-height: 1.7;
+      color: #d8c7ea;
+      cursor: default;
+    }
+    #sc-cn {
+      font-family: 'Noto Serif SC', 'Songti SC', Georgia, serif;
+      font-size: clamp(17px, 2.4vw, 24px);
+      line-height: 1.9;
+      color: #d8c7ea;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <header class="demo-head">
+    <h1>LZY.Comp.ScrambledText — 乱码文字</h1>
+    <p>零依赖重写（无 gsap）· 双层 sizer/glyph 防抖动 · hover 乱码 + lift/blur 物理 · 点击波环扫 · IO stagger 解码</p>
+  </header>
+
+  <section class="demo-card">
+    <h2>变体 A · 中文标题 / CJK 字符集自动 / introDecode / scrambleColor 青</h2>
+    <div id="sc-title"></div>
+    <p class="demo-hint">入场逐字解码（一次性）；指针划过 → 字符乱码闪烁后还原。</p>
+  </section>
+
+  <section class="demo-card">
+    <h2>变体 B · 西文段落 / charset '.:' / useLift+useBlur</h2>
+    <div id="sc-en"></div>
+    <p class="demo-hint">指针附近字母乱码 + 上浮 + 模糊；点击发出环扫波。</p>
+  </section>
+
+  <section class="demo-card">
+    <h2>变体 C · 中文段落 / charset '▓▒░█01&lt;&gt;/#' / duration 600ms</h2>
+    <div id="sc-cn"></div>
+    <p class="demo-hint">hover 半径 150px；点击任意处触发乱码环。</p>
+  </section>
+
+  <script src="scrambled-text.js"></script>
+  <script>
+    (function () {
+      function boot() {
+        window.LZY.Comp.ScrambledText.init(document.getElementById('sc-title'), {
+          text: '技能信号 · 已解码',
+          radius: 160,
+          duration: 800,
+          scrambleColor: '#00d9ff',
+          introDecode: true,
+          scrambleOnHover: true
+        });
+        window.LZY.Comp.ScrambledText.init(document.getElementById('sc-en'), {
+          text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique pariatur dignissimos porro eius quam doloremque et enim velit nobis maxime.',
+          radius: 110,
+          duration: 900,
+          useLift: true,
+          useBlur: true,
+          introDecode: true
+        });
+        window.LZY.Comp.ScrambledText.init(document.getElementById('sc-cn'), {
+          text: '把每一件小事做到可靠，是工程师最朴素的浪漫。从电路板到云端，从数据到界面。',
+          charset: '▓▒░█01<>/#',
+          radius: 150,
+          duration: 600,
+          introDecode: true,
+          scrambleColor: '#ffb627'
+        });
+      }
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot, boot);
+      else boot();
+    })();
+  </script>
+</body>
+</html>

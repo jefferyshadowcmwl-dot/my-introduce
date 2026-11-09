@@ -167,13 +167,12 @@
                 （如 Google 双认证 = Display + AI-Powered Shopping 两张）
      顺序与荣誉区显示顺序一致（01 国赛 → 08 专利）。
 
-     ⚠️ shangHaiSan（上海市计算机应用能力大赛）按用户要求**只放奖状、不放现场照**：
-     它原先指向 comp_2023_15city（那是现场合影），已改用 comp_2024_apply3（第 16 届三等奖奖状）。
+     shangHaiSan 使用第 16 届市赛证书及同届现场照片。
      ⚠️ shiXinZhuanLi：证书载明发明人是**赖哲浩**、专利权人是**上海鸿惊智能科技有限公司**，
      不是本人发明。配图据实展示，卡片文案也据实标注，不认领。 */
   const AWARD_BINDINGS = [
     { cardKey:'guoSaiEr',      certId:'comp_2023_design2',  altId:'comp_2023_design4c_vision' },  // 01 国赛二等奖
-    { cardKey:'shangHaiSan',   certId:'comp_2024_apply3',   altId:'comp_2023_apply15_group'  },  // 02 市赛三等奖
+    { cardKey:'shangHaiSan',   certId:'comp_2024_apply3',   altId:'comp_2024_apply16_scene'  },  // 02 市赛三等奖
     { cardKey:'shuangChuang',  certId:'comp_2024_intl_yin', altId:'comp_2024_intl_ujs'       },  // 03 双创银奖（旗舰）
     { cardKey:'puDongYi',      certId:'startup_pudong_1',   altId:'startup_pudong_ust_2024'  },  // 04 浦东一等奖
     { cardKey:'guoJiaLiXiang', certId:null,                 altId:'talk_2025_annual_meet'    },  // 05 国家级立项（无证书，用年会展示照）
@@ -282,8 +281,49 @@
      故在启动页期间给 body 加 is-intro 锁滚动，离开时解锁并强制回顶。 */
   document.body.classList.add('is-intro');
 
+  let introLeaving = false;
+  let bgmPlayBlocked = false;
+  let bgmPlayRequest = null;
+
+  function setBgmBlocked(blocked){
+    bgmPlayBlocked = blocked;
+    const muteBtn = $('.si-mute');
+    if(!muteBtn) return;
+    muteBtn.classList.toggle('is-blocked', blocked);
+    const muted = muteBtn.getAttribute('aria-pressed') === 'true';
+    const label = blocked ? '点击开启音乐' : (muted ? '取消静音' : '静音');
+    muteBtn.setAttribute('aria-label', label);
+    muteBtn.title = blocked ? '浏览器阻止了自动播放，点击开启音乐' : label;
+  }
+
+  function playBgm(){
+    const audio = $('#bgm');
+    if(!audio) return Promise.resolve(false);
+    if(!audio.paused && !audio.ended){
+      setBgmBlocked(false);
+      return Promise.resolve(true);
+    }
+    if(bgmPlayRequest) return bgmPlayRequest;
+    try{
+      bgmPlayRequest = Promise.resolve(audio.play()).then(() => {
+        setBgmBlocked(false);
+        return true;
+      }).catch(error => {
+        setBgmBlocked(true);
+        console.warn('背景音乐播放失败；点击音量或静音按钮可重试。', error);
+        return false;
+      }).finally(() => { bgmPlayRequest = null; });
+    }catch(error){
+      setBgmBlocked(true);
+      console.warn('背景音乐播放失败；点击音量或静音按钮可重试。', error);
+      return Promise.resolve(false);
+    }
+    return bgmPlayRequest;
+  }
+
   function leaveIntro(){
-    if(!introGate) return;
+    if(!introGate || introLeaving) return;
+    introLeaving = true;
     // 方案 A v2：5 阶段仪式感过渡（与 styles.css .is-leaving/.is-bursting/.is-streaming/.is-arrive/.is-opacity-out 配合）
     //   0   question 吸进中心 + sticker shine + deco fade
     // 180   8 道脉冲光线放射 + photo emit + halo scan
@@ -310,9 +350,9 @@
       window.scrollTo({top:0,behavior:'instant'});
       header?.classList.add('is-visible');
       stationIndex?.classList.add('is-visible');
-      /* 背景音乐起播。此刻用户刚点过启动页（或跳过），属于用户手势之后的
-         播放，不会被自动播放策略拦。被拦下也静默降级，不打断主线。 */
-      $('#bgm')?.play().catch(() => {});
+      /* 片头自然结束会程序化点击跳过，不一定仍有用户手势。
+         播放失败时显示恢复入口；成功或已在播放时不会重复起播。 */
+      playBgm();
       // 只让首屏（#about）的 reveal 元素立即可见（启动页 → 主站的衔接）
       // 其他区块（internship/projects/...）保留 IntersectionObserver 滚动揭示
       $$('#about .reveal').forEach(el=>el.classList.add('is-visible'));
@@ -483,12 +523,7 @@
 
   /* ---------- Quick Stats 数字滚动 ---------- */
   function initCountUp(){
-    /* 选择器从 `.about-stats strong[data-count]` 放宽为 `[data-count]` ——
-       data-count 只有两处消费者：#about 数据带的 4 个 KPI、
-       #skills 的 18 个技能百分比（.skill-pct）。
-       两者的结构契约一致（元素内含纯数字；KPI 额外含 <small> 尾标，
-       由下面的 querySelector('small') 保住）。 */
-    const stats = $$('[data-count]');
+    const stats = $$('[data-count]:not(.skill-pct)');
     if(!stats.length) return;
     const obs = new IntersectionObserver((entries)=>{
       entries.forEach(en=>{
@@ -583,7 +618,22 @@
 
   /* ---------- 奖项详情弹层（双栏：图片视觉区 + 文案） ---------- */
   function initAwards(){
-    const cards = $$('.award-evidence');
+    const cards = $$('.award-evidence').map(button => {
+      const row = document.createElement('div');
+      Array.from(button.attributes).forEach(({name, value}) => {
+        if(!['type', 'role', 'tabindex'].includes(name)) row.setAttribute(name, value);
+      });
+      row.setAttribute('role', 'group');
+      row.append(...button.childNodes);
+      const detail = document.createElement('button');
+      detail.type = 'button';
+      detail.className = 'award-row-detail';
+      detail.setAttribute('aria-label', `查看荣誉详情：${row.dataset.title || ''}`);
+      detail.setAttribute('aria-haspopup', 'dialog');
+      row.appendChild(detail);
+      button.replaceWith(row);
+      return row;
+    });
     if(!cards.length) return;
 
     // 动态创建 modal（双栏布局：左 visual + 右 copy）
@@ -591,7 +641,10 @@
     modal.className = 'award-modal';
     modal.setAttribute('role','dialog');
     modal.setAttribute('aria-modal','true');
+    modal.setAttribute('aria-labelledby','awardTitle');
     modal.setAttribute('aria-hidden','true');
+    modal.tabIndex = -1;
+    modal.inert = true;
     modal.innerHTML = `
       <div class="award-modal-backdrop" data-award-close></div>
       <div class="award-modal-card">
@@ -618,12 +671,7 @@
     `;
     document.body.appendChild(modal);
 
-    /* 旗舰卡内联展示它的证据缩略图 —— 荣誉区「立主次」的可视化落点：
-       头牌卡除了占 4 倍面积，还把证据摊在卡面上；其余 8 张保持纯文字，
-       它们的图仍在各自详情弹层里，不重复。无图则保持纯文字，不塞空框。 */
-    /* 给荣誉区的**每一行**填图（用户要求：每一项都配图强调，不只旗舰）。
-       每条最多两张：cert（证书/奖状）排第一，alt（参赛现场照 / 另一张证书）排第二。
-       没绑定的槽直接移除 —— 宁缺勿滥，不留空框。 */
+
     $$('.award-evidence').forEach(row => {
       const figs = row.querySelector('.award-row-figs');
       if(!figs) return;
@@ -632,8 +680,22 @@
         const el  = figs.querySelector('.award-fig-' + kind);
         const img = id ? findImg(id) : null;
         if(!img){ if(el) el.remove(); return; }
-        el.src = assetUrl(img);      // src 不写死在 HTML 里 —— 图由 AWARD_BINDINGS 决定
+        if(!el) return;
+        el.src = assetUrl(img);
         el.alt = img.caption;
+        const preview = document.createElement('button');
+        preview.type = 'button';
+        preview.className = 'award-image-open';
+        preview.dataset.imgId = img.id;
+        preview.setAttribute('aria-label', `查看完整原图：${img.caption}`);
+        preview.setAttribute('aria-haspopup', 'dialog');
+        el.replaceWith(preview);
+        preview.appendChild(el);
+        preview.addEventListener('click', e => {
+          e.stopPropagation();
+          preview.focus({preventScroll:true});
+          window.openLightbox(img.id, img.caption);
+        });
       });
       if(!figs.children.length) figs.remove();
     });
@@ -657,8 +719,45 @@
     const evidenceEl  = modal.querySelector('#awardEvidence');
     const storyEl     = modal.querySelector('#awardStory');
     const linkEl      = modal.querySelector('#awardLink');
+    const closeBtn    = modal.querySelector('.award-modal-close');
+    const lightbox    = $('.lightbox');
+    let trigger = null;
+    let background = [];
+    let previousOverflow = '';
+    let modalFocus = closeBtn;
+    const lightboxOpen = () => lightbox?.classList.contains('is-open');
+    const focusable = () => $$('button, [href], input, select, textarea, video[controls], [tabindex]', modal)
+      .filter(el => !el.matches(':disabled') && el.tabIndex >= 0 &&
+        !el.closest('[hidden], [inert]') && el.getClientRects().length > 0);
+    function restoreModalFocus(){
+      const target = focusable().includes(modalFocus) ? modalFocus : (focusable()[0] || modal);
+      target.focus({preventScroll:true});
+    }
+    if(lightbox){
+      new MutationObserver(() => {
+        if(!modal.classList.contains('is-open')) return;
+        modal.inert = !!lightboxOpen();
+        if(!lightboxOpen()){
+          document.body.style.overflow = 'hidden';
+          document.body.classList.add('detail-active');
+          trigger?.closest('section')?.classList.add('is-active');
+          restoreModalFocus();
+        }
+      }).observe(lightbox, {attributes:true, attributeFilter:['class']});
+    }
+    document.addEventListener('focusin', e => {
+      if(!modal.classList.contains('is-open') || lightboxOpen()) return;
+      if(modal.contains(e.target)) modalFocus = e.target;
+      else restoreModalFocus();
+    });
 
     function open(card){
+      if(modal.classList.contains('is-open') || lightboxOpen()) return;
+      trigger = card.querySelector('.award-row-detail');
+      previousOverflow = document.body.style.overflow;
+      background = Array.from(document.body.children)
+        .filter(el => el !== modal && el !== lightbox)
+        .map(el => ({el, inert:el.inert}));
       const cardKey = card.dataset.awardKey || '';
       const binding = AWARD_BINDINGS.find(b => b.cardKey === cardKey);
       /* 读 certId（证书/奖状），不是已废弃的 imgId ——
@@ -705,6 +804,8 @@
         linkEl.hidden = true;
       }
 
+      if(!titleEl.textContent.trim()) titleEl.textContent = '荣誉详情';
+      modal.inert = false;
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden','false');
       document.body.style.overflow = 'hidden';
@@ -712,17 +813,26 @@
       const activeSection = card.closest('section');
       if(activeSection) activeSection.classList.add('is-active');
       document.body.classList.add('detail-active');
+      modalFocus = closeBtn;
+      restoreModalFocus();
+      background.forEach(({el}) => { el.inert = true; });
     }
     function close(){
+      if(!modal.classList.contains('is-open') || lightboxOpen()) return;
       modal.classList.remove('is-open');
-      modal.setAttribute('aria-hidden','true');
-      document.body.style.overflow = '';
+      background.forEach(({el, inert}) => { if(el.isConnected) el.inert = inert; });
+      background = [];
+      document.body.style.overflow = previousOverflow;
       // 移除聚焦态。**必须限定到 section** —— 原先写的是全站
       // `$$('.is-active')`，它假设 is-active 只有 section 聚焦态在用；
       // 但 .sky-star 的选中态也是 is-active，全站清场会把它一起抹掉
       // （表现为：开一次灯箱，星点选中就没了）。
       $$('main > section.is-active').forEach(s => s.classList.remove('is-active'));
       document.body.classList.remove('detail-active');
+      if(trigger?.isConnected) trigger.focus({preventScroll:true});
+      trigger = null;
+      modal.inert = true;
+      modal.setAttribute('aria-hidden','true');
     }
 
     cards.forEach(card=>{
@@ -730,9 +840,7 @@
         e.preventDefault();
         open(card);
       });
-      card.addEventListener('keydown',(e)=>{
-        if(e.key==='Enter'||e.key===' '){e.preventDefault();open(card);}
-      });
+
     });
 
     // 关闭交互
@@ -740,7 +848,22 @@
       if(e.target.dataset.awardClose!==undefined) close();
     });
     document.addEventListener('keydown',(e)=>{
-      if(e.key==='Escape'&&modal.classList.contains('is-open')) close();
+      if(!modal.classList.contains('is-open') || lightboxOpen()) return;
+      if(e.key==='Escape'){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        close();
+        return;
+      }
+      if(e.key!=='Tab') return;
+      const items = focusable();
+      const first = items[0] || modal;
+      const last = items[items.length - 1] || modal;
+      const active = document.activeElement;
+      if(!items.includes(active) || (e.shiftKey && active===first) || (!e.shiftKey && active===last)){
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus({preventScroll:true});
+      }
     });
   }
 
@@ -1018,33 +1141,53 @@
     });
   }
 
-  /* ---------- 大学游历：行程线（#campus） ----------
-     全站唯一的**横向**轴 —— 与星座图（竖向星点 + 连线）、荣誉区（竖向编年列表）
-     刻意区分：这里是「按地理移动」而非「按重要度/分类」组织。
-     站点可点：有绑定图的进 lightbox 看该次出行的照片。 */
+  /* ---------- 大学游历：按真实年份编排的校园活动流（#campus） ---------- */
   function initCampusTrail(){
-    const track = $('.trail-track');
+    const campus = $('#campus');
+    const track = campus?.querySelector('.trail-track');
     if(!track) return;
-    track.innerHTML = CAMPUS_TRAIL.map((s, i) => {
-      const img = s.imgId ? findImg(s.imgId) : null;
+    const stops = CAMPUS_TRAIL.map((stop, index) => ({ ...stop, index, year:Number(stop.date.slice(0, 4)) }))
+      .sort((a, b) => a.year - b.year || a.index - b.index);
+    const years = [...new Set(stops.map(stop => stop.year))];
+    track.classList.add('cz-campus-track');
+    track.setAttribute('aria-label', '按年份排列的九站校园活动');
+    track.closest('.trail')?.classList.add('cz-campus-journey');
+    track.closest('.trail')?.setAttribute('aria-label', '上海、扬州、南京三座城市的九站校园旅程');
+    const hint = campus.querySelector('.trail-hint');
+    if(hint) hint.textContent = '按年份记录 · 左右滑动查看全部 9 站 · 点击卡片查看原图';
+
+    track.innerHTML = years.map(year => {
+      const yearStops = stops.filter(stop => stop.year === year);
       return `
-        <li class="trail-item">
-          <button class="trail-stop" type="button" style="--i:${i}"
-                  data-img-id="${img ? img.id : ''}" data-caption="${img ? img.caption : ''}">
-            <span class="trail-date">${s.date}</span>
-            <span class="trail-node" aria-hidden="true"></span>
-            ${img ? `<span class="trail-thumb"><img src="${assetUrl(img)}" alt="" loading="lazy" decoding="async" /></span>` : ''}
-            <strong class="trail-uni">${s.uni}</strong>
-            <span class="trail-event">${s.event}</span>
-            <span class="trail-city mu-no">${s.city}</span>
-          </button>
+        <li class="cz-campus-year-group">
+          <h3 class="cz-campus-year"><time datetime="${year}">${year}</time><span>${yearStops.length} 站记录</span></h3>
+          <ol class="cz-campus-list" aria-label="${year} 年校园活动">
+            ${yearStops.map(s => {
+              const img = s.imgId ? findImg(s.imgId) : null;
+              return `
+                <li class="cz-campus-item">
+                  <time class="cz-campus-date" datetime="${s.date.replace('.', '-')}">${s.date}</time>
+                  <button class="cz-campus-card" type="button"
+                          data-img-id="${img ? img.id : ''}" data-caption="${img ? img.caption : ''}"
+                          aria-label="${s.date}，${s.city}，${s.uni}：${s.event}，查看完整照片" aria-haspopup="dialog">
+                    <span class="cz-campus-photo">${img ? `<img src="${assetUrl(img)}" alt="${s.uni} · ${s.event}" width="280" height="190" loading="lazy" decoding="async" />` : ''}</span>
+                    <span class="cz-campus-meta">
+                      <span class="cz-campus-city">${s.city}</span>
+                      <strong class="cz-campus-name">${s.uni}</strong>
+                      <span class="cz-campus-event">${s.event}</span>
+                      <span class="cz-campus-open" aria-hidden="true">查看完整原图 <span>↗</span></span>
+                    </span>
+                  </button>
+                </li>`;
+            }).join('')}
+          </ol>
         </li>`;
     }).join('');
 
     track.addEventListener('click', e => {
-      const btn = e.target.closest('.trail-stop');
-      if(!btn || !btn.dataset.imgId) return;
-      openLightbox(btn.dataset.imgId, btn.dataset.caption);
+      const btn = e.target.closest('.cz-campus-card');
+      if(!btn || !track.contains(btn) || !btn.dataset.imgId) return;
+      window.openLightbox(btn.dataset.imgId, btn.dataset.caption);
     });
   }
 
@@ -1304,6 +1447,8 @@
   /* 关灯箱时「延迟清空 img.src」的句柄。**必须可取消** —— 否则关掉后 400ms 内
      再点一张图，陈旧定时器会把刚写入的 src 抹掉，灯箱开着却是空白。 */
   let lbClearTimer = null;
+  let lbTrigger = null;
+  let lbBackground = [];
 
   window.openLightbox = function(mediaId, caption){
     const img = IMG_BY_ID[mediaId];
@@ -1311,6 +1456,17 @@
     const lb  = $('.lightbox');
     if((!img && !vid) || !lb){ console.warn('Lightbox 缺失媒体：', mediaId); return; }
     clearTimeout(lbClearTimer);        // 取消上一次关闭遗留的清理
+
+    const wasOpen = lb.classList.contains('is-open');
+    if(!wasOpen){
+      const active = document.activeElement;
+      lbTrigger = active && active !== document.body && active !== document.documentElement
+        ? active : null;
+      document._lightboxSource = lbTrigger?.closest('main > section') || null;
+      if(document._lightboxSource) document._lightboxSource.classList.add('is-active');
+      lbBackground = $$('main, .site-header, .station-index').map(el => ({ el, inert:el.inert }));
+      lbBackground.forEach(({el}) => { el.inert = true; });
+    }
 
     const imgEl = $('.lightbox-content img',   lb);
     const vidEl = $('.lightbox-content video', lb);
@@ -1331,19 +1487,18 @@
     const cap = $('.lightbox-content p', lb);
     if(cap) cap.textContent = caption || (img || vid).caption;
 
+    lb.inert = false;
     lb.classList.add('is-open');
     lb.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
-    // 聚焦态：找到触发源所属 section，加 .is-active
-    document._lightboxSource = document.activeElement && document.activeElement.closest
-      ? document.activeElement.closest('section')
-      : null;
-    if(document._lightboxSource) document._lightboxSource.classList.add('is-active');
     document.body.classList.add('detail-active');
+    if(!wasOpen) $('.lightbox-close', lb)?.focus({preventScroll:true});
   };
   function closeLightbox(){
     const lb = $('.lightbox');
-    if(!lb) return;
+    if(!lb || !lb.classList.contains('is-open')) return;
+    const trigger = lbTrigger;
+    lb.inert = true;
     lb.classList.remove('is-open');
     lb.setAttribute('aria-hidden','true');
     document.body.style.overflow = '';
@@ -1351,6 +1506,9 @@
     // 全站 `$$('.is-active')` 会连带抹掉 .sky-star 的选中态。
     $$('main > section.is-active').forEach(s => s.classList.remove('is-active'));
     document.body.classList.remove('detail-active');
+    lbBackground.forEach(({el, inert}) => { if(el.isConnected) el.inert = inert; });
+    lbBackground = [];
+    lbTrigger = null;
     /* 影片必须**立刻**停：只 removeAttribute('src') 不暂停，声音会继续放。
        load() 再走一次，把已缓冲的数据一起丢掉。 */
     const vidEl = $('.lightbox-content video', lb);
@@ -1366,22 +1524,47 @@
       const imgEl = $('.lightbox-content img', lb);
       if(imgEl) imgEl.src = '';
     }, 400);
+    if(trigger?.isConnected) trigger.focus({preventScroll:true});
   }
   function initLightbox(){
     const lb = $('.lightbox');
     if(!lb) return;
+    lb.inert = true;
     lb.addEventListener('click', e => {
       if(e.target.classList.contains('lightbox') ||
          e.target.classList.contains('lightbox-close')) closeLightbox();
     });
     document.addEventListener('keydown', e => {
-      if(e.key === 'Escape' && lb.classList.contains('is-open')) closeLightbox();
+      if(!lb.classList.contains('is-open')) return;
+      if(e.key === 'Escape'){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        closeLightbox();
+        return;
+      }
+      if(e.key !== 'Tab') return;
+      const focusable = $$('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), video[controls], [tabindex]:not([tabindex="-1"])', lb)
+        .filter(el => !el.hidden && el.getClientRects().length > 0);
+      if(!focusable.length){ e.preventDefault(); return; }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if(!lb.contains(active)){
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+      }else if(e.shiftKey && active === first){
+        e.preventDefault();
+        last.focus();
+      }else if(!e.shiftKey && active === last){
+        e.preventDefault();
+        first.focus();
+      }
     });
   }
 
-  /* ---------- 序厅展柜：整柜即按钮，点击看肖像原图 ----------
-     展柜在 HTML 里已是 <button>，故 Enter / Space 原生可用，无需补键盘处理。
-     此前它是纯文本 div 且未设 user-select —— 点上去会划选文字、看着像能编辑。 */
+  /* ---------- 序厅展柜：工牌区域翻面，其他区域打开肖像 ----------
+     React Lanyard 的点击由 components-init 停止冒泡；展柜其余区域仍打开 lightbox。
+     展柜在 HTML 里已是 <button>，故 Enter / Space 原生可用，无需补键盘处理。 */
   function initVitrine(){
     const btn = $('.mu-vitrine');
     if(!btn) return;
@@ -1418,8 +1601,8 @@
   }
 
   /* ---------- 背景音乐 ----------
-     起播时机在 leaveIntro（点启动页进入主站）—— 那是一次用户手势，
-     之后的 play() 不会被浏览器自动播放策略拦下。
+     起播时机在 leaveIntro；片头自然结束可能没有用户手势，因此被拒后
+     由音量或静音控件在真实手势内重试，并显示可感知的 blocked 状态。
      音量控件在站台索引面板里（项目禁令 3：不新增 fixed 装饰层），
      音量与静音状态持久化到 localStorage，与 initTheme 同一套做法。 */
   const BGM_KEY = 'lzy-bgm-vol';
@@ -1443,20 +1626,48 @@
       if(range)   range.value = p;
       if(pctEl)   pctEl.textContent = p;
       if(muteBtn) muteBtn.setAttribute('aria-pressed', vol === 0 ? 'true' : 'false');
+      setBgmBlocked(bgmPlayBlocked);
       if(save){ try{ localStorage.setItem(BGM_KEY, String(vol)); }catch(e){} }
     }
     apply(false);
+    audio.addEventListener('play', () => setBgmBlocked(false));
 
     range?.addEventListener('input', () => {
       vol = Math.min(1, Math.max(0, parseFloat(range.value) / 100));
       if(vol > 0) bgmLastVol = vol;
       apply(true);
+      if(bgmPlayBlocked && vol > 0) playBgm();
+    });
+    range?.addEventListener('click', () => {
+      if(bgmPlayBlocked && vol > 0) playBgm();
     });
     muteBtn?.addEventListener('click', () => {
+      if(bgmPlayBlocked){
+        if(vol === 0) vol = bgmLastVol || 0.35;
+        apply(true);
+        playBgm();
+        return;
+      }
       vol = vol > 0 ? 0 : (bgmLastVol || 0.35);  // 记住静音前的音量，取消静音时还原
       apply(true);
     });
   }
+
+  window.LZY_CHROMA_ITEMS = IMG_CATALOG.map((img, index) => ({
+    id: img.id,
+    imgId: img.id,
+    image: assetUrl(img),
+    src: assetUrl(img),
+    title: img.caption,
+    caption: img.caption,
+    alt: img.caption,
+    no: String(index + 1).padStart(2, '0'),
+    subtitle: joinMeta(img.year, categoryLabel(img.category), tierLabel(img.tier)),
+    category: img.category,
+    categoryLabel: categoryLabel(img.category),
+    accent: CAT_COLORS[img.category] || '#78cfc5'
+  }));
+  window.dispatchEvent(new CustomEvent('lzy:chroma-ready', {detail:{items:window.LZY_CHROMA_ITEMS}}));
 
   /* ---------- 启动 ---------- */
   onReady(()=>{

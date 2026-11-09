@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TechText 组件 demo — 科技文字</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tech-text.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0f0820;
+      color: #f5e8ff;
+      font-family: 'Fraunces', 'Noto Serif SC', Georgia, serif;
+      padding: 40px 5vw 80px;
+    }
+    .demo-head { max-width: 1200px; margin: 0 auto 28px; }
+    .demo-head h1 { font-size: 26px; margin: 0 0 6px; font-weight: 600; }
+    .demo-head p { margin: 0; color: #a895b3; font-size: 14px; font-family: 'JetBrains Mono', monospace; }
+    .demo-card {
+      max-width: 1200px;
+      margin: 0 auto 36px;
+      border: 1px solid rgba(158, 89, 238, 0.28);
+      background: #160d20;
+      padding: 18px 20px 22px;
+    }
+    .demo-card h2 {
+      margin: 0 0 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #5beaff;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.14em;
+    }
+    .demo-stage { width: 100%; }
+    #tt-en { height: 340px; color: #f5e8ff; }
+    #tt-cn { height: 400px; color: #f5e8ff; }
+    .demo-hint { color: #a895b3; font-size: 12px; margin-top: 10px; font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body>
+  <header class="demo-head">
+    <h1>LZY.Comp.TechText — 科技文字</h1>
+    <p>Canvas 2D 双 sprite（实心/虚线轮廓）· reveal letter/area · selection 选框 · clickKick 弹跳传播 · sweep 离屏自动扫过</p>
+  </header>
+
+  <section class="demo-card">
+    <h2>变体 A · 英文微标 / reveal:letter / accent 青</h2>
+    <div id="tt-en" class="demo-stage"></div>
+    <p class="demo-hint">指针划过字母 → 变虚线轮廓 + 选框跟随；点击字母 → 弹跳并向邻字传播；指针离开 → 自动扫过。</p>
+  </section>
+
+  <section class="demo-card">
+    <h2>变体 B · 中文 / Noto Serif SC / reveal:area / accent 橙</h2>
+    <div id="tt-cn" class="demo-stage"></div>
+    <p class="demo-hint">area 模式：指针周围径向渐变擦除实心层露出虚线轮廓层。</p>
+  </section>
+
+  <script src="tech-text.js"></script>
+  <script>
+    (function () {
+      function boot() {
+        window.LZY.Comp.TechText.init(document.getElementById('tt-en'), {
+          text: 'LZY ENGINEER STATION',
+          fontWeight: 600,
+          fontSize: 110,
+          reveal: 'letter',
+          reach: 200,
+          dashLength: 4,
+          dashGap: 2,
+          bounce: 0.4,
+          accentColor: '#00d9ff'
+        });
+        window.LZY.Comp.TechText.init(document.getElementById('tt-cn'), {
+          text: '一个工程师视角',
+          fontFamily: "'Noto Serif SC', 'Songti SC', Georgia, serif",
+          fontWeight: 600,
+          fontSize: 150,
+          reveal: 'area',
+          reach: 240,
+          dashLength: 5,
+          dashGap: 3,
+          bounce: 0.5,
+          accentColor: '#ff6b35'
+        });
+      }
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot, boot);
+      else boot();
+    })();
+  </script>
+</body>
+</html>

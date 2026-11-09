@@ -1,0 +1,241 @@
+/* ============================================================
+   DomeGallery — 飘逸照片墙（纯 CSS 3D，零依赖移植自 ReactBits）
+   类名一律 cz-dg- 前缀；几何公式与原版 DomeGallery.css 逐行对应
+   ============================================================ */
+
+.cz-dg-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  --cz-dg-radius: 520px;
+  --cz-dg-viewer-pad: 72px;
+  --cz-dg-circ: calc(var(--cz-dg-radius) * 3.14);
+  --rot-y: calc((360deg / var(--segments-x)) / 2);
+  --rot-x: calc((360deg / var(--segments-y)) / 2);
+  --item-width: calc(var(--cz-dg-circ) / var(--segments-x));
+  --item-height: calc(var(--cz-dg-circ) / var(--segments-y));
+}
+
+.cz-dg-root * {
+  box-sizing: border-box;
+}
+
+.cz-dg-sphere,
+.cz-dg-item,
+.cz-dg-item__image {
+  transform-style: preserve-3d;
+}
+
+.cz-dg-main {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  background: var(--cz-dg-overlay-blur-color, #0f0820);
+}
+
+.cz-dg-stage {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  perspective: calc(var(--cz-dg-radius) * 2);
+  perspective-origin: 50% 50%;
+  contain: layout paint size;
+}
+
+.cz-dg-sphere {
+  transform: translateZ(calc(var(--cz-dg-radius) * -1));
+  will-change: transform;
+}
+
+.cz-dg-overlay,
+.cz-dg-overlay--blur {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.cz-dg-overlay {
+  background-image: radial-gradient(rgba(235, 235, 235, 0) 65%, var(--cz-dg-overlay-blur-color, #0f0820) 100%);
+}
+
+.cz-dg-overlay--blur {
+  -webkit-mask-image: radial-gradient(rgba(235, 235, 235, 0) 70%, var(--cz-dg-overlay-blur-color, #0f0820) 90%);
+  mask-image: radial-gradient(rgba(235, 235, 235, 0) 70%, var(--cz-dg-overlay-blur-color, #0f0820) 90%);
+  backdrop-filter: blur(3px);
+}
+
+/* —— 穹顶 tile：rotateY(unitX) rotateX(unitY) translateZ(radius) —— */
+.cz-dg-item {
+  width: calc(var(--item-width) * var(--item-size-x));
+  height: calc(var(--item-height) * var(--item-size-y));
+  position: absolute;
+  top: -999px;
+  bottom: -999px;
+  left: -999px;
+  right: -999px;
+  margin: auto;
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  transform:
+    rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2))))
+    rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2))))
+    translateZ(var(--cz-dg-radius));
+}
+
+.cz-dg-item__image {
+  position: absolute;
+  display: block;
+  inset: 10px;
+  border-radius: var(--cz-dg-tile-radius, 12px);
+  background: var(--cz-dg-overlay-blur-color, #0f0820);
+  overflow: hidden;
+  backface-visibility: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  pointer-events: auto;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.cz-dg-item__image:focus {
+  outline: none;
+}
+
+.cz-dg-item__image:focus-visible,
+.cz-dg-item__image:focus-within {
+  outline: 2px solid #9e59ee;
+  outline-offset: 2px;
+}
+
+.cz-dg-item__image > .photo-card:focus {
+  outline: none;
+}
+
+.cz-dg-item__image > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  backface-visibility: hidden;
+  filter: var(--cz-dg-image-filter, none);
+  display: block;
+}
+
+/* itemsFromSelector 模式：外来容器节点整体入住，内部 img 铺满 */
+.cz-dg-item__image > *:not(img) {
+  width: 100%;
+  height: 100%;
+}
+
+.cz-dg-item__image > *:not(img) img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  backface-visibility: hidden;
+  filter: var(--cz-dg-image-filter, none);
+  display: block;
+}
+
+.cz-dg-viewer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--cz-dg-viewer-pad);
+}
+
+.cz-dg-viewer .cz-dg-frame {
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--cz-dg-enlarge-radius, 32px);
+  display: flex;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .cz-dg-viewer .cz-dg-frame {
+    height: auto;
+    width: 100%;
+  }
+}
+
+.cz-dg-viewer .cz-dg-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 500ms ease;
+  backdrop-filter: blur(3px);
+}
+
+.cz-dg-root[data-enlarging='true'] .cz-dg-viewer .cz-dg-scrim {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.cz-dg-viewer .cz-dg-enlarge {
+  position: absolute;
+  z-index: 30;
+  border-radius: var(--cz-dg-enlarge-radius, 32px);
+  overflow: hidden;
+  transition:
+    transform 500ms ease,
+    opacity 500ms ease;
+  transform-origin: top left;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.cz-dg-viewer .cz-dg-enlarge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: var(--cz-dg-image-filter, none);
+}
+
+.cz-dg-edge-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--cz-dg-overlay-blur-color, #0f0820));
+}
+
+.cz-dg-edge-fade--top {
+  top: 0;
+  transform: rotate(180deg);
+}
+
+.cz-dg-edge-fade--bottom {
+  bottom: 0;
+}
+
+/* 滚动锁定（放大时锁宿主页面滚动） */
+body.cz-dg-scroll-lock {
+  overflow: hidden;
+}
+
+/* reduced-motion：关过渡，惯性由 JS 禁用 */
+@media (prefers-reduced-motion: reduce) {
+  .cz-dg-item,
+  .cz-dg-item__image,
+  .cz-dg-viewer .cz-dg-enlarge,
+  .cz-dg-viewer .cz-dg-scrim {
+    transition: none;
+  }
+}

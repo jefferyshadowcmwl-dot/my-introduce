@@ -1,0 +1,221 @@
+/* 九校园三城 · 横向年份活动轨道 */
+.campus.section-pad{
+  padding-top:var(--s-12);
+  padding-bottom:var(--s-12);
+}
+
+.campus .section-head{
+  gap:var(--s-6);
+  margin-bottom:var(--s-6);
+}
+
+.trail.cz-campus-journey{
+  min-width:0;
+  max-width:100%;
+  margin-top:var(--s-6);
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:var(--s-2) var(--s-2) var(--s-4);
+  scroll-padding-inline:var(--s-2);
+  scroll-snap-type:x proximity;
+  scrollbar-width:auto;
+  scrollbar-color:var(--muted) var(--bg-2);
+  -webkit-overflow-scrolling:touch;
+}
+
+.trail.cz-campus-journey::-webkit-scrollbar{height:10px}
+.trail.cz-campus-journey::-webkit-scrollbar-track{background:var(--bg-2)}
+.trail.cz-campus-journey::-webkit-scrollbar-thumb{
+  border:2px solid var(--bg-2);
+  border-radius:5px;
+  background:var(--muted);
+}
+
+.trail-track.cz-campus-track{
+  --campus-card-width:260px;
+  display:flex;
+  flex-wrap:nowrap;
+  align-items:stretch;
+  gap:var(--s-6);
+  width:max-content;
+  min-width:100%;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.cz-campus-year-group{
+  position:relative;
+  display:flex;
+  flex:0 0 auto;
+  flex-direction:column;
+  min-width:0;
+}
+
+.cz-campus-year{
+  display:flex;
+  align-items:center;
+  gap:var(--s-3);
+  margin:0 0 var(--s-3);
+  padding:0 0 var(--s-2);
+  border-bottom:1px solid var(--line);
+  color:var(--ink-2);
+  font-family:var(--font-mono);
+  font-size:var(--fs-h3);
+  line-height:1.4;
+}
+
+.cz-campus-year time{flex-shrink:0}
+.cz-campus-year > span{
+  color:var(--muted);
+  font-size:var(--fs-micro);
+  font-weight:400;
+  letter-spacing:.08em;
+}
+
+.cz-campus-list{
+  display:flex;
+  flex:1;
+  flex-wrap:nowrap;
+  align-items:stretch;
+  gap:var(--s-3);
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.cz-campus-item{
+  position:relative;
+  display:flex;
+  flex:0 0 var(--campus-card-width);
+  flex-direction:column;
+  gap:var(--s-2);
+  width:var(--campus-card-width);
+  min-width:0;
+  scroll-snap-align:start;
+}
+
+.cz-campus-date{
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:var(--fs-micro);
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.04em;
+  white-space:nowrap;
+}
+
+.cz-campus-card{
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  align-items:stretch;
+  gap:var(--s-3);
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  padding:var(--s-3);
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:var(--surface);
+  color:inherit;
+  text-align:left;
+  cursor:pointer;
+  transition:border-color 180ms ease,background-color 180ms ease;
+}
+
+.cz-campus-photo{
+  display:flex;
+  flex:0 0 150px;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:150px;
+  overflow:hidden;
+  border-radius:3px;
+  background:var(--bg-2);
+}
+
+.cz-campus-photo img{
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  border-radius:0;
+  filter:none;
+  transform:none;
+  mix-blend-mode:normal;
+}
+
+.cz-campus-meta{
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:var(--s-2);
+  min-width:0;
+  padding:0;
+}
+
+.cz-campus-city{
+  display:inline-flex;
+  padding:2px 8px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--cyan);
+  background:var(--bg-2);
+  font-family:var(--font-sans);
+  font-size:var(--fs-micro);
+  line-height:1.5;
+  letter-spacing:.1em;
+}
+
+.cz-campus-name{
+  color:var(--ink-2);
+  font-family:var(--font-display);
+  font-size:var(--fs-h4);
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
+
+.cz-campus-event{
+  color:var(--muted);
+  font-family:var(--font-sans);
+  font-size:var(--fs-body);
+  line-height:1.55;
+  overflow-wrap:anywhere;
+}
+
+.cz-campus-open{
+  display:flex;
+  align-items:center;
+  gap:var(--s-2);
+  margin-top:auto;
+  color:var(--orange-2);
+  font-family:var(--font-mono);
+  font-size:var(--fs-micro);
+  line-height:1.6;
+  letter-spacing:.06em;
+}
+
+.cz-campus-card:hover{
+  border-color:var(--cyan);
+  background:var(--surface-2);
+}
+
+.cz-campus-card:focus-visible{
+  outline:2px solid var(--cyan);
+  outline-offset:4px;
+}
+
+@media (max-width:767px){
+  .campus.section-pad{padding-top:var(--s-8);padding-bottom:var(--s-8)}
+  .campus .section-head{gap:var(--s-4);margin-bottom:var(--s-4)}
+  .trail.cz-campus-journey{margin-top:var(--s-4)}
+  .trail-track.cz-campus-track{gap:var(--s-4)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .cz-campus-card{transition:none}
+}

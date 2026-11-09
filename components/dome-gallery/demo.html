@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DomeGallery demo — 飘逸照片墙（纯 CSS 3D / 零依赖）</title>
+<link rel="stylesheet" href="dome-gallery.css">
+<style>
+  :root { color-scheme: dark; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f0820;
+    color: #f5e8ff;
+    font-family: "ZCOOL XiaoWei", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  }
+  .demo-head {
+    padding: 48px 32px 20px;
+    text-align: center;
+  }
+  .demo-head h1 {
+    font-size: 30px;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  .demo-head p {
+    color: #a895b3;
+    margin-top: 10px;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  .demo-label {
+    padding: 26px 32px 10px;
+    color: #5beaff;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .demo-dome-main { height: 82vh; min-height: 480px; }
+  .demo-dome-small {
+    height: 420px;
+    border: 1px solid rgba(158, 89, 238, 0.25);
+    border-radius: 24px;
+    margin: 0 32px;
+    overflow: hidden;
+  }
+  .demo-dome-sel {
+    height: 460px;
+    margin: 26px 32px 60px;
+    border: 1px solid rgba(0, 217, 255, 0.25);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  /* itemsFromSelector 数据源：隐藏的普通 DOM 列表（模拟站点既有 .photo-wall） */
+  .demo-source-wall {
+    display: none;
+  }
+  .demo-source-wall .photo-card {
+    background: #1a0f2e;
+    border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+
+<header class="demo-head">
+  <h1>DomeGallery · 飘逸照片墙</h1>
+  <p>拖拽旋转穹顶 · 松手惯性滑动 · 点击图片放大（FLIP）· 纯 CSS 3D，零依赖</p>
+</header>
+
+<div class="demo-label">variant A — items 数组 · segments 35 · color · 全高</div>
+<div class="demo-dome-main" id="dome-a"></div>
+
+<div class="demo-label">variant B — segments 25 · grayscale · minRadius 420</div>
+<div class="demo-dome-small" id="dome-b"></div>
+
+<div class="demo-label">variant C — itemsFromSelector（从既有 DOM 收集，保留原节点）</div>
+<div class="demo-dome-sel" id="dome-c"></div>
+
+<!-- 模拟宿主站点已有的 DOM 图库（整合时即 .photo-wall 的 .photo-card） -->
+<ul class="demo-source-wall" id="source-wall">
+  <li class="photo-card" data-cat="event"><img src="../../assets/2026亚马逊峰会.jpg" alt="亚马逊峰会"></li>
+  <li class="photo-card" data-cat="award"><img src="../../assets/2025中国国际创新创业大赛上海市铜奖.jpg" alt="创新创业大赛铜奖"></li>
+  <li class="photo-card" data-cat="event"><img src="../../assets/百度ai时代智能制造.jpg" alt="百度 AI 时代智能制造"></li>
+  <li class="photo-card" data-cat="speech"><img src="../../assets/中山北路小学演讲.jpg" alt="中山北路小学演讲"></li>
+  <li class="photo-card" data-cat="event"><img src="../../assets/2026华为开发者大会.jpg" alt="华为开发者大会"></li>
+  <li class="photo-card" data-cat="award"><img src="../../assets/2025上海杉达学院校赛金奖.jpg" alt="校赛金奖"></li>
+</ul>
+
+<script src="dome-gallery.js"></script>
+<script>
+(function () {
+  var A = [
+    { src: '../../assets/1000人漫展峰会.jpg', alt: '千人漫展峰会' },
+    { src: '../../assets/2026华为开发者大会.jpg', alt: '华为开发者大会' },
+    { src: '../../assets/产教合作商汤linux机箱.jpg', alt: '商汤产教合作' },
+    { src: '../../assets/上海民办高校科技论坛.jpg', alt: '民办高校科技论坛' },
+    { src: '../../assets/百度paddlepaddle领航团团长.jpg', alt: 'PaddlePaddle 领航团' },
+    { src: '../../assets/校园十大杰出人物.jpg', alt: '校园十大杰出人物' },
+    { src: '../../assets/程序设计设社长.jpg', alt: '程序设计社社长' },
+    { src: '../../assets/智联工翼第二代产品图.jpg', alt: '智联工翼产品' },
+    { src: '../../assets/2025南京大学智能视觉比赛现场.jpg', alt: '南大智能视觉比赛' },
+    { src: '../../assets/武宁路小学演讲.jpg', alt: '武宁路小学演讲' },
+    { src: '../../assets/2024研究生EFG夏令营孵化基地.jpg', alt: 'EFG 夏令营' },
+    { src: '../../assets/商汤李宝祥博士合作场景.jpg', alt: '商汤博士合作' }
+  ];
+
+  window.dgA = LZY.Comp.DomeGallery.init(document.getElementById('dome-a'), {
+    items: A,
+    segments: 35,
+    grayscale: false,
+    minRadius: 600,
+    overlayBlurColor: '#0f0820',
+    enlargeTransitionMs: 300,
+    imageBorderRadius: '24px',
+    openedImageWidth: '420px',
+    openedImageHeight: '420px'
+  });
+
+  window.dgB = LZY.Comp.DomeGallery.init(document.getElementById('dome-b'), {
+    items: A.slice(0, 6),
+    segments: 25,
+    grayscale: true,
+    minRadius: 420,
+    overlayBlurColor: '#160d20',
+    imageBorderRadius: '16px',
+    openedImageWidth: '320px',
+    openedImageHeight: '320px'
+  });
+
+  window.dgC = LZY.Comp.DomeGallery.init(document.getElementById('dome-c'), {
+    itemsFromSelector: '#source-wall .photo-card',
+    segments: 27,
+    grayscale: false,
+    minRadius: 460,
+    overlayBlurColor: '#0f0820',
+    imageBorderRadius: '18px',
+    onItemClick: function (item) {
+      console.log('[demo C] onItemClick →', item);
+      /* 生产环境由此回调对接站点 lightbox；demo 打印确认 */
+    }
+  });
+})();
+</script>
+</body>
+</html>

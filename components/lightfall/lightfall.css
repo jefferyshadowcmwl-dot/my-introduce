@@ -1,0 +1,31 @@
+.cz-lightfall {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(120, 207, 197, .12), transparent 52%),
+    repeating-linear-gradient(94deg, transparent 0 9%, rgba(242, 240, 234, .08) 9.1%, transparent 9.3% 17%),
+    #0b0f12;
+}
+
+.cz-lightfall__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.cz-lightfall--poster .cz-lightfall__canvas {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cz-lightfall__canvas {
+    opacity: .82;
+  }
+}

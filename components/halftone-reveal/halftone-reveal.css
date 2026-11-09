@@ -1,0 +1,32 @@
+/* ============================================================
+   LZY.Comp.HalftoneReveal — 网点显影（Canvas 2D 双层）
+   ① 静态印刷层：angle=45° 旋转网格，格心采样亮度 → t=(shade-paper)/(ink-paper)
+      → reach=sqrt(t/π)*cellSize 画圆；duotone 第二套网屏 +30°
+   ② 显影层：半分辨率 trail（浮点遮罩，线性衰减 linger）+ 光标软边圆
+      合成 drawImage(照片) → destination-in(trail) → 叠到印刷层
+   宿主需给定尺寸（组件根 canvas 填满挂载元素 height:100%）
+   ============================================================ */
+
+.cz-halftone {
+  overflow: hidden;
+}
+
+/* 宿主为 static 定位时由 JS 补挂此类（canvas 需要 absolute 基准） */
+.cz-halftone.cz-halftone--pos {
+  position: relative;
+}
+
+.cz-halftone__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 降为静态 poster：JS 侧停止帧循环，CSS 无需过渡 */
+  .cz-halftone__canvas {
+    pointer-events: none;
+  }
+}

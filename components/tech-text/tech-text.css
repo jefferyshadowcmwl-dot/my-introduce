@@ -1,0 +1,27 @@
+/* LZY.Comp.TechText — 组件样式（cz- 前缀，宿主给多高就多高） */
+.cz-tech-text {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.cz-tech-text-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 无障碍：canvas 外的 sr-only 原文 */
+.cz-tech-text-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

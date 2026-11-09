@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OptionWheel 组件 demo — 滚轮菜单</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="option-wheel.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0f0820;
+      color: #f5e8ff;
+      font-family: 'Fraunces', 'Noto Serif SC', Georgia, serif;
+      padding: 40px 5vw 80px;
+    }
+    .demo-head { max-width: 1200px; margin: 0 auto 28px; }
+    .demo-head h1 { font-size: 26px; margin: 0 0 6px; font-weight: 600; }
+    .demo-head p { margin: 0; color: #a895b3; font-size: 14px; font-family: 'JetBrains Mono', monospace; }
+    .demo-card {
+      max-width: 1200px;
+      margin: 0 auto 36px;
+      border: 1px solid rgba(158, 89, 238, 0.28);
+      background: #160d20;
+      padding: 22px 26px;
+    }
+    .demo-card h2 {
+      margin: 0 0 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #5beaff;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.14em;
+    }
+    .wheel-row { display: flex; gap: 32px; align-items: stretch; }
+    #ow-skills { flex: 1 1 46%; height: 380px; font-family: 'Noto Serif SC', Georgia, serif; }
+    .ow-result {
+      flex: 1 1 54%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+    }
+    .ow-now {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #a895b3;
+    }
+    .ow-now strong { color: #f5e8ff; font-weight: 600; font-size: 22px; display: block; margin-top: 4px; font-family: 'Noto Serif SC', Georgia, serif; }
+    .ow-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .ow-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 6px 12px;
+      border: 1px solid rgba(168, 149, 179, 0.4);
+      color: #a895b3;
+      transition: border-color 0.25s, color 0.25s, background 0.25s;
+    }
+    .ow-tag.is-hot {
+      border-color: #ff6b35;
+      color: #ffb627;
+      background: rgba(255, 107, 53, 0.12);
+    }
+    .demo-hint { color: #a895b3; font-size: 12px; margin-top: 14px; font-family: 'JetBrains Mono', monospace; }
+    #ow-loop { height: 300px; font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body>
+  <header class="demo-head">
+    <h1>LZY.Comp.OptionWheel — 滚轮菜单</h1>
+    <p>弧形布局 R=rowH/tiltRad · 指数平滑 · 滚轮 notch 截断 + 140ms snap · 拖拽 4px 阈值 · 方向键 · color-mix 中间项提亮</p>
+  </header>
+
+  <section class="demo-card">
+    <h2>变体 A · 技能分类切换器（6 项 / side:left / onChange 联动高亮）</h2>
+    <div class="wheel-row">
+      <div id="ow-skills"></div>
+      <div class="ow-result">
+        <div class="ow-now">当前分类 onChange → <strong id="ow-now-label">—</strong></div>
+        <div class="ow-tags" id="ow-tags"></div>
+      </div>
+    </div>
+    <p class="demo-hint">滚轮 / 拖拽 / 点击 / ↑↓←→ 均可拨动；选中项经 color-mix 提亮。</p>
+  </section>
+
+  <section class="demo-card">
+    <h2>变体 B · loop 环绕 / side:right / 12 项</h2>
+    <div id="ow-loop"></div>
+    <p class="demo-hint">loop:true 无限环绕；side:right 弧线镜像到右缘。</p>
+  </section>
+
+  <script src="option-wheel.js"></script>
+  <script>
+    (function () {
+      var cats = [
+        { label: '编程', value: 'programming', note: 'C/C++ · Python · Java · JS' },
+        { label: '数据', value: 'data', note: 'SQL · pandas · 可视化' },
+        { label: 'AI', value: 'ai', note: 'PaddlePaddle · 机器视觉' },
+        { label: '硬件', value: 'hardware', note: '单片机 · 电路 · 传感器' },
+        { label: '营销', value: 'marketing', note: '策划 · 文案 · 运营' },
+        { label: '办公', value: 'office', note: 'Office · 流程 · 协作' }
+      ];
+      var tagsBox = document.getElementById('ow-tags');
+      var nowLabel = document.getElementById('ow-now-label');
+      cats.forEach(function (c) {
+        var t = document.createElement('span');
+        t.className = 'ow-tag';
+        t.textContent = c.label;
+        t.dataset.value = c.value;
+        tagsBox.appendChild(t);
+      });
+      function highlight(c) {
+        nowLabel.textContent = c.label + ' — ' + c.note;
+        tagsBox.querySelectorAll('.ow-tag').forEach(function (t) {
+          t.classList.toggle('is-hot', t.dataset.value === c.value);
+        });
+      }
+      var wheel = window.LZY.Comp.OptionWheel.init(document.getElementById('ow-skills'), {
+        items: cats,
+        activeIndex: 0,
+        side: 'left',
+        fontSize: 2.4,
+        spacing: 1.4,
+        curve: 1,
+        tilt: 6,
+        blur: 2,
+        fade: 0.25,
+        loop: false,
+        onChange: function (item, index) { highlight(item); }
+      });
+      highlight(wheel.item);
+
+      window.LZY.Comp.OptionWheel.init(document.getElementById('ow-loop'), {
+        items: ['Ambient', 'House', 'Techno', 'Jazz', 'Lo-Fi', 'Synthwave', 'Trance', 'Funk', 'Disco', 'Hip-Hop', 'Chillwave', 'Drum & Bass'],
+        activeIndex: 3,
+        side: 'right',
+        fontSize: 1.6,
+        inset: 60,
+        loop: true,
+        activeColor: '#00d9ff',
+        onChange: function () {}
+      });
+    })();
+  </script>
+</body>
+</html>

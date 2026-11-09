@@ -1,0 +1,12 @@
+services:
+  my-introduce:
+    image: nginx:alpine
+    container_name: my-introduce
+    ports:
+      # 仅本机访问，与已有容器（genshin-wiki 等）保持一致
+      - "127.0.0.1:8095:80"
+    volumes:
+      # 挂载整个仓库目录：git pull 更新简历后无需重新构建，刷新页面即生效
+      - ./:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped

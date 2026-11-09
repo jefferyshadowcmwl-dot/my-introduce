@@ -1,0 +1,66 @@
+.cz-option-wheel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 18rem;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-x pinch-zoom;
+  outline: none;
+  isolation: isolate;
+}
+
+.cz-option-wheel::before {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  inset: calc(50% - 2rem) 1rem;
+  border-block: 1px solid #78cfc54d;
+  border-left: 3px solid var(--ow-active-color, #78cfc5);
+  background: linear-gradient(90deg, #78cfc51c, transparent);
+  z-index: -1;
+}
+
+.cz-option-wheel:focus-visible {
+  outline: 2px solid var(--ow-active-color, #78cfc5);
+  outline-offset: 4px;
+}
+
+.cz-option-wheel--dragging { cursor: grabbing; }
+
+.cz-option-wheel__item {
+  position: absolute;
+  top: 50%;
+  left: min(var(--ow-inset, 48px), 15%);
+  white-space: nowrap;
+  font-size: var(--ow-font-size, 2.6rem);
+  line-height: 1.25;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding-inline: 0.15em;
+  font-weight: 400;
+  transform-origin: left center;
+  cursor: pointer;
+  color: var(--ow-text-color, #b7cac8);
+  color: color-mix(in srgb, var(--ow-active-color, #78cfc5) calc(var(--ow-p, 0) * 100%), var(--ow-text-color, #b7cac8));
+}
+
+.cz-option-wheel__item:hover { text-decoration: underline; text-underline-offset: 0.18em; }
+
+.cz-option-wheel--right .cz-option-wheel__item {
+  left: auto;
+  right: min(var(--ow-inset, 48px), 15%);
+  transform-origin: right center;
+}
+
+.cz-option-wheel__item--selected {
+  font-weight: 700;
+  color: var(--ow-active-color, #78cfc5);
+  text-shadow: 0 0 24px #78cfc526;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cz-option-wheel__item { transition: none; text-shadow: none; }
+}

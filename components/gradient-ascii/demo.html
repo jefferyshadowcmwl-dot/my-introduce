@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gradient ASCII 渐变字符画 · 组件演示</title>
+<link rel="stylesheet" href="gradient-ascii.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0f0820;
+    color: #f5e8ff;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .stack { display: flex; flex-direction: column; gap: 16px; padding: 20px 24px; max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 15px; font-weight: 500; letter-spacing: 0.2em; color: #a895b3; margin: 4px 0 0; }
+  .hint { font-size: 12px; color: #a895b3; letter-spacing: 0.08em; margin: 0 0 4px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 285px 285px; gap: 16px; }
+  .panel {
+    position: relative;
+    height: 285px;
+    border: 1px solid rgba(120, 40, 214, 0.28);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0f0820;
+  }
+  .tag {
+    position: absolute; top: 14px; left: 16px; z-index: 2;
+    font-size: 12px; letter-spacing: 0.14em; color: #a895b3;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div class="stack">
+  <div>
+    <h1>GRADIENT ASCII · 渐变字符画（Canvas 2D 移植）</h1>
+    <p class="hint">移动指针扫出乱码尾迹，点击触发 wave 乱码环</p>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <span class="tag">V1 · horizon · 色带 紫→青→橙 · 默认参数（intro 2.4s 解码入场）</span>
+      <div id="ga-1" style="position:absolute; inset:0;"></div>
+    </div>
+
+    <div class="panel">
+      <span class="tag">V2 · eclipse · glow 0.7 · flicker 0.35 · grain 0.12</span>
+      <div id="ga-2" style="position:absolute; inset:0;"></div>
+    </div>
+
+    <div class="panel">
+      <span class="tag">V3 · rise · scale 1.4 · cellSize 14 · clickEffect burst</span>
+      <div id="ga-3" style="position:absolute; inset:0;"></div>
+    </div>
+
+    <div class="panel">
+      <span class="tag">V4 · pinch · softness 0.9 · gradientOpacity 0.75</span>
+      <div id="ga-4" style="position:absolute; inset:0;"></div>
+    </div>
+  </div>
+</div>
+
+<script src="gradient-ascii.js"></script>
+<script>
+  window.__gaInstances = [
+    LZY.Comp.GradientASCII.init(document.getElementById('ga-1')),
+    LZY.Comp.GradientASCII.init(document.getElementById('ga-2'), {
+      shape: 'eclipse', glow: 0.7, flicker: 0.35, grain: 0.12, density: 0.9
+    }),
+    LZY.Comp.GradientASCII.init(document.getElementById('ga-3'), {
+      shape: 'rise', scale: 1.4, cellSize: 14, clickEffect: 'burst', flow: 0.9
+    }),
+    LZY.Comp.GradientASCII.init(document.getElementById('ga-4'), {
+      shape: 'pinch', softness: 0.9, gradientOpacity: 0.75, variation: 3
+    })
+  ];
+</script>
+</body>
+</html>

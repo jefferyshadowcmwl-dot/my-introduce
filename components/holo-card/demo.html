@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HoloCard demo — LZY.Comp</title>
+<link rel="stylesheet" href="holo-card.css">
+<style>
+  body { margin: 0; background: #0f0820; color: #f5e8ff; font-family: "Noto Sans SC", system-ui, sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 48px 24px 80px; }
+  h1 { font-size: 22px; margin: 0 0 8px; }
+  p.tip { color: #a895b3; font-size: 13px; margin: 0 0 32px; }
+  .row { display: flex; flex-wrap: wrap; gap: 36px; align-items: flex-start; }
+  .cell { display: flex; flex-direction: column; gap: 12px; }
+  .cell figcaption { color: #a895b3; font-size: 12px; font-family: "JetBrains Mono", monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>HoloCard · CSS 烫箔全息卡</h1>
+  <p class="tip">悬停倾斜跟光 / 闲置自动漂移 / 点击翻面（第 2 张）/ preset：bursts 同心碎环 · glitter 白点闪砂</p>
+  <div class="row">
+    <figure class="cell">
+      <div id="card-a"></div>
+      <figcaption>preset=bursts · ratio=63/88 · width=280</figcaption>
+    </figure>
+    <figure class="cell">
+      <div id="card-b"></div>
+      <figcaption>preset=glitter · ratio=3/2 · backImage 可翻面</figcaption>
+    </figure>
+    <figure class="cell">
+      <div id="card-c"></div>
+      <figcaption>preset=bursts · ratio=3/2 · intensity=0.6 · glare=0.7</figcaption>
+    </figure>
+  </div>
+</div>
+
+<script src="holo-card.js"></script>
+<script>
+(function () {
+  'use strict';
+  var enc = encodeURIComponent;
+  var ASSET = '../../assets/';
+  var IMG_CERT1 = ASSET + enc('2023年(第16届》中国大学生计算机设计大赛二等奖.jpg');
+  var IMG_CERT2 = ASSET + enc('2025上海杉达学院校赛金奖.jpg');
+  var IMG_CERT3 = ASSET + enc('2026上海杉达学院校赛特等奖.jpg');
+  var IMG_BACK  = ASSET + enc('2024中国国际大学生创新创业大赛.jpg');
+
+  window.LZY.Comp.HoloCard.init(document.getElementById('card-a'), {
+    image: IMG_CERT1,
+    alt: '中国大学生计算机设计大赛二等奖证书（全息卡）',
+    preset: 'bursts',
+    ratio: '63/88',
+    width: 280
+  });
+
+  window.LZY.Comp.HoloCard.init(document.getElementById('card-b'), {
+    image: IMG_CERT2,
+    backImage: IMG_BACK,
+    alt: '校赛金奖证书（点击翻面）',
+    preset: 'glitter',
+    ratio: '3/2',
+    width: 420,
+    tiltMax: 14,
+    intensity: 0.9
+  });
+
+  window.LZY.Comp.HoloCard.init(document.getElementById('card-c'), {
+    image: IMG_CERT3,
+    alt: '校赛特等奖证书（低强度箔面）',
+    preset: 'bursts',
+    ratio: '3/2',
+    width: 420,
+    intensity: 0.6,
+    glare: 0.7,
+    scale: 1.4
+  });
+})();
+</script>
+</body>
+</html>

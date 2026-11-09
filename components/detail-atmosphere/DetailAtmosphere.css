@@ -1,0 +1,288 @@
+.da-atmosphere-host {
+  position: relative;
+  isolation: isolate;
+}
+
+.da-atmosphere-host > .shell {
+  position: relative;
+  z-index: 2;
+}
+
+.da-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.da-effect,
+.da-text-mask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.da-effect {
+  -webkit-mask-image: radial-gradient(ellipse 92% 76% at 50% 46%, #000 24%, rgba(0, 0, 0, 0.68) 58%, transparent 100%);
+  mask-image: radial-gradient(ellipse 92% 76% at 50% 46%, #000 24%, rgba(0, 0, 0, 0.68) 58%, transparent 100%);
+}
+
+.da-gallery-atmosphere .da-effect {
+  opacity: 0.28;
+}
+
+.da-awards-atmosphere .da-effect {
+  opacity: 0.64;
+}
+
+.da-gallery-atmosphere .da-text-mask {
+  background: linear-gradient(
+    180deg,
+    var(--hall-bg, #0b0f12) 0%,
+    color-mix(in srgb, var(--hall-bg, #0b0f12) 88%, transparent) 14%,
+    color-mix(in srgb, var(--hall-bg, #0b0f12) 48%, transparent) 29%,
+    transparent 46%,
+    transparent 80%,
+    color-mix(in srgb, var(--hall-bg, #0b0f12) 62%, transparent) 100%
+  );
+}
+
+.da-awards-atmosphere .da-text-mask {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--bg-2, #11171b) 94%, transparent) 0%,
+    color-mix(in srgb, var(--bg-2, #11171b) 82%, transparent) 18%,
+    color-mix(in srgb, var(--bg-2, #11171b) 38%, transparent) 34%,
+    transparent 50%,
+    transparent 82%,
+    color-mix(in srgb, var(--bg-2, #11171b) 52%, transparent) 100%
+  );
+}
+
+.da-effect[data-effect='unavailable'] {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .da-gallery-atmosphere .da-effect {
+    opacity: 0.2;
+  }
+
+  .da-awards-atmosphere .da-effect {
+    opacity: 0.48;
+  }
+
+  .da-effect {
+    -webkit-mask-image: radial-gradient(ellipse 118% 72% at 50% 46%, #000 20%, rgba(0, 0, 0, 0.62) 60%, transparent 100%);
+    mask-image: radial-gradient(ellipse 118% 72% at 50% 46%, #000 20%, rgba(0, 0, 0, 0.62) 60%, transparent 100%);
+  }
+}
+
+#archive,
+#skills,
+#contact {
+  position: relative;
+  isolation: isolate;
+}
+
+#archive > .shell,
+#skills > .shell,
+#contact > .shell {
+  position: relative;
+  z-index: 2;
+}
+
+#archive {
+  background: radial-gradient(ellipse at 92% 18%, #152328 0%, transparent 60%), #0b0f12;
+}
+
+#archive::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(120, 207, 197, .12) 31px 32px) left 4% top / 12px 100% no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 95px, rgba(120, 207, 197, .035) 95px 96px);
+  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 80%, transparent);
+}
+
+#archive .archive-group {
+  background: linear-gradient(110deg, rgba(27, 40, 44, .82), rgba(14, 21, 25, .94));
+  border-color: rgba(154, 166, 168, .2);
+  border-left-color: #718b89;
+}
+
+#archive .archive-list {
+  background: rgba(8, 13, 16, .48);
+}
+
+#skills {
+  background: radial-gradient(ellipse at 10% 60%, rgba(45, 74, 78, .16), transparent 65%),
+    linear-gradient(180deg, #0b0f12, #10181c 55%, #0c1216);
+}
+
+#skills::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-radial-gradient(ellipse at 110% 70%, transparent 0 86px, rgba(120, 207, 197, .055) 87px 88px, transparent 89px 146px);
+  mask-image: linear-gradient(90deg, transparent 15%, #000 100%);
+}
+
+#contact {
+  --contact-ground: #0c1216;
+  background: radial-gradient(ellipse at 85% 50%, #142329, var(--contact-ground) 72%);
+}
+
+#contact .cz-contact-tunnel {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(180deg, transparent, #000 16%, #000 86%, transparent);
+}
+
+#contact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(12, 18, 22, .94), rgba(12, 18, 22, .74) 45%, rgba(12, 18, 22, .1) 100%);
+}
+
+#contact > .shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+  min-width: 0;
+}
+
+#contact .section-head.ed-closing,
+#contact .cz-contact-launch,
+#contact .contact-grid {
+  width: 100%;
+  max-width: 860px;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+#contact .section-head.ed-closing {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  justify-items: center;
+  text-align: center;
+}
+
+#contact .section-head-main {
+  min-width: 0;
+}
+
+#contact .cz-launch__heading,
+#contact .cz-launch__intro,
+#contact .cz-launch__motion {
+  width: 100%;
+  max-width: none;
+  text-align: center;
+}
+
+#contact .cz-launch__intro {
+  margin: 8px auto 0;
+}
+
+#contact .section-kicker {
+  justify-content: center;
+}
+
+#contact .section-head h2 {
+  font-size: var(--fs-h2);
+  line-height: 1.28;
+  letter-spacing: -.025em;
+}
+
+#contact .cz-contact-title-line {
+  display: inline-block;
+  white-space: nowrap;
+  font: inherit;
+  color: var(--cyan);
+}
+
+#contact .section-head-note {
+  max-width: 52ch;
+  margin: 0 auto;
+  text-align: center;
+  line-height: 1.85;
+}
+
+#internship {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+#internship > .shell {
+  position: relative;
+  z-index: 1;
+}
+
+#internship .cz-internship-orb {
+  position: absolute;
+  top: 0;
+  right: -90px;
+  z-index: 0;
+  width: 620px;
+  height: 620px;
+  max-width: 110vw;
+  max-height: 110vw;
+  opacity: .3;
+  pointer-events: none;
+  mask-image: radial-gradient(circle, #000 30%, transparent 72%);
+}
+
+[data-theme='light'] #internship .cz-internship-orb {
+  opacity: .2;
+}
+
+[data-theme='light'] #skills {
+  background: radial-gradient(ellipse at 12% 60%, rgba(68, 111, 111, .06), transparent 65%),
+    linear-gradient(180deg, var(--ct-paper-2), var(--ct-paper));
+}
+
+[data-theme='light'] #skills::before {
+  opacity: .55;
+}
+
+[data-theme='light'] #contact {
+  --contact-ground: var(--ct-paper-2);
+  background: var(--contact-ground);
+}
+
+[data-theme='light'] #contact::before {
+  background: linear-gradient(90deg, var(--contact-ground), color-mix(in srgb, var(--contact-ground) 88%, transparent) 45%, color-mix(in srgb, var(--contact-ground) 40%, transparent));
+}
+
+[data-theme='light'] #contact .cz-contact-tunnel {
+  opacity: .55;
+}
+
+@media (max-width: 767px) {
+  #contact .section-head.ed-closing {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+
+  #contact .section-head-note {
+    max-width: 30ch;
+  }
+
+  #contact::before {
+    background: linear-gradient(90deg, rgba(12, 18, 22, .92), rgba(12, 18, 22, .46));
+  }
+}

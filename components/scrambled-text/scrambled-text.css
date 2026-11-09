@@ -1,0 +1,49 @@
+/* LZY.Comp.ScrambledText — 组件样式（cz- 前缀） */
+/* 原版默认 margin:7vw 必须覆盖为 0（对齐站点布局契约） */
+.cz-scrambled {
+  margin: 0;
+  font-family: inherit;
+  position: relative;
+}
+
+.cz-scrambled-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cz-scrambled-text {
+  margin: 0;
+  padding: 0;
+}
+
+/* 连续西文数字包 word，防止单词内断行 */
+.cz-scr-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* 每字：外层 char 占位（inline-block）+ 内层 sizer(hidden)/glyph(absolute) 双层 */
+.cz-scr-char {
+  display: inline-block;
+  position: relative;
+  white-space: pre;
+}
+
+.cz-scr-sizer {
+  visibility: hidden;
+}
+
+.cz-scr-glyph {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre;
+}

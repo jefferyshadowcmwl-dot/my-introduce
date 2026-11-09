@@ -1,0 +1,129 @@
+.drift-gallery {
+  width: 100%;
+  min-width: 0;
+  color: var(--ink, #f2f0ea);
+}
+
+.drift-gallery__wall {
+  height: clamp(560px, 56vw, 780px);
+  overflow: hidden;
+}
+
+.drift-gallery .drift-gallery__photo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+}
+
+.drift-gallery .drift-gallery__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  filter: none;
+  opacity: 1;
+  user-select: none;
+}
+
+.drift-gallery .drift-gallery__photo:hover {
+  box-shadow: inset 0 0 0 2px var(--cyan, #78cfc5);
+}
+
+.drift-gallery .drift-gallery__photo:focus-visible,
+.drift-gallery__browse-toggle:focus-visible {
+  outline: 3px solid var(--cyan, #78cfc5);
+  outline-offset: -3px;
+}
+
+.drift-gallery__browse {
+  margin-top: 16px;
+}
+
+.drift-gallery .drift-gallery__browse-toggle {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  min-height: 60px;
+  padding: 12px 0;
+  border: 0;
+  border-top: 1px solid var(--line, #454549);
+  border-bottom: 1px solid var(--line, #454549);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.drift-gallery__browse-toggle small {
+  display: inline-block;
+  margin-left: 16px;
+  font-size: var(--fs-micro, 13px);
+  font-weight: 400;
+}
+
+@media (max-width: 575px) {
+  .drift-gallery__browse-toggle small { display: block; margin: 4px 0 0; }
+}
+
+.drift-gallery__photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: 16px;
+  padding-block: 20px;
+}
+
+.drift-gallery__entry {
+  min-width: 0;
+  height: 240px;
+  border-radius: 10px;
+}
+
+.drift-gallery__caption {
+  flex: none;
+  max-width: 100%;
+  padding: 8px;
+  font-size: var(--fs-micro, 0.875rem);
+  line-height: 1.5;
+}
+
+@media (max-width: 767px) {
+  .drift-gallery__wall {
+    height: 620px;
+  }
+
+  .drift-gallery__photos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .drift-gallery__entry {
+    height: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drift-gallery .grid-motion__row {
+    will-change: auto;
+  }
+}

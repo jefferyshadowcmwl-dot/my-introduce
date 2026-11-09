@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern Waves 波纹图案 · 组件演示</title>
+<link rel="stylesheet" href="pattern-waves.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0f0820;
+    color: #f5e8ff;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .stack { display: flex; flex-direction: column; gap: 16px; padding: 20px 24px; max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 15px; font-weight: 500; letter-spacing: 0.2em; color: #a895b3; margin: 4px 0 0; }
+  .hint { font-size: 12px; color: #a895b3; letter-spacing: 0.08em; margin: 0 0 4px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 285px 285px; gap: 16px; }
+  .panel {
+    position: relative;
+    height: 285px;
+    border: 1px solid rgba(120, 40, 214, 0.28);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0f0820;
+  }
+  .tag {
+    position: absolute; top: 14px; left: 16px; z-index: 2;
+    font-size: 12px; letter-spacing: 0.14em; color: #a895b3;
+    pointer-events: none;
+  }
+  .headline {
+    position: absolute; inset: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; letter-spacing: 0.3em; color: #f5e8ff;
+    pointer-events: none; margin: 0;
+  }
+</style>
+</head>
+<body>
+<div class="stack">
+  <div>
+    <h1>PATTERN WAVES · 波纹图案（Canvas 2D 移植）</h1>
+    <p class="hint">在面板内移动指针可激起涟漪，点击产生溅波</p>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <span class="tag">V1 · silk · dot · fade:edges · 紫点 #9e59ee（footer 落位样式）</span>
+      <div id="pw-1" style="position:absolute; inset:0;"></div>
+    </div>
+
+    <div class="panel">
+      <span class="tag">V2 · silk · fade:center（中央压标题）</span>
+      <div id="pw-2" style="position:absolute; inset:0;"></div>
+      <p class="headline">LZY · ENGINEER STATION</p>
+    </div>
+
+    <div class="panel">
+      <span class="tag">V3 · pond · square 标记 · 涟漪加强</span>
+      <div id="pw-3" style="position:absolute; inset:0;"></div>
+    </div>
+
+    <div class="panel">
+      <span class="tag">V4 · terminal · glyph 字符 + ripple 波形</span>
+      <div id="pw-4" style="position:absolute; inset:0;"></div>
+    </div>
+  </div>
+</div>
+
+<script src="pattern-waves.js"></script>
+<script>
+  window.__pwInstances = [
+    LZY.Comp.PatternWaves.init(document.getElementById('pw-1'), {
+      preset: 'silk',
+      color: '#9e59ee',
+      backgroundColor: 'transparent',
+      opacity: 0.55,
+      fade: 'edges'
+    }),
+    LZY.Comp.PatternWaves.init(document.getElementById('pw-2'), {
+      preset: 'silk',
+      color: '#9e59ee',
+      backgroundColor: 'transparent',
+      opacity: 0.5,
+      fade: 'center',
+      fadeSize: 0.55
+    }),
+    LZY.Comp.PatternWaves.init(document.getElementById('pw-3'), {
+      preset: 'pond',
+      pattern: 'square',
+      color: '#00d9ff',
+      backgroundColor: 'transparent',
+      opacity: 0.6,
+      cursorSize: 70,
+      cursorStrength: 0.8
+    }),
+    LZY.Comp.PatternWaves.init(document.getElementById('pw-4'), {
+      preset: 'terminal',
+      color: '#25e8a5',
+      backgroundColor: 'transparent',
+      opacity: 0.6
+    })
+  ];
+</script>
+</body>
+</html>

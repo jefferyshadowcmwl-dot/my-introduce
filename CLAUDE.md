@@ -30,26 +30,26 @@ HALL LAYER / EDITORIAL LAYER / `.mu-*` / `.ed-*` **全部不存在** —— 改 
 
 ## 项目
 
-刘致远个人简历网站 — **LZY Engineer Station · 0324**（v1 暗色霓虹单页站），
+刘致远个人简历网站 — **LZY Engineer Station · 0324**（电影级工程档案单页站），
 部署地址 `https://jefferyshadowcmwl-dot.github.io/my-introduce/`。
-参考 [HXY-0124 宇宙观察站](https://hahaaa520.github.io/hxy-0124/) 的"信号收集 + 暗色霓虹"视觉语言，
-结合工程师语境调整为代码符号 / 脉冲信号风格。
+当前视觉为“高级工程档案 × 电影发布会”：15 秒纯文字片头、GhostFibers 光纤丝带 + 姓名入口（无照片球）、原版 Three.js 工牌。15 秒视频与音轨保持不变。
 
 ## 技术栈
 
-- **纯静态前端**：HTML + CSS + JS，**无构建工具 / 无 npm / 无框架**
+- **最终形态**：单个 `index.html` 内联 HTML + CSS + JS，部署时无框架或构建步骤
+- **组件源码**：原生 JS + React + Three.js；使用 npm / esbuild 构建 `assets/lzy-react.js`
 - **字体**：Google Fonts CDN（DM Sans / Fraunces / JetBrains Mono / Noto Sans SC /
   Noto Serif SC / ZCOOL XiaoWei / Monoton）
 - **部署**：GitHub Pages。**发布源 = `master` 分支 / root**
   （API 的 `default_branch` 显示 `main`，但 `main` 与 master 无共同祖先，**推 main 不生效**）
-- **设计风格**：暗紫底 `#160d20` + 霓虹紫 `#7828d6` + 强调青 `#00d9ff` + 强调橙 `#ff6b35`
+- **设计风格**：石墨黑 `#0B0F12` + 暖白 `#F2F0EA` + 冰川青 `#78CFC5` + 香槟金属 `#C8B285`；主题层为 `components/cinematic-theme/cinematic-theme.css`，其后依次加载 detail-atmosphere、campus-trail、awards-natural
 
 ## 常用命令
 
 ```bash
-# 本地预览（任选其一）
+# 本地预览（HTTP 优先）
 python -m http.server 8000           # 起 http server，访问 http://localhost:8000
-# 或直接双击 index.html 用浏览器打开
+# 不建议直接双击 index.html：file:// 下图片可能污染 canvas，导致读取或导出失败
 
 # Git 推送（走 SSH deploy key，不要用 HTTPS）
 git add . && git commit -m "..." && git push      # 已配 remote，无需输密码
@@ -58,45 +58,45 @@ git add . && git commit -m "..." && git push      # 已配 remote，无需输密
 git rm --cached bash.exe.stackdump && rm -f bash.exe.stackdump && git commit --amend --no-edit && git push --force
 ```
 
-**没有 build / lint / test 命令** — 项目是纯静态，浏览器即运行结果。
-回归验证靠本机 Chrome + CDP 套件，见「验证」一节。
+**构建**：`npm ci && npm run build`（react-src/build.mjs → assets/lzy-react.js + CSS）。
+**同步**：`node .gstack/sync-inline.cjs` 将全部本地源码内联到 index.html。
+**验证**：真实浏览器 + CDP / Playwright，见「验证」一节；部署后的 index.html 无构建步骤。
 
 ## 架构（看多文件才能理解）
 
 ### 页面结构（index.html）
-**启动页（`.intro-gate`）** + **主站（`main > section[id]`，9 区块，`#top` 起）**：
+**片头（`.cz-cinematic`）** + **入口（`.intro-gate`）** + **主站（`main > section[id]`，10 区块，`#top` 起）**：
 ```
-intro-gate (固定全屏，点击 character-button 触发 leaveIntro 跳转)
-├── canvas#cosmos-canvas (粒子背景)      ← 注意：index.html 里出现两次（重复 #id，历史遗留）
-├── intro-stars (22 个渐变小星星 twinkle)
-├── intro-bg-grid (网格)
-├── intro-brand / intro-eyebrow / h1#intro-title (4 个标题块各自律动)
-├── character-button (矩形容器：halo + photo-sticker + sticker-label + 4 question 标签)
-├── intro-hint (行楷 ZCOOL XiaoWei + 律动)
-├── intro-deco (6 个装饰符号 ⚡ { } </> Σ ∞ ∂)
-├── formula (6 个飘浮公式 λ=h/p、O(n log n)、∇·E=ρ/ε₀ 等)
-├── signal-burst (8 道脉冲光束) / signal-stream (12 条信号字符流) / scanline
+cz-cinematic (首屏固定全屏，15 秒纯文字视频，Skip/ESC/ended 到 intro-gate)
+intro-gate (片头后显示，GhostFibers 光纤丝带 + 姓名，无照片球)
+├── canvas#cosmos-canvas (粒子背景，历史重复 #id 保持现状)
+├── intro-stars / intro-bg-grid / intro-brand / intro-eyebrow / h1#intro-title
+├── cz-intro-ascii (原版 GhostFibers 光纤丝带)
+├── .character-button (点击 / Enter / Space 进入详情页)
+├── intro-hint / intro-deco / formula / signal-burst / signal-stream / scanline
 └── intro-skip
 
 main#top (主站)
 ├── site-header (顶部导航)
-├── station-index (右下浮动「站台索引」，收起/展开两态：9 项 + 滚动进度环 + BGM 音量)
-├── #about (首屏：h1 + CTA + 展柜 + 数据带 + role-cloud)
+├── station-index (右下浮动「站台索引」，收起/展开两态：10 项 + 滚动进度环 + BGM 音量)
+├── #about (首屏：h1 + CTA + 展柜 + 数据带 + role-cloud；工牌收到 lzy-enter 后物理入场，GradientASCII 持续 drift，均尊重 reduced-motion)
 ├── #internship (5 段实习 Tab 切换)
 ├── #projects (7 项目卡片 grid)
-├── #awards (9 荣誉卡片，6 张带 award-evidence modal)
-├── #gallery (全册 33 张挂画墙)
-├── #constellation (星座图：33 张履历 = 6 个星座)
-├── #archive (4 抽屉库房目录)
-├── #skills (6 技能卡 + skill-bars)
-├── #contact (4 联系卡片)
+├── #awards (9 荣誉卡片，6 张带 award-evidence modal；图片独立按钮打开原图，原版 Lightfall)
+├── #gallery (保留 GridMotion 漂移墙；独立按钮展开全部 63 图的 ChromaGallery 聚光相册，正常文档流 BranchedMenu 筛选 7 类，6 / 5 / 4 / 2 列小图，原图 Lightbox)
+├── #constellation (星座图：63 张履历 = 7 个星座，保留原分类颜色)
+├── #campus (大学游历：9 站，上海 7 / 扬州 1 / 南京 1；按 2023 / 2024 / 2025 真实年份稳定排序的横向轨道，手机端也横向浏览)
+├── #archive (6 抽屉库房目录)
+├── #skills (标题左对齐，中文 sans 的 6 项 OptionWheel 滚轮联动原有 18 项指标及 6 套真实实践 / 交付 / 三步路径 / 履历锚点，右侧技能卡无边框 / 透明背景)
+├── #contact (4 联系卡片 + 原库 FlyingButton WebGL2 烟雾起飞；点击显示真实邮箱并提供复制，不发送消息，支持 reduced-motion 与 WebGL 降级)
 └── .site-footer
 ```
 > 原 `.hero` 与 `.quick-stats` 已于 2026-09-23 删除/并入 `#about`；
 > 原 `mini-guide` + `signal-station` 两个浮动控件已合并为单一 `station-index`。
-> 编号 01–09 连续（`si-item` 恰 9 项），删 hero 不需要重排。
+> 编号 01–10 连续（`si-item` 恰 10 项），删 hero 不需要重排。
 
-### 样式系统（styles.css，约 2600 行）
+### 样式系统（styles.css + 组件层 + cinematic-theme 及新增覆盖层）
+- **最终主题**：`components/cinematic-theme/cinematic-theme.css` 统一石墨/暖白/冰川青/香槟令牌、明暗主题与响应式；其后新增 detail-atmosphere → campus-trail → awards-natural，构成最终 CSS 覆盖顺序。修改颜色优先改主题及对应覆盖层，不回退到旧紫橙组件默认值。
 - **`:root` 变量层**：颜色 / 间距（4px 网格）/ **字号阶梯（9 档）** / 字体 / 阴影 / 过渡
 - **字号阶梯**：`--fs-display/-h1/-h2/-h3/-h4/-h5/-lead/-body/-micro` 是全站字号的唯一来源。
   新增标题一律用令牌，**不要写死 px**。三处刻意豁免：`#intro-title`（启动页独立全屏层）、
@@ -109,10 +109,11 @@ main#top (主站)
 - **`prefers-reduced-motion`**：**6 个 `@media` 块**（不是 1 个），分散在启动页 / 展陈层 / 编辑层 ——
   改动画时**每个块都要检查**，漏一个就是"某个区块在 reduced 下还在动"
 
-### 脚本交互（script.js IIFE 封装，23 个函数）
+### 脚本交互（script.js IIFE 封装）
 | 分组 | 函数 | 功能 |
 |------|------|------|
-| 启动 | `leaveIntro` | intro-gate `.is-leaving` → 0.85s 后隐藏 + 显示主站 |
+| 启动 | `leaveIntro` / `playBgm` | intro-gate 分阶段离场，1.1s 后隐藏 + 显示主站；BGM 起播与拒绝状态 |
+| 片头 | `CinematicIntro` | 全屏自动播放 15s 纯文字片头（可 Skip）→ GhostFibers 光纤丝带 + 姓名入口（无照片球）→ `.character-button` 点击 / Enter / Space → `leaveIntro`；默认静音，支持手动开声、暂停、进度与 reduced-motion |
 | 背景 | `initCanvas` | requestAnimationFrame 粒子 + 连线 |
 | 揭示 | `initReveal` / `observeReveals` | IntersectionObserver 滚动揭示 `.reveal`（**注入型必须调 `observeReveals()`**） |
 | 数字 | `initCountUp` / `initCounters` | 数字滚动 / 数量注入 |
@@ -122,10 +123,16 @@ main#top (主站)
 | 项目 | `initProjectMedia` | 项目配图注入（**位置选择器 nth-child，改卡序会挂错**） |
 | 荣誉 | `initAwards` | **动态注入 DOM**：`.award-evidence` 点击 → modal 详情 |
 | 图库 | `initGallery` / `initConstellation` / `initArchive` | 挂画墙 / 星座图 / 抽屉库房（三块都是注入型） |
-| 灯箱 | `initLightbox` / `closeLightbox` | 大图查看 |
+| 灯箱 | `initLightbox` / `closeLightbox` | 大图/影片查看；焦点圈定、Escape、焦点恢复与背景 inert |
 | 悬浮 | `initStationIndex` | 站台索引收起/展开 + 滚动进度环 + 音量 |
-| 杂项 | `initVitrine` / `initCategoryLink` / `initBgm` / `initKeys` | 展柜 / 同类高亮 / 背景音乐 / ESC 关闭 |
+| 杂项 | `initVitrine` / `initCategoryLink` / `initBgm` | 展柜 / 同类高亮 / 背景音乐与手势恢复 |
 | 工具 | `mulberry` | 确定性伪随机（星座坐标，**不用 Math.random**，否则每次刷新形状都变） |
+
+片头媒体为 `assets/lzy-intro.mp4` + `lzy-intro-poster.jpg`，15 秒纯文字，不使用人物照片；视频原文件（包括 2024 / 2025 等年份变化及结尾年份）与音轨锁定不改。
+入口为原版 GhostFibers 光纤丝带 + 姓名，入口挂载 GhostFibers 而非 GradientASCII，无照片球；英文姓名 `LIU ZHIYUAN` 使用 TechText 科技文字，中文姓名使用 sans 无衬线字体；`.character-button` 支持点击 / Enter / Space 进入详情页。`#about` 使用 react-src 中原版 React + Three Lanyard，`finish: glossy`（非 holographic），旁有点击翻面提示，入口不再出现工牌；桥接在主站显现且工牌就绪后派发 `lzy-enter`，Lanyard 等待材质就绪与可见后执行真实物理入场，reduced-motion 下直接使用静止悬挂状态。
+`#about` 背景使用持续 drift 的 GradientASCII（尊重 reduced-motion），不再挂载 LightTunnel；`#awards` 仍使用原版 Lightfall。`#gallery` 保留 GridMotion 平面漂移照片墙，独立按钮展开的 ChromaGallery 从 `LZY_CHROMA_ITEMS` 浏览全部 63 图，使用正常文档流中的 BranchedMenu 筛选 7 类，以 6 / 5 / 4 / 2 列响应式小图提供聚光与原图 Lightbox；七星座的星点、连线与图例沿用 `CAT_COLORS` 原分类颜色，不统一改成主题青色。`#skills` 标题左对齐，使用中文 sans 的 6 项 OptionWheel 滚轮联动原有 18 项指标及 6 套真实实践、交付、三步路径和履历锚点，右侧技能卡保持无边框 / 透明背景。`#contact` 在原有联系卡片外新增原库 FlyingButton WebGL2 烟雾起飞效果，点击显示真实邮箱并提供复制，不发送消息，支持 reduced-motion 与 WebGL 不可用时降级。荣誉与校园图片保留原色、使用 `contain` 并去除闪膜，HoloCard / Halftone 不再初始化；荣誉图片以 `.award-image-open` 独立按钮打开原图并阻止冒泡，与整行详情分离。
+`react-src/` 保留原版组件源码，运行 `npm run build` 生成 `assets/lzy-react.js` 与 CSS。
+最终 `index.html` 内联全部本地 CSS/JS；`components/` 保留为模块源码，Docker 与 GitHub Pages 均无需构建。
 
 **JS 选择器约定**：`$()` 和 `$$()` 是别名函数（封装 querySelector）。
 所有 querySelector 都在 init 函数内查找 DOM，运行前必须有对应元素。
@@ -139,8 +146,8 @@ main#top (主站)
 
 **已推到 GitHub 的图片**：`assets/liuzhiyuan.jpg`（公开版，已做 arch 裁剪）。
 
-**⚠️ BGM 版权**：`assets/bgm.mp3` 是商业版权录音（由 53MB FLAC 转码）。
-仓库 public + 站点公开 = 侵权分发风险，已明确告知用户、用户知悉自担。
+**BGM**：`assets/bgm.mp3` 现为 64 秒原创程序合成循环（120 BPM、D 小调，44.1kHz 立体声），
+无商业采样；合成与验证脚本在 `.gstack/`。进入主站后播放，音量持久化逻辑不变。
 
 ### 部署走 SSH
 公司网络**拦截 HTTPS push**，必须用 SSH deploy key：

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BorderGlow demo — LZY.Comp</title>
+<link rel="stylesheet" href="border-glow.css">
+<style>
+  body { margin: 0; background: #0f0820; color: #f5e8ff; font-family: "Noto Sans SC", system-ui, sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 48px 24px 80px; }
+  h1 { font-size: 22px; margin: 0 0 8px; }
+  p.tip { color: #a895b3; font-size: 13px; margin: 0 0 32px; }
+  .row { display: flex; flex-wrap: wrap; gap: 32px; align-items: stretch; }
+  .cell { display: flex; flex-direction: column; gap: 10px; }
+  .cell figcaption { color: #a895b3; font-size: 12px; font-family: "JetBrains Mono", monospace; }
+  .demo-card { width: 330px; min-height: 216px; padding: 24px 26px; box-sizing: border-box; }
+  .demo-card h2 { margin: 0 0 10px; font-size: 17px; }
+  .demo-card p { margin: 0; color: #a895b3; font-size: 13px; line-height: 1.75; }
+  .demo-card .tag { display: inline-block; margin-top: 14px; font-size: 11px; letter-spacing: .12em;
+    color: #5beaff; font-family: "JetBrains Mono", monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>BorderGlow · 流光描边卡</h1>
+  <p class="tip">指针靠近边缘出现锥形流光 + 13 层外发光；glowColor 为 "H S L" 字符串；第 3 张为 animated 入场扫光；第 1 张为模拟悬停态（静态变量演示）</p>
+  <div class="row">
+    <figure class="cell">
+      <div id="bg-purple" class="demo-card cz-sweep-active" style="--edge-proximity:100; --cursor-angle:135deg;" data-demo-static="1">
+        <h2>工程交付 · projects accent</h2>
+        <p>紫 accent。此卡用内联 --edge-proximity/--cursor-angle 模拟悬停状态，便于无指针环境验收流光形态。</p>
+        <span class="tag">GLOW 265 90% 60%</span>
+      </div>
+      <figcaption>glowColor="265 90% 60%"（紫）· 模拟悬停态</figcaption>
+    </figure>
+    <figure class="cell">
+      <div id="bg-cyan" class="demo-card">
+        <h2>联系通道 · contact accent</h2>
+        <p>青 accent。把鼠标移到卡片边缘，描边流光跟随光标角度旋转。</p>
+        <span class="tag">GLOW 190 95% 55%</span>
+      </div>
+      <figcaption>glowColor="190 95% 55%"（青）· 交互态</figcaption>
+    </figure>
+    <figure class="cell">
+      <div id="bg-orange" class="demo-card">
+        <h2>技能矩阵 · skills accent</h2>
+        <p>橙 accent + animated 入场扫光（约 4s 自动播放一遍后熄灭）。</p>
+        <span class="tag">GLOW 25 95% 58%</span>
+      </div>
+      <figcaption>glowColor="25 95% 58%"（橙）· animated=true</figcaption>
+    </figure>
+  </div>
+</div>
+
+<script src="border-glow.js"></script>
+<script>
+(function () {
+  'use strict';
+  window.LZY.Comp.BorderGlow.init(document.getElementById('bg-purple'), {
+    glowColor: '265 90% 60%',
+    glowRadius: 40,
+    coneSpread: 25,
+    borderRadius: 18,
+    backgroundColor: '#1a0f2e',
+    colors: ['#7828d6', '#9e59ee', '#00d9ff']
+  });
+
+  window.LZY.Comp.BorderGlow.init(document.getElementById('bg-cyan'), {
+    glowColor: '190 95% 55%',
+    glowRadius: 45,
+    coneSpread: 30,
+    borderRadius: 18,
+    edgeSensitivity: 22,
+    backgroundColor: '#160d20',
+    colors: ['#00d9ff', '#5beaff', '#7828d6']
+  });
+
+  window.LZY.Comp.BorderGlow.init(document.getElementById('bg-orange'), {
+    glowColor: '25 95% 58%',
+    glowRadius: 50,
+    coneSpread: 25,
+    borderRadius: 18,
+    backgroundColor: '#1a0f2e',
+    colors: ['#ff6b35', '#ffb627', '#ff2e88'],
+    animated: true
+  });
+})();
+</script>
+</body>
+</html>

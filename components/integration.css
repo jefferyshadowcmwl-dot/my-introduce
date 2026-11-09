@@ -1,0 +1,292 @@
+/* ============================================================
+   components/integration.css — v2 组件整合层
+   职责：cz- 组件的挂载点布局 + 宿主适配 + 状态类。
+   独立于 styles.css；不新增 !important；注入容器类名保持不变。
+   启动页与首屏统一使用石墨黑、暖白、冰川青与少量香槟色。
+   ============================================================ */
+
+/* ---------- 0. 纯氛围层一律不拦截指针 ---------- */
+.cz-intro-ascii,
+.cz-about-orb,
+.cz-footer-waves{pointer-events:none}
+
+/* ---------- 1. intro-gate · React GhostFibers ----------
+   与网格/星空同为 z-index:0，标题与入口内容保持在上层。 */
+.intro-gate .cz-intro-ascii{
+  position:absolute;inset:0;z-index:0;
+  opacity:.8;
+}
+.intro-gate .cz-intro-ascii.cz-ghost-fallback{
+  opacity:.28;
+  background:repeating-linear-gradient(96deg,transparent 0 9%,rgba(120,207,197,.16) 9.1%,transparent 9.35% 17%);
+}
+.cz-intro-ascii .ghost-fibers-container,
+.cz-intro-ascii .ghost-fibers-canvas{
+  position:absolute;inset:0;display:block;width:100%;height:100%;
+}
+.intro-gate[hidden]{display:none}
+
+/* #about 唯一一套 Three Lanyard；原图只在挂载成功后隐藏。 */
+.vitrine-portrait.cz-react-lanyard-ready{
+  aspect-ratio:4/5;overflow:visible;clip-path:none;
+}
+.vitrine-portrait img.cz-react-lanyard-original{display:none}
+.cz-lanyard-react-mount{position:absolute;inset:0;visibility:hidden}
+.cz-react-lanyard-ready .cz-lanyard-react-mount{visibility:visible}
+.vitrine-portrait .lanyard,
+.vitrine-portrait .lanyard-canvas{
+  position:absolute;inset:0;display:block;width:100%;height:100%;
+}
+.cz-lanyard-flip-hint{
+  position:relative;z-index:4;display:flex;align-items:center;justify-content:flex-end;
+  gap:6px;margin:8px 2px -4px;pointer-events:none;
+  color:var(--muted);font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;
+}
+.cz-lanyard-flip-hint svg{width:14px;height:14px;color:var(--cyan)}
+@media (max-width:767px){
+  .cz-lanyard-flip-hint{justify-content:center;margin-top:10px}
+}
+
+/* ---------- 2. #about · Laser Flow 光纤流 ----------
+   光效覆盖首屏背景，.shell 内容始终位于其上。 */
+.about .cz-about-orb{
+  position:absolute;top:-6%;right:-6%;width:58%;height:82%;
+  z-index:0;
+}
+.about{overflow:hidden}
+.about > .shell{position:relative;z-index:1}
+
+/* ---------- 3. #about · TechText 微标（英文降级方案） ----------
+   中文大字标由 canvas 虚线轮廓渲染观感差（笔画密、无法两行排），故只对
+   「LZY ENGINEER STATION」英文微标使用；h1 保持普通排版不动。 */
+.cz-about-microtech{
+  height:58px;margin-top:20px;
+  color:var(--cyan);
+}
+@media (max-width:767px){
+  .cz-about-microtech{height:42px;margin-top:14px}
+}
+
+/* 工牌背面排版（backContent HTML 注入 .cz-lanyard__back-body）——
+   米白卡纸 + 铜色 mono 微字，与展柜铭牌同一套「铭牌」语言 */
+.cz-lz-badge-back{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;height:100%;padding:18px 16px;text-align:center;
+  background:linear-gradient(180deg,#f4efe6,#e7dfd0);
+  color:#2c183c;
+}
+.cz-lz-badge-back small{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:.3em;color:#8a6d3b;
+}
+.cz-lz-badge-back strong{
+  font-family:var(--font-display);font-size:24px;font-weight:800;letter-spacing:.08em;
+}
+.cz-lz-badge-back em{
+  font-style:normal;font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;
+  padding:3px 10px;border:1px solid #8a6d3b;border-radius:99px;color:#6b4f1d;
+}
+.cz-lz-badge-row{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-mono);font-size:10px;color:#4a3a55;
+}
+.cz-lz-badge-row i{
+  font-style:normal;font-size:8px;letter-spacing:.2em;color:#8a6d3b;
+  border-bottom:1px solid #c9b98f;padding-bottom:1px;
+}
+.cz-lz-badge-foot{
+  margin-top:6px;font-family:var(--font-mono);font-size:8px;
+  letter-spacing:.34em;color:#a08a5a;
+}
+
+/* ---------- 5a. ScrambledText 宿主适配 ----------
+   组件在挂载 span 内构建 p.cz-scrambled-text —— 命中 .section-head p
+   （15px/muted）且块级显示，把 h2 行流打断成碎块。恢复继承与 inline。 */
+.section-head .cz-scrambled-text{font-size:inherit;color:inherit;display:inline}
+.section-head .cz-scrambled{font-size:inherit}
+
+.photo-wall.cz-wall-drift{display:block;height:auto;overflow:visible}
+.cz-drift-mount{width:100%}
+.cz-drift-originals[hidden]{display:none}
+
+/* ---------- 7. #skills · OptionWheel 分类选择器 ---------- */
+.cz-skill-wheel-row{
+  display:flex;align-items:center;gap:var(--s-8);
+  margin-bottom:var(--s-8);
+}
+.cz-skill-wheel{
+  width:min(320px,52%);height:280px;flex-shrink:0;
+  font-family:var(--font-display);
+}
+.cz-skill-wheel-note{max-width:420px}
+.cz-skill-wheel-note strong{
+  display:block;font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.2em;color:var(--orange-2);margin-bottom:8px;
+}
+.cz-skill-wheel-note p{margin:0;font-size:var(--fs-body);color:var(--muted);line-height:1.7}
+@media (max-width:767px){
+  .cz-skill-wheel-row{flex-direction:column;align-items:flex-start;gap:var(--s-4)}
+  .cz-skill-wheel{width:100%;height:220px}
+}
+/* onChange 驱动的分类高亮（追加状态类，不改 .skill-card 结构） */
+.skill-card.cz-highlight{
+  border-color:var(--orange-2);
+  box-shadow:0 0 0 1px var(--orange-2),0 14px 34px rgba(255,182,39,.14);
+}
+.skill-card.cz-highlight .skill-no{color:var(--orange-2);border-color:var(--orange-2)}
+
+/* ---------- 8. #projects / #contact · BorderGlow 布局对冲 ----------
+   组件包装类自带 display:grid / border / background —— 对两卡恢复
+   原布局语法；背景色由 init 的 backgroundColor 对齐 var(--surface) 值。 */
+.project-card.cz-border-glow{display:block}
+.contact-card.cz-border-glow{display:flex;flex-direction:column;align-items:flex-start}
+/* 发光 span 外扩 --glow-padding(40px)，触屏无 hover 光锥 —— 窄屏隐藏，
+   否则贡献 24px 横向溢出（375 视口红线） */
+@media (max-width:767px){
+  .project-card.cz-border-glow > .cz-edge-light,
+  .contact-card.cz-border-glow > .cz-edge-light{display:none}
+}
+
+/* ---------- 9. #awards · 行内全息叠加（纯 CSS，不改 button 结构） ----------
+   ::after 彩虹箔层叠在整个 .award-row-figs 上（hover/focus 显现 + 扫动），
+   mix-blend-mode:screen 在证书图上做烫箔光泽。动画只动 transform。 */
+.award-row-figs{position:relative;overflow:hidden}
+.award-row-figs::after{
+  content:'';position:absolute;inset:-70%;z-index:2;pointer-events:none;
+  background:linear-gradient(115deg,
+    rgba(120,40,214,.34) 0%,rgba(0,217,255,.20) 20%,rgba(255,46,136,.24) 38%,
+    rgba(183,122,255,.30) 55%,rgba(0,217,255,.22) 72%,rgba(120,40,214,.36) 100%);
+  mix-blend-mode:screen;
+  opacity:0;
+  transform:translate3d(-16%,16%,0);
+  transition:opacity var(--t-fast);
+}
+.award-row:hover .award-row-figs::after,
+.award-row:focus-visible .award-row-figs::after{
+  opacity:.9;
+  animation:czHoloSweep 3.2s ease-in-out infinite alternate;
+}
+@keyframes czHoloSweep{
+  from{transform:translate3d(-16%,16%,0)}
+  to{transform:translate3d(16%,-16%,0)}
+}
+
+/* ---------- 10. award modal · HoloCard 接管主图 ----------
+   modal 打开（is-open）时主图 #awardImg 退场，HoloCard 以同 src 接管；
+   关闭时还原原 img。award-modal-visual 的 is-empty 分支不受影响。 */
+.award-modal-visual img.cz-is-holo-host{display:none}
+.cz-award-holo-mount{display:none;position:relative;z-index:1;width:100%;padding:24px}
+.cz-award-holo-mount.is-on{display:grid;place-items:center}
+
+/* ---------- 11. footer · PatternWaves ---------- */
+.site-footer{position:relative;overflow:hidden}
+.site-footer .cz-footer-waves{position:absolute;inset:0;z-index:0}
+.site-footer > .shell{position:relative;z-index:1}
+
+/* ---------- 12. 窄屏既有溢出修复（非组件引入，实测 375 视口 docW 399） ----------
+   award 行尾「长结果 + 长年份」并排超出 minmax(0,1fr) 列宽 —— 允许 tail 换行，
+   小字落下一行（桌面不受影响） */
+@media (max-width:575px){
+  .award-row-tail{flex-wrap:wrap}
+}
+
+/* ---------- 13. reduced-motion 收口（组件 css 之外的宿主侧动效） ---------- */
+@media (prefers-reduced-motion:reduce){
+  .award-row-figs::after{animation:none}
+  .cz-about-microtech{height:auto;min-height:44px}
+}
+
+
+/* ---------- 14. 石墨展厅视觉升级：启动页 + 首屏 ---------- */
+.intro-gate{
+  color:#f2f0ea;
+  background:
+    radial-gradient(ellipse at 50% -8%,rgba(120,207,197,.11),transparent 48%),
+    radial-gradient(ellipse at 82% 92%,rgba(200,178,133,.055),transparent 38%),
+    #0b0f12;
+}
+.intro-gate > canvas{display:none}
+.intro-gate .cz-intro-ascii{opacity:1}
+.intro-bg-grid{
+  background-image:
+    linear-gradient(rgba(120,207,197,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(120,207,197,.045) 1px,transparent 1px);
+}
+.intro-stars i{
+  background:radial-gradient(circle,rgba(242,240,234,.8),rgba(120,207,197,.2) 48%,transparent 74%);
+  box-shadow:none;
+}
+.intro-brand,.intro-brand span{color:#78cfc5;text-shadow:none}
+.intro-eyebrow{color:#c8b285}
+#intro-title{color:#f2f0ea;text-shadow:none}
+#intro-title span{
+  color:#f2f0ea;background:none;
+  -webkit-text-fill-color:#f2f0ea;
+}
+.character-halo{border-color:rgba(200,178,133,.34)}
+.character-halo::before{border-color:rgba(120,207,197,.22)}
+.character-halo::after{background:radial-gradient(circle,rgba(120,207,197,.07),transparent 68%)}
+.question{
+  color:#f2f0ea;border-color:rgba(200,178,133,.28);
+  background:rgba(11,15,18,.9);box-shadow:0 5px 16px rgba(0,0,0,.24);
+}
+.question small{color:#78cfc5}
+.question i{color:#c8b285}
+.sticker-label{color:#c8b285;background:#11171b;box-shadow:0 8px 18px rgba(0,0,0,.3)}
+.intro-hint{color:#f2f0ea;text-shadow:none}
+.intro-hint span,.intro-hint i{color:#78cfc5}
+.intro-hint small{color:#b9bcb7}
+.intro-skip{color:#f2f0ea;border-color:rgba(242,240,234,.26);background:rgba(11,15,18,.74)}
+.intro-skip:hover{color:#78cfc5;border-color:#78cfc5}
+.intro-deco,.formula,
+.formula-one,.formula-two,.formula-three,.formula-four,.formula-five,.formula-six{
+  color:rgba(200,178,133,.46);text-shadow:none;
+}
+.deco-two,.deco-four{color:rgba(120,207,197,.5)}
+
+.about.mu-hall{
+  --bg:#0b0f12;
+  --bg-2:#11171b;
+  --surface:#11171b;
+  --surface-2:#171e21;
+  --ink:#f2f0ea;
+  --ink-2:#f2f0ea;
+  --muted:#b9bcb7;
+  --cyan:#78cfc5;
+  --cyan-2:#78cfc5;
+  --line:rgba(200,178,133,.22);
+  --hall-bg:#0b0f12;
+  --hall-bg-2:#11171b;
+  --hall-mat:#171e21;
+  --hall-plate:#11171b;
+  --hall-cone:rgba(120,207,197,.09);
+  --hall-brass:#c8b285;
+  color:#f2f0ea;
+  background:#0b0f12;
+}
+.about .cz-about-orb{inset:0;width:100%;height:100%;opacity:1}
+.about .section-head h1 span{
+  color:#78cfc5;background:none;
+  -webkit-text-fill-color:#78cfc5;
+}
+.about .about-stats strong{
+  color:#f2f0ea;background:none;
+  -webkit-text-fill-color:#f2f0ea;
+}
+.about .vitrine-glass{background:linear-gradient(180deg,#171e21,#0b0f12)}
+.about .mu-vitrine:focus-visible{outline-color:#78cfc5}
+.cz-lz-badge-back{color:#182022}
+.cz-lz-badge-row{color:#3f4948}
+
+.site-header{
+  --scrim:rgba(11,15,18,.88);
+  --ink:#f2f0ea;
+  --ink-2:#f2f0ea;
+  --muted:#b9bcb7;
+  --line:rgba(200,178,133,.22);
+}
+.site-header .brand span{color:#78cfc5;border-color:#78cfc5}
+.site-header .site-nav a:hover{color:#78cfc5;background:rgba(120,207,197,.1)}
+.intro-photo-sticker:not(.cz-is-lanyard-ready){
+  background:#11171b;
+  box-shadow:0 22px 48px rgba(0,0,0,.42);
+}

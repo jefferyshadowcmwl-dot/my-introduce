@@ -1,0 +1,21 @@
+/* Orb 能量光环 —— 组件样式（cz- 前缀，宿主只管给高度） */
+.cz-orb {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.cz-orb__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* WebGL2 不可用时的静态径向渐变 poster（JS 会内联 background，类仅作标记与最小底色） */
+.cz-orb--poster {
+  background-color: transparent;
+}

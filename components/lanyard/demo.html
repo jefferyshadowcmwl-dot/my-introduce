@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lanyard demo — 挂绳工牌（2.5D / 零依赖）</title>
+<link rel="stylesheet" href="lanyard.css">
+<style>
+  :root { color-scheme: dark; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f0820;
+    color: #f5e8ff;
+    font-family: "ZCOOL XiaoWei", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+  }
+  .demo-head { padding: 44px 32px 8px; text-align: center; }
+  .demo-head h1 { font-size: 30px; letter-spacing: 2px; font-weight: 600; }
+  .demo-head p { color: #a895b3; margin-top: 10px; font-size: 14px; letter-spacing: 1px; }
+  .demo-stage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+    justify-content: center;
+    padding: 26px 32px 60px;
+  }
+  .demo-vitrine {
+    position: relative;
+    width: 430px;
+    height: 600px;
+    border: 1px solid rgba(158, 89, 238, 0.25);
+    border-radius: 26px;
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(120, 40, 214, 0.18), transparent 60%),
+      #160d20;
+    overflow: hidden;
+  }
+  .demo-tag {
+    position: absolute;
+    left: 20px;
+    top: 16px;
+    z-index: 9;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #5beaff;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  /* —— 背面排版（demo 内容样式，组件只负责注入） —— */
+  .badge-back {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    color: #171226;
+  }
+  .badge-back__id {
+    margin-top: 34px;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 6px;
+  }
+  .badge-back__rule {
+    height: 3px;
+    background: #171226;
+    margin: 12px 0 4px;
+  }
+  .badge-back__sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    line-height: 1.7;
+    opacity: 0.85;
+  }
+  .badge-back__barcode {
+    margin-top: auto;
+    height: 42px;
+    background: repeating-linear-gradient(90deg,
+      #171226 0 2px, transparent 2px 5px,
+      #171226 5px 9px, transparent 9px 12px,
+      #171226 12px 13px, transparent 13px 17px);
+  }
+  .badge-back__no {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-top: 8px;
+  }
+
+  /* —— 纯文字正面（变体 B） —— */
+  .badge-front-text {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    color: #b77aff;
+    background:
+      radial-gradient(90% 60% at 50% 30%, rgba(120, 40, 214, 0.25), transparent 70%);
+    text-align: center;
+  }
+  .badge-front-text .kick {
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: #5beaff;
+  }
+  .badge-front-text .big {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: 10px;
+    margin-left: 10px;
+  }
+  .badge-front-text .role {
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: #a895b3;
+  }
+  .badge-front-text .st {
+    margin-top: 16px;
+    width: 54px;
+    height: 3px;
+    background: #ff6b35;
+  }
+</style>
+</head>
+<body>
+
+<header class="demo-head">
+  <h1>Lanyard · 挂绳工牌</h1>
+  <p>拖拽甩动（惯性）· 点击卡片翻面（rotateY 弹簧）· 双频风常摆 · SVG 绳 + 阻尼摆，零依赖</p>
+</header>
+
+<div class="demo-stage">
+  <!-- 变体 A：真实照片正面 + LZY 排版背面 -->
+  <div class="demo-vitrine" id="ly-a">
+    <span class="demo-tag">variant A · photo front / typed back</span>
+  </div>
+
+  <!-- 变体 B：纯文字双面 -->
+  <div class="demo-vitrine" id="ly-b">
+    <span class="demo-tag">variant B · text only · light breeze</span>
+  </div>
+</div>
+
+<script src="lanyard.js"></script>
+<script>
+(function () {
+  var BACK_HTML =
+    '<div class="badge-back">' +
+      '<div class="badge-back__id">LZY</div>' +
+      '<div class="badge-back__rule"></div>' +
+      '<div class="badge-back__sub">ENGINEER<br>STATION 0324</div>' +
+      '<div class="badge-back__barcode"></div>' +
+      '<div class="badge-back__no"><span>ENERGY SIGNAL DECK</span><span>NO.0324</span></div>' +
+    '</div>';
+
+  window.lyA = LZY.Comp.Lanyard.init(document.getElementById('ly-a'), {
+    frontImage: '../../assets/liuzhiyuan.jpg',
+    backContent: BACK_HTML,
+    width: 216,
+    aspectRatio: 63 / 88,
+    strapLength: 0.46,
+    gravity: 1,
+    breeze: 0.5,
+    flipOn: 'click',
+    clamp: 'silver'
+  });
+
+  window.lyB = LZY.Comp.Lanyard.init(document.getElementById('ly-b'), {
+    frontContent:
+      '<div class="badge-front-text">' +
+        '<div class="kick">STAFF PASS</div>' +
+        '<div class="big">LZY</div>' +
+        '<div class="role">ENGINEER</div>' +
+        '<div class="st"></div>' +
+      '</div>',
+    backContent:
+      '<div class="badge-front-text">' +
+        '<div class="kick">STATION</div>' +
+        '<div class="big" style="font-size:40px">0324</div>' +
+        '<div class="role">SIGNAL · BUILD · SHIP</div>' +
+      '</div>',
+    width: 190,
+    aspectRatio: 63 / 88,
+    cardColor: '#1a0f2e',
+    strapColor: '#251238',
+    strapLength: 0.4,
+    gravity: 0.8,
+    breeze: 0.85,
+    flipOn: 'click',
+    clamp: 'gold'
+  });
+})();
+</script>
+</body>
+</html>
